@@ -5,6 +5,7 @@ import { MlpPlayground } from "@/components/demos/MlpPlayground";
 import { PerceptronDemo } from "@/components/demos/PerceptronDemo";
 import { FrameworkTabs } from "@/components/FrameworkTabs";
 import { LessonMarkdown } from "@/components/LessonMarkdown";
+import { LessonVisitTracker } from "@/components/LessonVisitTracker";
 import { NotebookViewer } from "@/components/NotebookViewer";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -75,6 +76,7 @@ export default async function LessonPage({
   return (
     <>
       <SiteHeader locale={locale} />
+      <LessonVisitTracker lessonId={lesson.id} />
       <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-10">
         <Link
           href={`/course?lang=${locale}`}

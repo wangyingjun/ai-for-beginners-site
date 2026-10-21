@@ -11,5 +11,11 @@ export async function LessonMarkdown({
 }) {
   const md = await loadLessonMarkdown(lessonId, locale);
   if (!md) return null;
-  return <MarkdownBody content={md} />;
+  return (
+    <MarkdownBody
+      content={md}
+      lessonId={lessonId}
+      langQuery={`?lang=${locale}`}
+    />
+  );
 }

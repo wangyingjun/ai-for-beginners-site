@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AuthButton } from "@/components/AuthButton";
 import { t, type Locale } from "@/lib/i18n";
 import { LanguageToggle } from "./LanguageToggle";
 
@@ -9,7 +10,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
         <Link href={`/?lang=${locale}`} className="font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
           {t(locale, "siteName")}
         </Link>
-        <nav className="flex items-center gap-4 text-sm text-zinc-600 dark:text-zinc-300">
+        <nav className="flex flex-wrap items-center gap-3 text-sm text-zinc-600 dark:text-zinc-300 sm:gap-4">
           <Link href={`/?lang=${locale}`} className="hover:text-zinc-900 dark:hover:text-white">
             {t(locale, "navHome")}
           </Link>
@@ -22,7 +23,11 @@ export function SiteHeader({ locale }: { locale: Locale }) {
           <Link href={`/lab?lang=${locale}`} className="hover:text-zinc-900 dark:hover:text-white">
             Lab
           </Link>
+          <Link href={`/progress?lang=${locale}`} className="hover:text-zinc-900 dark:hover:text-white">
+            {t(locale, "navProgress")}
+          </Link>
           <LanguageToggle locale={locale} />
+          <AuthButton locale={locale} />
         </nav>
       </div>
     </header>

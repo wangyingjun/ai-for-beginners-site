@@ -2,6 +2,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
+import { rewriteQuizHref } from "@/lib/quizzes";
 
 const schema = {
   ...defaultSchema,
@@ -27,7 +28,17 @@ const schema = {
   ],
 };
 
-export function MarkdownBody({ content }: { content: string }) {
+export function MarkdownBody({
+  content,
+  lessonId,
+  langQuery,
+}: {
+  content: string;
+  lessonId?: string;
+  /** e.g. "?lang=zh-CN" appended to rewritten in-site quiz links */
+  langQuery?: string;
+}) {
+  const suffix = langQuery || "";
   return (
     <div className="markdown-body space-y-3 text-[15px] leading-relaxed text-zinc-800 dark:text-zinc-200">
       <ReactMarkdown
@@ -51,16 +62,29 @@ export function MarkdownBody({ content }: { content: string }) {
             <ol className="my-2 list-decimal space-y-1 pl-6">{children}</ol>
           ),
           li: ({ children }) => <li className="leading-relaxed">{children}</li>,
-          a: ({ href, children }) => (
-            <a
-              href={href}
-              className="text-indigo-600 underline underline-offset-2 hover:text-indigo-500 dark:text-indigo-400"
-              target={href?.startsWith("http") ? "_blank" : undefined}
-              rel={href?.startsWith("http") ? "noreferrer" : undefined}
-            >
-              {children}
-            </a>
-          ),
+          a: ({ href, children }) => {
+            const rewritten = rewriteQuizHref(href, lessonId);
+            const isInternal =
+              rewritten?.startsWith("/") && !rewritten.startsWith("//");
+            const finalHref =
+              isInternal && rewritten
+                ? `${rewritten}${suffix}`
+                : rewritten;
+            return (
+              <a
+                href={finalHref}
+                className="text-indigo-600 underline underline-offset-2 hover:text-indigo-500 dark:text-indigo-400"
+                target={
+                  finalHref?.startsWith("http") ? "_blank" : undefined
+                }
+                rel={
+                  finalHref?.startsWith("http") ? "noreferrer" : undefined
+                }
+              >
+                {children}
+              </a>
+            );
+          },
           img: ({ src, alt }) => (
             // eslint-disable-next-line @next/next/no-img-element
             <img

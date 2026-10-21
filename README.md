@@ -8,7 +8,7 @@ Chinese-first interactive teaching site scaffold based on Microsoft’s AI-For-B
 
 - **Next.js** (App Router) + TypeScript + Tailwind CSS
 - Deploy target: **Vercel**
-- Auth / DB (later): **Supabase**
+- Auth / DB: **Supabase** (GitHub OAuth + progress sync — see `docs/auth.md`)
 - Browser notebooks (later): JupyterLite / Pyodide
 - Content sync: sparse checkout of upstream (see `scripts/sync-upstream.md`)
 
@@ -49,6 +49,9 @@ npm run build   # must pass before deploy
 | `/demos/perceptron` | Perceptron decision-boundary playground (also embedded on lesson 03) |
 | `/demos/mlp` | MLP playground — layers / activation / L2 (also on lessons 04 & 05) |
 | `/lab` | JupyterLite Tier A browser lab |
+| `/quiz/[id]` | Pre/post quizzes (mk_id 101–124 / 201–224; legacy 1–46 also resolve) |
+| `/progress` | Local + cloud learning progress |
+| `/auth/callback` | Supabase OAuth code exchange |
 
 ## Content
 
@@ -56,6 +59,9 @@ npm run build   # must pass before deploy
 - Lesson Markdown: `content/lessons/<id>/README.{en,zh-CN}.md` for **all 25** lessons (sparse sync)
 - Images: `public/lessons/<id>/…` (size-capped; sketchnotes omitted)
 - Static notebooks (Tier A sample): Perceptron, OwnFramework, Genetic under `content/lessons/<id>/notebooks/`
+- Quiz bank: `content/quizzes/bank.en.json` (48 quizzes / 145 questions) + `bank.zh-CN.json` overlay
+- Legacy URL map: `content/quizzes/legacy-map.json` (ff-quizzes `/quiz/N` → mk_id)
+- Auth setup: `docs/auth.md`
 - Architecture plan: `docs/方案.md`
 - Tier A validation: `/workspace/aifb-validate/tier-a-report.md` on the build machine — **10 notebooks** confirmed browser-runnable in Phase 0
 

@@ -1,0 +1,2362 @@
+{
+  "version": 1,
+  "lang": "zh-CN",
+  "note": "LLM draft translations for MVP; English is fallback.",
+  "quizzes": {
+    "101": {
+      "id": 101,
+      "title": "人工智能导论：课前测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "一位著名的 19 世纪原型计算机工程师是",
+          "answerOptions": [
+            {
+              "answerText": "Charles Barkley"
+            },
+            {
+              "answerText": "Charles Babbage"
+            },
+            {
+              "answerText": "Charles Darwin"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "弱人工智能（Weak AI）是一种被设计用来解决许多任务的系统",
+          "answerOptions": [
+            {
+              "answerText": "正确"
+            },
+            {
+              "answerText": "错误"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "聊天机器人是真正智能系统的例子",
+          "answerOptions": [
+            {
+              "answerText": "错，它们通常由一系列规则设计而成。"
+            },
+            {
+              "answerText": "对，它们通常被认为是「智能」的"
+            },
+            {
+              "answerText": "错，但随着它们变得更复杂，越来越能通过图灵测试。"
+            }
+          ]
+        }
+      ]
+    },
+    "201": {
+      "id": 201,
+      "title": "人工智能导论：课后测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "自上而下的人工智能方法是一种被称为 ___ 的推理模型",
+          "answerOptions": [
+            {
+              "answerText": "战略推理"
+            },
+            {
+              "answerText": "符号推理"
+            },
+            {
+              "answerText": "协同推理"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "自下而上的人工智能方法基于神经网络",
+          "answerOptions": [
+            {
+              "answerText": "正确"
+            },
+            {
+              "answerText": "错误"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "「AI 寒冬」发生在哪个年代",
+          "answerOptions": [
+            {
+              "answerText": "1950 年代"
+            },
+            {
+              "answerText": "1960 年代"
+            },
+            {
+              "answerText": "1970 年代"
+            }
+          ]
+        }
+      ]
+    },
+    "102": {
+      "id": 102,
+      "title": "知识表示与专家系统：课前测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "创建智能系统的自上而下方法基于：",
+          "answerOptions": [
+            {
+              "answerText": "知识寻求与阅读"
+            },
+            {
+              "answerText": "知识表示与推理"
+            },
+            {
+              "answerText": "知识推理与寻求"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "知识与信息是相同的",
+          "answerOptions": [
+            {
+              "answerText": "正确"
+            },
+            {
+              "answerText": "错误"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "知识是通过 ___ 获得的：",
+          "answerOptions": [
+            {
+              "answerText": "主动学习过程"
+            },
+            {
+              "answerText": "被动学习过程"
+            },
+            {
+              "answerText": "以上两者"
+            }
+          ]
+        }
+      ]
+    },
+    "202": {
+      "id": 202,
+      "title": "知识表示与专家系统：课后测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "最简单的知识表示方法是：",
+          "answerOptions": [
+            {
+              "answerText": "算法式"
+            },
+            {
+              "answerText": "符号式"
+            },
+            {
+              "answerText": "协同式"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "场景（Scenarios）可以表示随时间展开的复杂情境",
+          "answerOptions": [
+            {
+              "answerText": "正确"
+            },
+            {
+              "answerText": "错误"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "正向推理从初始数据开始，然后：",
+          "answerOptions": [
+            {
+              "answerText": "执行推理循环"
+            },
+            {
+              "answerText": "寻找目标"
+            },
+            {
+              "answerText": "重新开始"
+            }
+          ]
+        }
+      ]
+    },
+    "103": {
+      "id": 103,
+      "title": "神经网络导论 - 感知机：课前测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "早期的神经网络需要",
+          "answerOptions": [
+            {
+              "answerText": "手动调整权重"
+            },
+            {
+              "answerText": "数 TB 的数据"
+            },
+            {
+              "answerText": "特殊推理"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "简单神经元也被称为「阈值逻辑单元」",
+          "answerOptions": [
+            {
+              "answerText": "正确"
+            },
+            {
+              "answerText": "错误"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "感知机是一种 ___ 类型的模型",
+          "answerOptions": [
+            {
+              "answerText": "多类分类"
+            },
+            {
+              "answerText": "聚类"
+            },
+            {
+              "answerText": "二分类"
+            }
+          ]
+        }
+      ]
+    },
+    "203": {
+      "id": 203,
+      "title": "神经网络导论 - 感知机：课后测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "训练感知机时，要找到能使 ___ 最小的权重向量。",
+          "answerOptions": [
+            {
+              "answerText": "规模"
+            },
+            {
+              "answerText": "误差"
+            },
+            {
+              "answerText": "节点数"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "为了最小化权重函数，可以使用梯度下降",
+          "answerOptions": [
+            {
+              "answerText": "正确"
+            },
+            {
+              "answerText": "错误"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "在梯度下降过程中，每一步会更新 ___",
+          "answerOptions": [
+            {
+              "answerText": "学习率"
+            },
+            {
+              "answerText": "权重"
+            },
+            {
+              "answerText": "梯度"
+            }
+          ]
+        }
+      ]
+    },
+    "104": {
+      "id": 104,
+      "title": "神经网络：课前测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "预测质量用损失函数来衡量",
+          "answerOptions": [
+            {
+              "answerText": "正确"
+            },
+            {
+              "answerText": "错误"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "单层网络能够分类 ____",
+          "answerOptions": [
+            {
+              "answerText": "线性连接的类别"
+            },
+            {
+              "answerText": "线性可分的类别"
+            },
+            {
+              "answerText": "单层类别"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "训练多层感知机的方法称为 ____",
+          "answerOptions": [
+            {
+              "answerText": "反向传播"
+            },
+            {
+              "answerText": "多重传播"
+            },
+            {
+              "answerText": "前向传播"
+            }
+          ]
+        }
+      ]
+    },
+    "204": {
+      "id": 204,
+      "title": "神经网络：课后测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "回归损失函数我们使用 ____",
+          "answerOptions": [
+            {
+              "answerText": "绝对误差"
+            },
+            {
+              "answerText": "均方误差"
+            },
+            {
+              "answerText": "以上全部"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "下列除一项外都是分类损失函数",
+          "answerOptions": [
+            {
+              "answerText": "0-1 损失"
+            },
+            {
+              "answerText": "二元损失"
+            },
+            {
+              "answerText": "逻辑损失"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "交叉熵损失可以计算两个任意概率分布之间的相似度",
+          "answerOptions": [
+            {
+              "answerText": "正确"
+            },
+            {
+              "answerText": "错误"
+            }
+          ]
+        }
+      ]
+    },
+    "105": {
+      "id": 105,
+      "title": "框架：课前测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "深度神经网络训练需要大量计算",
+          "answerOptions": [
+            {
+              "answerText": "正确"
+            },
+            {
+              "answerText": "错误"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "过拟合是因为 ____",
+          "answerOptions": [
+            {
+              "answerText": "测试数据不足"
+            },
+            {
+              "answerText": "模型过于强大"
+            },
+            {
+              "answerText": "输出数据噪声过多"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "偏差误差是因为我们的 ____ 无法正确捕捉训练数据之间的关系。",
+          "answerOptions": [
+            {
+              "answerText": "模型"
+            },
+            {
+              "answerText": "算法"
+            },
+            {
+              "answerText": "计算机"
+            }
+          ]
+        }
+      ]
+    },
+    "205": {
+      "id": 205,
+      "title": "框架：课后测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "编译模型对象后，我们通过调用 ____ 函数来训练",
+          "answerOptions": [
+            {
+              "answerText": "fit"
+            },
+            {
+              "answerText": "train"
+            },
+            {
+              "answerText": "teach"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "二元交叉熵也称为对数损失（log loss）",
+          "answerOptions": [
+            {
+              "answerText": "正确"
+            },
+            {
+              "answerText": "错误"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "TensorFlow 对应 ____，而 PyTorch 对应 ____",
+          "answerOptions": [
+            {
+              "answerText": "Facebook, Google"
+            },
+            {
+              "answerText": "Google, Facebook"
+            },
+            {
+              "answerText": "Microsoft, Google"
+            }
+          ]
+        }
+      ]
+    },
+    "106": {
+      "id": 106,
+      "title": "计算机视觉导论：课前测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "计算机视觉旨在让计算机获得对 _____ 的理解",
+          "answerOptions": [
+            {
+              "answerText": "图像"
+            },
+            {
+              "answerText": "文本"
+            },
+            {
+              "answerText": "计算机"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "可用于图像处理的 Python 库包括",
+          "answerOptions": [
+            {
+              "answerText": "OpenCV"
+            },
+            {
+              "answerText": "Pillow"
+            },
+            {
+              "answerText": "以上两者"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "在 Python 中图像不能表示为 NumPy 数组",
+          "answerOptions": [
+            {
+              "answerText": "正确"
+            },
+            {
+              "answerText": "错误"
+            }
+          ]
+        }
+      ]
+    },
+    "206": {
+      "id": 206,
+      "title": "计算机视觉导论：课后测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "光流（Optical Flow）帮助我们理解视频帧上每个像素如何移动。",
+          "answerOptions": [
+            {
+              "answerText": "正确"
+            },
+            {
+              "answerText": "错误"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "_____ 计算显示每个像素移动方向的向量场",
+          "answerOptions": [
+            {
+              "answerText": "稀疏光流"
+            },
+            {
+              "answerText": "稠密光流"
+            },
+            {
+              "answerText": "都不是"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "缩放和模糊是在哪个阶段可以采取的步骤？",
+          "answerOptions": [
+            {
+              "answerText": "预处理"
+            },
+            {
+              "answerText": "训练"
+            },
+            {
+              "answerText": "图像变换"
+            }
+          ]
+        }
+      ]
+    },
+    "107": {
+      "id": 107,
+      "title": "卷积神经网络：课前测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "为了从图像中提取模式，我们使用？",
+          "answerOptions": [
+            {
+              "answerText": "卷积滤波器"
+            },
+            {
+              "answerText": "提取器"
+            },
+            {
+              "answerText": "滤波器"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "下列哪一个不是 CNN 架构",
+          "answerOptions": [
+            {
+              "answerText": "ResNet"
+            },
+            {
+              "answerText": "MobileNet"
+            },
+            {
+              "answerText": "TensorFlow"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "CNN 主要用于计算机视觉任务。",
+          "answerOptions": [
+            {
+              "answerText": "正确"
+            },
+            {
+              "answerText": "错误"
+            }
+          ]
+        }
+      ]
+    },
+    "207": {
+      "id": 207,
+      "title": "卷积神经网络：课后测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "哪种池化层用于「缩小」图像尺寸",
+          "answerOptions": [
+            {
+              "answerText": "平均池化"
+            },
+            {
+              "answerText": "最大池化"
+            },
+            {
+              "answerText": "以上两者"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "卷积网络的泛化能力更好",
+          "answerOptions": [
+            {
+              "answerText": "正确"
+            },
+            {
+              "answerText": "错误"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "要训练神经网络，我们需要把图像转换为张量",
+          "answerOptions": [
+            {
+              "answerText": "正确"
+            },
+            {
+              "answerText": "错误"
+            }
+          ]
+        }
+      ]
+    },
+    "108": {
+      "id": 108,
+      "title": "预训练网络与迁移学习：课前测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "迁移学习方法使用未训练的模型进行分类",
+          "answerOptions": [
+            {
+              "answerText": "正确"
+            },
+            {
+              "answerText": "错误"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "下列哪一个不是归一化技术？",
+          "answerOptions": [
+            {
+              "answerText": "高度归一化"
+            },
+            {
+              "answerText": "权重归一化"
+            },
+            {
+              "answerText": "层归一化"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "深度学习中选择随机梯度下降（SGD）是因为经典梯度下降可能 ____",
+          "answerOptions": [
+            {
+              "answerText": "很快"
+            },
+            {
+              "answerText": "很慢"
+            }
+          ]
+        }
+      ]
+    },
+    "208": {
+      "id": 208,
+      "title": "预训练网络与迁移学习：课后测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "Dropout 层作为一种 ____ 技术",
+          "answerOptions": [
+            {
+              "answerText": "梯度提升"
+            },
+            {
+              "answerText": "训练"
+            },
+            {
+              "answerText": "正则化"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "冻结卷积特征提取器的权重可以通过 ____",
+          "answerOptions": [
+            {
+              "answerText": "将 `requires_grad` 设为 `False`"
+            },
+            {
+              "answerText": "将 `trainable` 设为 `False`"
+            },
+            {
+              "answerText": "以上两者"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "批归一化是为了把流经 ____ 的值调整到合适区间",
+          "answerOptions": [
+            {
+              "answerText": "算法"
+            },
+            {
+              "answerText": "批次"
+            },
+            {
+              "answerText": "神经网络"
+            }
+          ]
+        }
+      ]
+    },
+    "109": {
+      "id": 109,
+      "title": "自编码器：课前测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "自监督学习使用 ____ 数据进行训练",
+          "answerOptions": [
+            {
+              "answerText": "预训练"
+            },
+            {
+              "answerText": "原始"
+            },
+            {
+              "answerText": "有标签"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "编码器网络将输入图像转换为潜在空间",
+          "answerOptions": [
+            {
+              "answerText": "正确"
+            },
+            {
+              "answerText": "错误"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "VAE 是什么的缩写？",
+          "answerOptions": [
+            {
+              "answerText": "Variable AutoEncoding"
+            },
+            {
+              "answerText": "Variation auto-encoder"
+            },
+            {
+              "answerText": "Variational automated encoders"
+            }
+          ]
+        }
+      ]
+    },
+    "209": {
+      "id": 209,
+      "title": "自编码器：课后测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "自编码器的特性包括",
+          "answerOptions": [
+            {
+              "answerText": "它是数据特定的"
+            },
+            {
+              "answerText": "可用于无标签数据"
+            },
+            {
+              "answerText": "以上全部"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "自编码器可以有效地从图像中去除噪声",
+          "answerOptions": [
+            {
+              "answerText": "正确"
+            },
+            {
+              "answerText": "错误"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "变分自编码器的损失函数不包括下列哪一项？",
+          "answerOptions": [
+            {
+              "answerText": "重构损失"
+            },
+            {
+              "answerText": "KL 损失"
+            },
+            {
+              "answerText": "TF 损失"
+            }
+          ]
+        }
+      ]
+    },
+    "110": {
+      "id": 110,
+      "title": "生成对抗网络：课前测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "生成器接收向量并产生 ____",
+          "answerOptions": [
+            {
+              "answerText": "视频"
+            },
+            {
+              "answerText": "图像"
+            },
+            {
+              "answerText": "gif"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "GAN 是什么的缩写？",
+          "answerOptions": [
+            {
+              "answerText": "General adversarial networks"
+            },
+            {
+              "answerText": "Generative advisor networks"
+            },
+            {
+              "answerText": "Generative adversarial networks"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "GAN 使用 ____ 个神经网络",
+          "answerOptions": [
+            {
+              "answerText": "1"
+            },
+            {
+              "answerText": "2"
+            },
+            {
+              "answerText": "3"
+            }
+          ]
+        }
+      ]
+    },
+    "210": {
+      "id": 210,
+      "title": "生成对抗网络：课后测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "我们可以使用批归一化和 BatchNorm1D 来稳定训练",
+          "answerOptions": [
+            {
+              "answerText": "正确"
+            },
+            {
+              "answerText": "错误"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "深度卷积 GAN 对 ____ 和 ____ 使用卷积层",
+          "answerOptions": [
+            {
+              "answerText": "生成器、判别器"
+            },
+            {
+              "answerText": "CNN、生成器"
+            },
+            {
+              "answerText": "训练、测试"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "GAN 训练的问题包括",
+          "answerOptions": [
+            {
+              "answerText": "对超参数敏感"
+            },
+            {
+              "answerText": "保持生成器与判别器的平衡"
+            },
+            {
+              "answerText": "以上全部"
+            }
+          ]
+        }
+      ]
+    },
+    "111": {
+      "id": 111,
+      "title": "目标检测：课前测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "神经网络只能用于图像分类",
+          "answerOptions": [
+            {
+              "answerText": "正确"
+            },
+            {
+              "answerText": "错误"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "在目标检测中，我们不仅得到物体的类别，还得到它的 ____",
+          "answerOptions": [
+            {
+              "answerText": "形状"
+            },
+            {
+              "answerText": "位置"
+            },
+            {
+              "answerText": "类型"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "一个目标检测模型可以检测多少个物体？",
+          "answerOptions": [
+            {
+              "answerText": "一个"
+            },
+            {
+              "answerText": "两个"
+            },
+            {
+              "answerText": "任意数量"
+            }
+          ]
+        }
+      ]
+    },
+    "211": {
+      "id": 211,
+      "title": "目标检测：课后测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "目标检测模型给我们",
+          "answerOptions": [
+            {
+              "answerText": "物体类别"
+            },
+            {
+              "answerText": "边界框"
+            },
+            {
+              "answerText": "类别和边界框两者"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "哪些目标检测模型更快？",
+          "answerOptions": [
+            {
+              "answerText": "单程模型"
+            },
+            {
+              "answerText": "区域提议网络"
+            },
+            {
+              "answerText": "Fast R-CNN"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "哪种指标可用于判断边界框对齐得有多好？",
+          "answerOptions": [
+            {
+              "answerText": "准确率"
+            },
+            {
+              "answerText": "精确率"
+            },
+            {
+              "answerText": "IoU"
+            }
+          ]
+        }
+      ]
+    },
+    "112": {
+      "id": 112,
+      "title": "分割：课前测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "有多少种分割算法？",
+          "answerOptions": [
+            {
+              "answerText": "1"
+            },
+            {
+              "answerText": "2"
+            },
+            {
+              "answerText": "3"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "分割是一项 _____ 任务",
+          "answerOptions": [
+            {
+              "answerText": "计算机视觉"
+            },
+            {
+              "answerText": "自然语言处理"
+            },
+            {
+              "answerText": "神经网络"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "分割网络由 ____ 和 ____ 两部分组成",
+          "answerOptions": [
+            {
+              "answerText": "分类器、分割器"
+            },
+            {
+              "answerText": "编码器、解码器"
+            },
+            {
+              "answerText": "生成器、判别器"
+            }
+          ]
+        }
+      ]
+    },
+    "212": {
+      "id": 212,
+      "title": "分割：课后测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "____ 从输入图像中提取特征",
+          "answerOptions": [
+            {
+              "answerText": "解码器"
+            },
+            {
+              "answerText": "生成器"
+            },
+            {
+              "answerText": "编码器"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "____ 将输入特征转换为掩码图像",
+          "answerOptions": [
+            {
+              "answerText": "解码器"
+            },
+            {
+              "answerText": "生成器"
+            },
+            {
+              "answerText": "编码器"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "SegNet 依靠 ____ 来训练多层网络",
+          "answerOptions": [
+            {
+              "answerText": "批归一化"
+            },
+            {
+              "answerText": "高度归一化"
+            },
+            {
+              "answerText": "权重归一化"
+            }
+          ]
+        }
+      ]
+    },
+    "113": {
+      "id": 113,
+      "title": "文本表示：课前测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "词袋模型中的每个词都关联到一个向量索引",
+          "answerOptions": [
+            {
+              "answerText": "正确"
+            },
+            {
+              "answerText": "错误"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "文本可以用 _____ 种方法表示",
+          "answerOptions": [
+            {
+              "answerText": "1"
+            },
+            {
+              "answerText": "2"
+            },
+            {
+              "answerText": "3"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "字符级表示将每个 _____ 表示为数字",
+          "answerOptions": [
+            {
+              "answerText": "字母"
+            },
+            {
+              "answerText": "词"
+            },
+            {
+              "answerText": "符号"
+            }
+          ]
+        }
+      ]
+    },
+    "213": {
+      "id": 213,
+      "title": "文本表示：课后测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "词级表示将 _____ 表示为数字",
+          "answerOptions": [
+            {
+              "answerText": "字母"
+            },
+            {
+              "answerText": "词"
+            },
+            {
+              "answerText": "符号"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "N-Gram 指的是 _____",
+          "answerOptions": [
+            {
+              "answerText": "n 个词与符号的组合"
+            },
+            {
+              "answerText": "n 个字母的组合"
+            },
+            {
+              "answerText": "n 个词的组合"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "N-gram 的主要缺点是词表大小增长很快",
+          "answerOptions": [
+            {
+              "answerText": "正确"
+            },
+            {
+              "answerText": "错误"
+            }
+          ]
+        }
+      ]
+    },
+    "114": {
+      "id": 114,
+      "title": "词嵌入：课前测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "嵌入用于用 _____ 维稠密向量表示词",
+          "answerOptions": [
+            {
+              "answerText": "更低"
+            },
+            {
+              "answerText": "更高"
+            },
+            {
+              "answerText": "平均"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "Word2Vec 预训练嵌入也可以用来替代神经网络中的嵌入层",
+          "answerOptions": [
+            {
+              "answerText": "正确"
+            },
+            {
+              "answerText": "错误"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "使用嵌入层时我们不能从词袋切换到嵌入袋",
+          "answerOptions": [
+            {
+              "answerText": "正确"
+            },
+            {
+              "answerText": "错误"
+            }
+          ]
+        }
+      ]
+    },
+    "214": {
+      "id": 214,
+      "title": "词嵌入：课后测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "Word2Vec 有 _____ 种主要架构",
+          "answerOptions": [
+            {
+              "answerText": "1"
+            },
+            {
+              "answerText": "2"
+            },
+            {
+              "answerText": "3"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "词义消歧是传统预训练嵌入表示的一个局限",
+          "answerOptions": [
+            {
+              "answerText": "正确"
+            },
+            {
+              "answerText": "错误"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "嵌入层以 _____ 作为输入",
+          "answerOptions": [
+            {
+              "answerText": "词"
+            },
+            {
+              "answerText": "符号"
+            },
+            {
+              "answerText": "数字"
+            }
+          ]
+        }
+      ]
+    },
+    "115": {
+      "id": 115,
+      "title": "语言建模：课前测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "下列哪一项可以视为语言模型？",
+          "answerOptions": [
+            {
+              "answerText": "Word2Vec 嵌入"
+            },
+            {
+              "answerText": "RNN 中的嵌入层"
+            },
+            {
+              "answerText": "用于文本分类的 RNN"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "语言模型应该能够 ____ 句子中的下一个词",
+          "answerOptions": [
+            {
+              "answerText": "使用"
+            },
+            {
+              "answerText": "预测"
+            },
+            {
+              "answerText": "猜测"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "语言模型训练于",
+          "answerOptions": [
+            {
+              "answerText": "语言词表"
+            },
+            {
+              "answerText": "专门标注的数据"
+            },
+            {
+              "answerText": "任意自然语言文本"
+            }
+          ]
+        }
+      ]
+    },
+    "215": {
+      "id": 215,
+      "title": "语言建模：课后测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "哪种架构从邻近词预测一个词？",
+          "answerOptions": [
+            {
+              "answerText": "CBoW"
+            },
+            {
+              "answerText": "Skip-gram"
+            },
+            {
+              "answerText": "N-Gram"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "训练 CBoW 模型后，我们得到",
+          "answerOptions": [
+            {
+              "answerText": "可生成文本的模型"
+            },
+            {
+              "answerText": "Word2Vec 嵌入向量"
+            },
+            {
+              "answerText": "文本分类模型"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "CBoW 模型基于",
+          "answerOptions": [
+            {
+              "answerText": "稠密神经网络"
+            },
+            {
+              "answerText": "卷积神经网络"
+            },
+            {
+              "answerText": "循环神经网络"
+            }
+          ]
+        }
+      ]
+    },
+    "116": {
+      "id": 116,
+      "title": "RNN：课前测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "RNN 是什么的缩写？",
+          "answerOptions": [
+            {
+              "answerText": "regression neural network"
+            },
+            {
+              "answerText": "recurrent neural network"
+            },
+            {
+              "answerText": "re-iterative neural network"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "一个简单的 RNN 单元有两个权重 _____",
+          "answerOptions": [
+            {
+              "answerText": "矩阵"
+            },
+            {
+              "answerText": "单元"
+            },
+            {
+              "answerText": "神经元"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "梯度消失是 _____ 的问题",
+          "answerOptions": [
+            {
+              "answerText": "RNN"
+            },
+            {
+              "answerText": "CNN"
+            },
+            {
+              "answerText": "KNN"
+            }
+          ]
+        }
+      ]
+    },
+    "216": {
+      "id": 216,
+      "title": "RNN：课后测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "_____ 从输入和隐向量中取一些信息，并插入到状态中",
+          "answerOptions": [
+            {
+              "answerText": "遗忘门"
+            },
+            {
+              "answerText": "输出门"
+            },
+            {
+              "answerText": "输入门"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "双向 RNN 在 _____ 运行循环计算",
+          "answerOptions": [
+            {
+              "answerText": "两个方向"
+            },
+            {
+              "answerText": "西北方向"
+            },
+            {
+              "answerText": "左右方向"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "所有 RNN 单元共享相同的权重",
+          "answerOptions": [
+            {
+              "answerText": "正确"
+            },
+            {
+              "answerText": "错误"
+            }
+          ]
+        }
+      ]
+    },
+    "117": {
+      "id": 117,
+      "title": "生成网络：课前测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "RNN 可以用于生成任务",
+          "answerOptions": [
+            {
+              "answerText": "是"
+            },
+            {
+              "answerText": "否"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "_____ 是有一个输入和一个输出的传统神经网络",
+          "answerOptions": [
+            {
+              "answerText": "one-to-one"
+            },
+            {
+              "answerText": "sequence-to-sequence"
+            },
+            {
+              "answerText": "one-to-many"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "RNN 通过为每个输入 token 生成下一个输出 token 来生成文本",
+          "answerOptions": [
+            {
+              "answerText": "正确"
+            },
+            {
+              "answerText": "错误"
+            }
+          ]
+        }
+      ]
+    },
+    "217": {
+      "id": 217,
+      "title": "生成网络：课后测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "输出编码器将隐状态转换为 _____ 输出",
+          "answerOptions": [
+            {
+              "answerText": "one-hot 编码"
+            },
+            {
+              "answerText": "序列"
+            },
+            {
+              "answerText": "数字"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "总是选择概率最高的字符总能得到有意义的文本。",
+          "answerOptions": [
+            {
+              "answerText": "正确"
+            },
+            {
+              "answerText": "错误"
+            },
+            {
+              "answerText": "也许"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "Many-to-many 也可以称为 _____",
+          "answerOptions": [
+            {
+              "answerText": "one-to-one"
+            },
+            {
+              "answerText": "sequence-to-sequence"
+            },
+            {
+              "answerText": "one-to-many"
+            }
+          ]
+        }
+      ]
+    },
+    "118": {
+      "id": 118,
+      "title": "Transformer：课前测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "注意力机制提供了一种对 RNN 输出预测中输入向量影响进行 _____ 的方式",
+          "answerOptions": [
+            {
+              "answerText": "加权"
+            },
+            {
+              "answerText": "训练"
+            },
+            {
+              "answerText": "测试"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "BERT 是下列哪项的缩写",
+          "answerOptions": [
+            {
+              "answerText": "Bidirectional Encoded Representations From Transformers"
+            },
+            {
+              "answerText": "Bidirectional Encoder Representations From Transformers"
+            },
+            {
+              "answerText": "Bidirectional Encoder Representatives of Transformers"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "在位置编码中，token 的相对位置由步数表示",
+          "answerOptions": [
+            {
+              "answerText": "正确"
+            },
+            {
+              "answerText": "错误"
+            }
+          ]
+        }
+      ]
+    },
+    "218": {
+      "id": 218,
+      "title": "Transformer：课后测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "位置嵌入 _____ 原始 token 及其在序列中的位置",
+          "answerOptions": [
+            {
+              "answerText": "分离"
+            },
+            {
+              "answerText": "比较"
+            },
+            {
+              "answerText": "嵌入"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "Transformer 中的多头注意力让网络能够捕捉 _____ 依赖",
+          "answerOptions": [
+            {
+              "answerText": "不同类型的"
+            },
+            {
+              "answerText": "相同类型的"
+            },
+            {
+              "answerText": "没有"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "在 Transformer 中，注意力用在 _____ 处",
+          "answerOptions": [
+            {
+              "answerText": "1"
+            },
+            {
+              "answerText": "2"
+            },
+            {
+              "answerText": "3"
+            }
+          ]
+        }
+      ]
+    },
+    "119": {
+      "id": 119,
+      "title": "命名实体识别：课前测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "NER 代表什么？",
+          "answerOptions": [
+            {
+              "answerText": "Nearest Estimated Region"
+            },
+            {
+              "answerText": "Nearest Entity Region"
+            },
+            {
+              "answerText": "Named Entity Recognition"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "一个实体总是由一个 token 组成",
+          "answerOptions": [
+            {
+              "answerText": "正确"
+            },
+            {
+              "answerText": "错误"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "训练 NER 模型需要",
+          "answerOptions": [
+            {
+              "answerText": "有标签数据集"
+            },
+            {
+              "answerText": "任意自然语言文本"
+            },
+            {
+              "answerText": "两种语言的翻译文本"
+            }
+          ]
+        }
+      ]
+    },
+    "219": {
+      "id": 219,
+      "title": "命名实体识别：课后测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "NER 模型本质上是一个 ____ 模型",
+          "answerOptions": [
+            {
+              "answerText": "文本分类"
+            },
+            {
+              "answerText": "token 分类"
+            },
+            {
+              "answerText": "文本回归"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "哪些神经网络类型可用于 NER？",
+          "answerOptions": [
+            {
+              "answerText": "RNN"
+            },
+            {
+              "answerText": "Transformer"
+            },
+            {
+              "answerText": "RNN 和 Transformer 都可以"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "NER 模型是 ____ 网络架构的好例子",
+          "answerOptions": [
+            {
+              "answerText": "one-to-one"
+            },
+            {
+              "answerText": "one-to-many"
+            },
+            {
+              "answerText": "many-to-many"
+            }
+          ]
+        }
+      ]
+    },
+    "120": {
+      "id": 120,
+      "title": "语言模型：课前测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "GPT 代表什么？",
+          "answerOptions": [
+            {
+              "answerText": "Generic Pre-Trained network"
+            },
+            {
+              "answerText": "Generative Pre-trained Transformers"
+            },
+            {
+              "answerText": "Generic Positional Text"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "GPT 可以用于什么？",
+          "answerOptions": [
+            {
+              "answerText": "文本生成"
+            },
+            {
+              "answerText": "文本分类"
+            },
+            {
+              "answerText": "文本生成及其他任务"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "GPT 基于 Transformer 架构",
+          "answerOptions": [
+            {
+              "answerText": "正确"
+            },
+            {
+              "answerText": "错误"
+            }
+          ]
+        }
+      ]
+    },
+    "220": {
+      "id": 220,
+      "title": "语言模型：课后测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "什么是零样本学习（zero-shot learning）？",
+          "answerOptions": [
+            {
+              "answerText": "从预训练网络直接得到答案"
+            },
+            {
+              "answerText": "从头训练网络"
+            },
+            {
+              "answerText": "只训练一个 epoch"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "提示工程（prompt engineering）可用于",
+          "answerOptions": [
+            {
+              "answerText": "零样本学习"
+            },
+            {
+              "answerText": "少样本学习"
+            },
+            {
+              "answerText": "两者都可以"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "哪种指标可用于估计语言模型质量？",
+          "answerOptions": [
+            {
+              "answerText": "准确率"
+            },
+            {
+              "answerText": "召回率"
+            },
+            {
+              "answerText": "困惑度（perplexity）"
+            }
+          ]
+        }
+      ]
+    },
+    "121": {
+      "id": 121,
+      "title": "遗传算法：课前测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "遗传算法基于下列哪些？",
+          "answerOptions": [
+            {
+              "answerText": "突变"
+            },
+            {
+              "answerText": "选择"
+            },
+            {
+              "answerText": "以上两者"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "交叉（Crossover）允许我们将两个解组合得到新的有效解",
+          "answerOptions": [
+            {
+              "answerText": "正确"
+            },
+            {
+              "answerText": "错误"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "遗传算法的有效解可以表示为 _____",
+          "answerOptions": [
+            {
+              "answerText": "基因"
+            },
+            {
+              "answerText": "神经元"
+            },
+            {
+              "answerText": "细胞"
+            }
+          ]
+        }
+      ]
+    },
+    "221": {
+      "id": 221,
+      "title": "遗传算法：课后测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "遗传算法可以解决哪些任务",
+          "answerOptions": [
+            {
+              "answerText": "日程优化"
+            },
+            {
+              "answerText": "最优装箱"
+            },
+            {
+              "answerText": "以上两者"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "实现遗传算法的第一步是随机选择两个基因",
+          "answerOptions": [
+            {
+              "answerText": "正确"
+            },
+            {
+              "answerText": "错误"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "使用交叉操作时，算法随机选择 _____ 个基因",
+          "answerOptions": [
+            {
+              "answerText": "3"
+            },
+            {
+              "answerText": "1"
+            },
+            {
+              "answerText": "2"
+            }
+          ]
+        }
+      ]
+    },
+    "122": {
+      "id": 122,
+      "title": "强化学习：课前测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "训练强化学习模型需要",
+          "answerOptions": [
+            {
+              "answerText": "仿真环境"
+            },
+            {
+              "answerText": "有标签数据集"
+            },
+            {
+              "answerText": "无标签数据集"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "强化学习的一个好例子是：",
+          "answerOptions": [
+            {
+              "answerText": "零样本图像分类"
+            },
+            {
+              "answerText": "零样本文本分类"
+            },
+            {
+              "answerText": "学习下国际象棋"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "创建基于强化学习的象棋引擎时，我们需要",
+          "answerOptions": [
+            {
+              "answerText": "把所有现有对局当作数据集"
+            },
+            {
+              "answerText": "让计算机自我对弈很多次"
+            },
+            {
+              "answerText": "编写穷举搜索算法"
+            }
+          ]
+        }
+      ]
+    },
+    "222": {
+      "id": 222,
+      "title": "强化学习：课后测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "强化学习训练算法如何知道自己表现如何？",
+          "answerOptions": [
+            {
+              "answerText": "达到高准确率"
+            },
+            {
+              "answerText": "使用困惑度指标"
+            },
+            {
+              "answerText": "使用奖励函数"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "强化学习适用于哪些问题？",
+          "answerOptions": [
+            {
+              "answerText": "离散环境"
+            },
+            {
+              "answerText": "连续环境"
+            },
+            {
+              "answerText": "两者都可以"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "在 Actor-Critic 模型中，critic 预测",
+          "answerOptions": [
+            {
+              "answerText": "奖励函数"
+            },
+            {
+              "answerText": "最佳下一步动作"
+            },
+            {
+              "answerText": "下一步动作的概率"
+            }
+          ]
+        }
+      ]
+    },
+    "123": {
+      "id": 123,
+      "title": "多智能体建模：课前测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "通过建模简单智能体的行为，我们可以理解系统更复杂的行为。",
+          "answerOptions": [
+            {
+              "answerText": "正确"
+            },
+            {
+              "answerText": "错误"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "元系统跃迁原理来源于：",
+          "answerOptions": [
+            {
+              "answerText": "进化控制论"
+            },
+            {
+              "answerText": "涌现论"
+            },
+            {
+              "answerText": "以上两者"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "多智能体系统出现在 ____：",
+          "answerOptions": [
+            {
+              "answerText": "1970 年代"
+            },
+            {
+              "answerText": "1980 年代"
+            },
+            {
+              "answerText": "1990 年代"
+            }
+          ]
+        }
+      ]
+    },
+    "223": {
+      "id": 223,
+      "title": "多智能体建模：课后测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "智能体是：",
+          "answerOptions": [
+            {
+              "answerText": "独自存在的实体"
+            },
+            {
+              "answerText": "生活在环境中的实体"
+            },
+            {
+              "answerText": "智能的实体"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "反应式智能体通常具有：",
+          "answerOptions": [
+            {
+              "answerText": "简单的请求-响应行为"
+            },
+            {
+              "answerText": "复杂行为"
+            },
+            {
+              "answerText": "没有行为"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "多智能体系统用于：",
+          "answerOptions": [
+            {
+              "answerText": "视频制作与系统建模"
+            },
+            {
+              "answerText": "游戏与自动化"
+            },
+            {
+              "answerText": "以上两者"
+            }
+          ]
+        }
+      ]
+    },
+    "124": {
+      "id": 124,
+      "title": "伦理与负责任的 AI：课前测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "我们为什么需要关注 AI 伦理？",
+          "answerOptions": [
+            {
+              "answerText": "AI 是强大工具，可能造成伤害"
+            },
+            {
+              "answerText": "我们需要确保 AI 模型不歧视人"
+            },
+            {
+              "answerText": "以上两者"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "下列哪项是可解释 AI 的例子？",
+          "answerOptions": [
+            {
+              "answerText": "专家系统"
+            },
+            {
+              "answerText": "神经网络"
+            },
+            {
+              "answerText": "图像分类器"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "在医学中使用 AI 是不道德的",
+          "answerOptions": [
+            {
+              "answerText": "正确"
+            },
+            {
+              "answerText": "错误"
+            }
+          ]
+        }
+      ]
+    },
+    "224": {
+      "id": 224,
+      "title": "伦理与负责任的 AI：课后测验",
+      "questions": [
+        {
+          "order": 0,
+          "questionText": "为什么 AI 模型可能会歧视？",
+          "answerOptions": [
+            {
+              "answerText": "因为它可能变得不友好"
+            },
+            {
+              "answerText": "因为数据集没有妥善平衡"
+            },
+            {
+              "answerText": "因为开发者这样编程"
+            }
+          ]
+        },
+        {
+          "order": 1,
+          "questionText": "下列哪项不是负责任 AI 的原则？",
+          "answerOptions": [
+            {
+              "answerText": "透明度"
+            },
+            {
+              "answerText": "公平性"
+            },
+            {
+              "answerText": "聪明度"
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "questionText": "AI 系统的问责制意味着",
+          "answerOptions": [
+            {
+              "answerText": "决策中应有能承担责任的人类参与"
+            },
+            {
+              "answerText": "AI 系统应对其行为负责"
+            },
+            {
+              "answerText": "AI 系统开发者应承担责任"
+            }
+          ]
+        },
+        {
+          "order": 3,
+          "questionText": "模型公平性与 ____ 相关",
+          "answerOptions": [
+            {
+              "answerText": "可解释性"
+            },
+            {
+              "answerText": "偏见"
+            },
+            {
+              "answerText": "问责制"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
