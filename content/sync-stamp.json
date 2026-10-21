@@ -6,17 +6,38 @@
     {
       "lessonId": "03",
       "file": "Perceptron.ipynb",
+      "locale": "en",
       "bytes": 136963
+    },
+    {
+      "lessonId": "03",
+      "file": "zh-CN/Perceptron.ipynb",
+      "locale": "zh-CN",
+      "bytes": 136761
     },
     {
       "lessonId": "04",
       "file": "OwnFramework.ipynb",
+      "locale": "en",
       "bytes": 455453
+    },
+    {
+      "lessonId": "04",
+      "file": "zh-CN/OwnFramework.ipynb",
+      "locale": "zh-CN",
+      "bytes": 453402
     },
     {
       "lessonId": "21",
       "file": "Genetic.ipynb",
+      "locale": "en",
       "bytes": 33166
+    },
+    {
+      "lessonId": "21",
+      "file": "zh-CN/Genetic.ipynb",
+      "locale": "zh-CN",
+      "bytes": 30432
     }
   ],
   "imagesCopied": 122,

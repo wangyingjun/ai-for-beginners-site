@@ -18,7 +18,8 @@ Into this repo (lean):
 | `content/lessons/<id>/README.zh-CN.md` | zh-CN translation README |
 | `public/lessons/<id>/images/` | Relative images ≤450KB each (skips huge GIFs / DALL·E assets) |
 | `public/lessons/<id>/module-images/` | Module-level `../images/` when referenced |
-| `content/lessons/<id>/notebooks/*.ipynb` | Tier A samples: Perceptron, OwnFramework, Genetic |
+| `content/lessons/<id>/notebooks/*.ipynb` | Tier A English samples: Perceptron, OwnFramework, Genetic |
+| `content/lessons/<id>/notebooks/zh-CN/*.ipynb` | Matching zh-CN notebooks from `translations/zh-CN/` |
 
 Does **not** copy: full `translations/` tree, `sketchnotes/` (13MB), `translated_images/`, datasets, or the 2.3GB upstream checkout.
 

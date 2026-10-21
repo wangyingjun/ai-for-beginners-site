@@ -62,7 +62,7 @@ export default async function LessonPage({
   const staticFiles = lesson.staticNotebooks ?? [];
   const staticRendered = [];
   for (const file of staticFiles) {
-    const cells = await loadStaticNotebook(lesson.id, file);
+    const cells = await loadStaticNotebook(lesson.id, file, locale);
     if (cells) staticRendered.push({ file, cells });
   }
 
@@ -195,9 +195,31 @@ export default async function LessonPage({
             <p className="text-sm text-zinc-500">
               {t(locale, "notebookOutputHint")}
             </p>
-            {staticRendered.map(({ file, cells }) => (
-              <NotebookViewer key={file} title={file} cells={cells} />
-            ))}
+            {staticRendered.map(({ file, cells }) => {
+              const collapse = cells.length >= 6;
+              const viewer = (
+                <NotebookViewer title={file} cells={cells} />
+              );
+              if (!collapse) {
+                return <div key={file}>{viewer}</div>;
+              }
+              return (
+                <details
+                  key={file}
+                  className="rounded-lg border border-zinc-200 bg-zinc-50 open:bg-white dark:border-zinc-800 dark:bg-zinc-900 dark:open:bg-zinc-950"
+                >
+                  <summary className="cursor-pointer select-none px-4 py-3 text-sm font-medium text-zinc-800 dark:text-zinc-100">
+                    {t(locale, "notebookExpand")} — {file} ({cells.length})
+                  </summary>
+                  <div className="space-y-3 border-t border-zinc-200 px-4 py-4 dark:border-zinc-800">
+                    <p className="text-xs text-zinc-500">
+                      {t(locale, "notebookExpandHint")}
+                    </p>
+                    {viewer}
+                  </div>
+                </details>
+              );
+            })}
           </section>
         )}
 

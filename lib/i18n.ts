@@ -31,6 +31,8 @@ const dict = {
     notebookOutput: "Notebook 输出（静态占位）",
     notebookOutputHint:
       "以下为上游已保存的静态输出（Tier A 抽样）。其余 notebook 请用 Colab / Codespaces / Binder 打开。",
+    notebookExpand: "展开静态 Notebook",
+    notebookExpandHint: "单元格较多，默认折叠以免淹没正文。点击展开查看代码与输出。",
     language: "语言",
     backToIndex: "返回课程目录",
     attribution:
@@ -280,6 +282,8 @@ const dict = {
     notebookOutput: "Notebook output (static placeholder)",
     notebookOutputHint:
       "Static saved outputs from upstream (Tier A sample). Open other notebooks via Colab / Codespaces / Binder.",
+    notebookExpand: "Expand static notebook",
+    notebookExpandHint: "Many cells — collapsed by default so the lesson body stays readable. Expand to see code and outputs.",
     language: "Language",
     backToIndex: "Back to course index",
     attribution:

@@ -212,10 +212,13 @@ function syncNotebooks() {
     const to = join(root, "content", "lessons", nb.lessonId, "notebooks", nb.destName);
     if (!existsSync(from)) {
       console.warn(`  missing notebook ${nb.src}`);
-      continue;
-    }
-    if (copyOne(from, to)) {
-      synced.push({ lessonId: nb.lessonId, file: nb.destName, bytes: statSync(from).size });
+    } else if (copyOne(from, to)) {
+      synced.push({
+        lessonId: nb.lessonId,
+        file: nb.destName,
+        locale: "en",
+        bytes: statSync(from).size,
+      });
       // Mark in manifest
       const lesson = manifest.lessons.find((l) => l.id === nb.lessonId);
       if (lesson) {
@@ -225,6 +228,28 @@ function syncNotebooks() {
           lesson.staticNotebooks.push(nb.destName);
         }
       }
+    }
+
+    // zh-CN translation notebooks live under translations/zh-CN/{lesson.path}/
+    const zhFrom = join(UPSTREAM, "translations", "zh-CN", nb.src);
+    const zhTo = join(
+      root,
+      "content",
+      "lessons",
+      nb.lessonId,
+      "notebooks",
+      "zh-CN",
+      nb.destName,
+    );
+    if (!existsSync(zhFrom)) {
+      console.warn(`  missing zh-CN notebook translations/zh-CN/${nb.src}`);
+    } else if (copyOne(zhFrom, zhTo)) {
+      synced.push({
+        lessonId: nb.lessonId,
+        file: `zh-CN/${nb.destName}`,
+        locale: "zh-CN",
+        bytes: statSync(zhFrom).size,
+      });
     }
   }
   return synced;
