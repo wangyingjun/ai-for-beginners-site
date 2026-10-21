@@ -1,20 +1,28 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { AttentionDemo } from "@/components/demos/AttentionDemo";
 import { BrowserRunButtons } from "@/components/BrowserRunButtons";
 import { CartPoleDemo } from "@/components/demos/CartPoleDemo";
 import { ConvKernelDemo } from "@/components/demos/ConvKernelDemo";
+import { EmbeddingsDemo } from "@/components/demos/EmbeddingsDemo";
 import { ExpertAnimalsDemo } from "@/components/demos/ExpertAnimalsDemo";
 import { GeneticDemo } from "@/components/demos/GeneticDemo";
 import { MlpPlayground } from "@/components/demos/MlpPlayground";
 import { PerceptronDemo } from "@/components/demos/PerceptronDemo";
+import { TextRepDemo } from "@/components/demos/TextRepDemo";
+import { ExternalRunButtons } from "@/components/ExternalRunButtons";
 import { FrameworkTabs } from "@/components/FrameworkTabs";
 import { LessonMarkdown } from "@/components/LessonMarkdown";
 import { LessonVisitTracker } from "@/components/LessonVisitTracker";
-import { NotebookViewer } from "@/components/NotebookViewer";
+import { MarkdownBody } from "@/components/MarkdownBody";
 import { SiteFooter } from "@/components/SiteFooter";
 import { TutorChat } from "@/components/tutor/TutorChat";
 import { SiteHeader } from "@/components/SiteHeader";
-import { loadLessonMarkdown, loadStaticNotebook } from "@/lib/content";
+import {
+  loadLabMarkdown,
+  loadLessonMarkdown,
+  loadStaticNotebook,
+} from "@/lib/content";
 import { t } from "@/lib/i18n";
 import { resolveLocale } from "@/lib/locale";
 import {
@@ -58,12 +66,15 @@ export default async function LessonPage({
   const notebooks = lesson.notebooks ?? [];
   const md = await loadLessonMarkdown(lesson.id, locale);
   const hasMd = Boolean(md);
+  const labMd = lesson.hasLab
+    ? await loadLabMarkdown(lesson.id, locale)
+    : null;
 
   const staticFiles = lesson.staticNotebooks ?? [];
-  const staticRendered = [];
+  const staticByFile: Record<string, Awaited<ReturnType<typeof loadStaticNotebook>> extends infer R ? NonNullable<R> : never> = {};
   for (const file of staticFiles) {
     const cells = await loadStaticNotebook(lesson.id, file, locale);
-    if (cells) staticRendered.push({ file, cells });
+    if (cells) staticByFile[file] = cells;
   }
 
   const tierLabel =
@@ -79,8 +90,13 @@ export default async function LessonPage({
   const showPerceptron = lesson.id === "03";
   const showMlp = lesson.id === "04" || lesson.id === "05";
   const showConv = lesson.id === "06" || lesson.id === "07";
+  const showTextRep = lesson.id === "13";
+  const showEmbed = lesson.id === "14" || lesson.id === "15";
+  const showAttn = lesson.id === "18";
   const showGenetic = lesson.id === "21";
   const showCart = lesson.id === "22";
+
+  const labNotebooks = lesson.labNotebooks ?? [];
 
   return (
     <>
@@ -117,6 +133,11 @@ export default async function LessonPage({
                 {t(locale, "readingOnly")}
               </span>
             )}
+            {lesson.hasLab && (
+              <span className="rounded-full bg-violet-50 px-2 py-0.5 text-violet-800 dark:bg-violet-950 dark:text-violet-200">
+                {t(locale, "lab")}
+              </span>
+            )}
             {hasMd && (
               <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">
                 Markdown
@@ -143,7 +164,6 @@ export default async function LessonPage({
           )}
         </section>
 
-
         {showExpert && (
           <section className="mt-10 space-y-3">
             <h2 className="text-xl font-semibold">{t(locale, "demoSection")}</h2>
@@ -165,11 +185,31 @@ export default async function LessonPage({
           </section>
         )}
 
-
         {showConv && (
           <section className="mt-10 space-y-3">
             <h2 className="text-xl font-semibold">{t(locale, "demoSection")}</h2>
             <ConvKernelDemo locale={locale} />
+          </section>
+        )}
+
+        {showTextRep && (
+          <section className="mt-10 space-y-3">
+            <h2 className="text-xl font-semibold">{t(locale, "demoSection")}</h2>
+            <TextRepDemo locale={locale} />
+          </section>
+        )}
+
+        {showEmbed && (
+          <section className="mt-10 space-y-3">
+            <h2 className="text-xl font-semibold">{t(locale, "demoSection")}</h2>
+            <EmbeddingsDemo locale={locale} />
+          </section>
+        )}
+
+        {showAttn && (
+          <section className="mt-10 space-y-3">
+            <h2 className="text-xl font-semibold">{t(locale, "demoSection")}</h2>
+            <AttentionDemo locale={locale} />
           </section>
         )}
 
@@ -187,39 +227,16 @@ export default async function LessonPage({
           </section>
         )}
 
-        {staticRendered.length > 0 && (
-          <section className="mt-10 space-y-8">
-            <h2 className="text-xl font-semibold">
-              {t(locale, "notebookOutput")}
-            </h2>
-            <p className="text-sm text-zinc-500">
-              {t(locale, "notebookOutputHint")}
-            </p>
-            {staticRendered.map(({ file, cells }) => {
-              const collapse = cells.length >= 6;
-              const viewer = (
-                <NotebookViewer title={file} cells={cells} />
-              );
-              if (!collapse) {
-                return <div key={file}>{viewer}</div>;
-              }
-              return (
-                <details
-                  key={file}
-                  className="rounded-lg border border-zinc-200 bg-zinc-50 open:bg-white dark:border-zinc-800 dark:bg-zinc-900 dark:open:bg-zinc-950"
-                >
-                  <summary className="cursor-pointer select-none px-4 py-3 text-sm font-medium text-zinc-800 dark:text-zinc-100">
-                    {t(locale, "notebookExpand")} — {file} ({cells.length})
-                  </summary>
-                  <div className="space-y-3 border-t border-zinc-200 px-4 py-4 dark:border-zinc-800">
-                    <p className="text-xs text-zinc-500">
-                      {t(locale, "notebookExpandHint")}
-                    </p>
-                    {viewer}
-                  </div>
-                </details>
-              );
-            })}
+        {lesson.hasNotebook && notebooks.length > 0 && (
+          <section className="mt-10 space-y-4">
+            <h2 className="text-xl font-semibold">{t(locale, "notebooks")}</h2>
+            <p className="text-sm text-zinc-500">{t(locale, "notebookOutputHint")}</p>
+            <FrameworkTabs
+              notebooks={notebooks}
+              locale={locale}
+              path={lesson.path}
+              staticByFile={staticByFile}
+            />
           </section>
         )}
 
@@ -229,15 +246,55 @@ export default async function LessonPage({
           </section>
         )}
 
-        {lesson.hasNotebook && notebooks.length > 0 && (
-          <section className="mt-10 space-y-4">
-            <h2 className="text-xl font-semibold">{t(locale, "notebooks")}</h2>
-            <FrameworkTabs
-              notebooks={notebooks}
-              locale={locale}
-              path={lesson.path}
-              staticFiles={staticFiles}
-            />
+        {lesson.hasLab && (
+          <section className="mt-10 space-y-4 rounded-xl border border-violet-200 bg-violet-50/50 p-5 dark:border-violet-900 dark:bg-violet-950/30">
+            <h2 className="text-xl font-semibold text-violet-900 dark:text-violet-100">
+              {t(locale, "labSection")}
+            </h2>
+            <p className="text-sm text-violet-800/80 dark:text-violet-200/80">
+              {t(locale, "labSectionHint")}
+            </p>
+            {labNotebooks.length > 0 && (
+              <ul className="space-y-3">
+                {labNotebooks.map((file) => (
+                  <li
+                    key={file}
+                    className="rounded-lg border border-violet-200 bg-white p-3 dark:border-violet-800 dark:bg-zinc-950"
+                  >
+                    <p className="font-mono text-sm text-zinc-600 dark:text-zinc-300">
+                      {file}
+                    </p>
+                    <div className="mt-2">
+                      <ExternalRunButtons
+                        locale={locale}
+                        path={lesson.path}
+                        file={file}
+                      />
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+            {labMd && (
+              <details className="rounded-lg border border-violet-200 bg-white dark:border-violet-800 dark:bg-zinc-950">
+                <summary className="cursor-pointer px-4 py-3 text-sm font-medium">
+                  {t(locale, "labReadme")}
+                </summary>
+                <div className="border-t border-violet-100 px-4 py-3 dark:border-violet-900">
+                  <MarkdownBody content={labMd} />
+                </div>
+              </details>
+            )}
+            {!labMd && labNotebooks.length === 0 && (
+              <a
+                href={githubBlobUrl(lesson.path, "lab/README.md")}
+                target="_blank"
+                rel="noreferrer"
+                className="text-sm text-indigo-600 underline dark:text-indigo-400"
+              >
+                {t(locale, "labReadme")} (GitHub)
+              </a>
+            )}
           </section>
         )}
 

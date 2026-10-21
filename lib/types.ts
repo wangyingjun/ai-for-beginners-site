@@ -27,6 +27,7 @@ export type LessonManifest = {
   hasLocalMarkdown?: { en?: boolean; "zh-CN"?: boolean };
   hasStaticNotebook?: boolean;
   staticNotebooks?: string[];
+  labNotebooks?: string[];
   jupyterlite?: string[];
 };
 

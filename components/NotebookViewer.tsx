@@ -1,5 +1,16 @@
+import type { ReactNode } from "react";
 import { MarkdownBody } from "@/components/MarkdownBody";
 import type { NotebookCell, NotebookOutput } from "@/lib/content";
+
+function imageSrc(mime: string, raw: string): string {
+  const v = raw.replace(/\s/g, "");
+  // Extracted asset path from sync (public/lessons/.../nb-assets/...)
+  if (v.startsWith("/lessons/") || v.startsWith("http://") || v.startsWith("https://")) {
+    return v;
+  }
+  const kind = mime.includes("png") ? "png" : "jpeg";
+  return `data:image/${kind};base64,${v}`;
+}
 
 function OutputView({ output }: { output: NotebookOutput }) {
   if (output.output_type === "stream") {
@@ -12,11 +23,10 @@ function OutputView({ output }: { output: NotebookOutput }) {
 
   const data = output.data || {};
   if (data["image/png"]) {
-    const b64 = data["image/png"];
     return (
       // eslint-disable-next-line @next/next/no-img-element
       <img
-        src={`data:image/png;base64,${b64.replace(/\s/g, "")}`}
+        src={imageSrc("image/png", data["image/png"])}
         alt="notebook output"
         className="my-2 max-h-[420px] max-w-full rounded border border-zinc-200 object-contain dark:border-zinc-700"
       />
@@ -27,14 +37,13 @@ function OutputView({ output }: { output: NotebookOutput }) {
     return (
       // eslint-disable-next-line @next/next/no-img-element
       <img
-        src={`data:image/jpeg;base64,${b64.replace(/\s/g, "")}`}
+        src={imageSrc("image/jpeg", b64)}
         alt="notebook output"
         className="my-2 max-h-[420px] max-w-full rounded border border-zinc-200 object-contain dark:border-zinc-700"
       />
     );
   }
   if (data["text/html"]) {
-    // Sanitize lightly: strip scripts
     const html = data["text/html"].replace(
       /<script[\s\S]*?<\/script>/gi,
       "<!-- script stripped -->",
@@ -60,7 +69,6 @@ function OutputView({ output }: { output: NotebookOutput }) {
       </pre>
     );
   }
-  // Skip application/javascript widgets etc.
   if (data["application/javascript"]) {
     return (
       <p className="rounded-b-md bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:bg-amber-950 dark:text-amber-200">
@@ -74,13 +82,18 @@ function OutputView({ output }: { output: NotebookOutput }) {
 export function NotebookViewer({
   title,
   cells,
+  headerExtra,
 }: {
   title: string;
   cells: NotebookCell[];
+  headerExtra?: ReactNode;
 }) {
   return (
     <div className="space-y-4">
-      <h3 className="font-mono text-sm text-zinc-500">{title}</h3>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h3 className="font-mono text-sm text-zinc-500">{title}</h3>
+        {headerExtra}
+      </div>
       <div className="space-y-4">
         {cells.map((cell, idx) => {
           if (cell.cell_type === "markdown") {
@@ -100,9 +113,7 @@ export function NotebookViewer({
                 className="overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-800"
               >
                 <div className="flex items-center justify-between bg-zinc-800 px-3 py-1 text-xs text-zinc-300">
-                  <span>
-                    In [{cell.execution_count ?? " "}]
-                  </span>
+                  <span>In [{cell.execution_count ?? " "}]</span>
                   <span>Python</span>
                 </div>
                 <pre className="overflow-x-auto bg-zinc-900 p-3 font-mono text-xs text-sky-200">

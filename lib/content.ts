@@ -109,3 +109,28 @@ export async function loadStaticNotebook(
   }
   return null;
 }
+
+/** Lab / Assignment README when present (synced as lab.en.md / lab.zh-CN.md). */
+export async function loadLabMarkdown(
+  lessonId: string,
+  locale: Locale,
+): Promise<string | null> {
+  const base = path.join(process.cwd(), "content", "lessons", lessonId);
+  const preferred =
+    locale === "zh-CN"
+      ? path.join(base, "lab.zh-CN.md")
+      : path.join(base, "lab.en.md");
+  const fallback =
+    locale === "zh-CN"
+      ? path.join(base, "lab.en.md")
+      : path.join(base, "lab.zh-CN.md");
+
+  for (const candidate of [preferred, fallback]) {
+    try {
+      return await readFile(candidate, "utf8");
+    } catch {
+      /* try next */
+    }
+  }
+  return null;
+}
