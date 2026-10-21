@@ -30,13 +30,31 @@ export default async function DemosIndexPage({
       href: `/demos/mlp?lang=${locale}`,
       title: t(locale, "demoMlpTitle"),
       body: t(locale, "demoMlpHint"),
-      lesson: "04",
+      lesson: "04 / 05",
     },
     {
       href: `/demos/conv-kernel?lang=${locale}`,
       title: t(locale, "demoConvTitle"),
       body: t(locale, "demoConvHint"),
       lesson: "06 / 07",
+    },
+    {
+      href: `/demos/text-rep?lang=${locale}`,
+      title: t(locale, "demoTextRepTitle"),
+      body: t(locale, "demoTextRepHint"),
+      lesson: "13",
+    },
+    {
+      href: `/demos/embeddings?lang=${locale}`,
+      title: t(locale, "demoEmbedTitle"),
+      body: t(locale, "demoEmbedHint"),
+      lesson: "14",
+    },
+    {
+      href: `/demos/attention?lang=${locale}`,
+      title: t(locale, "demoAttnTitle"),
+      body: t(locale, "demoAttnHint"),
+      lesson: "18",
     },
     {
       href: `/demos/genetic?lang=${locale}`,
