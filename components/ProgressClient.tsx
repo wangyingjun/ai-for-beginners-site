@@ -64,6 +64,17 @@ export function ProgressClient({ locale }: { locale: Locale }) {
 
   return (
     <div className="space-y-8">
+      <section className="rounded-xl border border-dashed border-rose-300 p-4 dark:border-rose-900">
+        <h2 className="text-lg font-semibold">{t(locale, "wrongbookTitle")}</h2>
+        <p className="mt-1 text-sm text-zinc-500">{t(locale, "wrongbookHint")}</p>
+        <Link
+          href={`/wrongbook?lang=${locale}`}
+          className="mt-3 inline-block text-sm text-indigo-600 hover:underline dark:text-indigo-400"
+        >
+          {t(locale, "navWrongbook")} →
+        </Link>
+      </section>
+
       <section className="rounded-xl border border-zinc-200 p-4 text-sm dark:border-zinc-800">
         <p>
           {userLabel

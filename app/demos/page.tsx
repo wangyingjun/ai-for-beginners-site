@@ -15,6 +15,12 @@ export default async function DemosIndexPage({
 
   const cards = [
     {
+      href: `/demos/expert-animals?lang=${locale}`,
+      title: t(locale, "demoExpertTitle"),
+      body: t(locale, "demoExpertHint"),
+      lesson: "02",
+    },
+    {
       href: `/demos/perceptron?lang=${locale}`,
       title: t(locale, "demoPerceptronTitle"),
       body: t(locale, "demoPerceptronHint"),
@@ -25,6 +31,24 @@ export default async function DemosIndexPage({
       title: t(locale, "demoMlpTitle"),
       body: t(locale, "demoMlpHint"),
       lesson: "04",
+    },
+    {
+      href: `/demos/conv-kernel?lang=${locale}`,
+      title: t(locale, "demoConvTitle"),
+      body: t(locale, "demoConvHint"),
+      lesson: "06 / 07",
+    },
+    {
+      href: `/demos/genetic?lang=${locale}`,
+      title: t(locale, "demoGeneticTitle"),
+      body: t(locale, "demoGeneticHint"),
+      lesson: "21",
+    },
+    {
+      href: `/demos/cartpole?lang=${locale}`,
+      title: t(locale, "demoCartTitle"),
+      body: t(locale, "demoCartHint"),
+      lesson: "22",
     },
   ];
 

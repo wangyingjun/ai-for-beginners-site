@@ -51,6 +51,8 @@ npm run build   # must pass before deploy
 | `/lab` | JupyterLite Tier A browser lab |
 | `/quiz/[id]` | Pre/post quizzes (mk_id 101–124 / 201–224; legacy 1–46 also resolve) |
 | `/progress` | Local + cloud learning progress |
+| `/assistant` | AI 助教（RAG；无 Key 时 503 + 配置说明） |
+| `/docs/ai-tutor` | AI 助教启用文档 |
 | `/auth/callback` | Supabase OAuth code exchange |
 
 ## Content
@@ -62,6 +64,7 @@ npm run build   # must pass before deploy
 - Quiz bank: `content/quizzes/bank.en.json` (48 quizzes / 145 questions) + `bank.zh-CN.json` overlay
 - Legacy URL map: `content/quizzes/legacy-map.json` (ff-quizzes `/quiz/N` → mk_id)
 - Auth setup: `docs/auth.md`
+- AI tutor setup: `docs/ai-tutor.md`
 - Architecture plan: `docs/方案.md`
 - Tier A validation: `/workspace/aifb-validate/tier-a-report.md` on the build machine — **10 notebooks** confirmed browser-runnable in Phase 0
 
@@ -72,6 +75,8 @@ Copy `.env.example` → `.env.local` after Supabase exists:
 ```
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
+# Optional AI tutor — see docs/ai-tutor.md
+# OPENAI_API_KEY=
 ```
 
 Do not commit secrets. This scaffold does **not** create Vercel/Supabase resources.
@@ -92,4 +97,4 @@ Never vendor the full 2.3 GB upstream tree into this repository.
 
 ## Phase status
 
-Phase 1 MVP: content site + JupyterLite Tier A + flagship demos (perceptron, MLP). Next: quizzes, Supabase Auth/progress, sync PR bot.
+Phase 1 MVP + quizzes/auth progress. Phase 2 scaffold: AI tutor RAG (`/assistant`, local chunk index, `/api/chat`). Fill `OPENAI_API_KEY` later — see `docs/ai-tutor.md`.

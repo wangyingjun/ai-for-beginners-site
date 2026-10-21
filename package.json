@@ -4,18 +4,22 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "node scripts/build-search-index.mjs && next build",
     "start": "next start",
     "lint": "eslint",
     "sync:upstream": "node scripts/sync-upstream.mjs",
     "prepare:jupyterlite": "node scripts/prepare-jupyterlite.mjs",
     "build:jupyterlite": "node scripts/prepare-jupyterlite.mjs && cd jupyterlite-src && ../.venv-jupyterlite/bin/jupyter lite build --contents content --output-dir ../public/jupyterlite --apps lab --apps notebooks --apps tree --no-sourcemaps",
     "import:quizzes": "node scripts/import-quizzes.mjs",
-    "generate:quiz-zh": "python3 scripts/generate-quiz-zh.py"
+    "generate:quiz-zh": "python3 scripts/generate-quiz-zh.py",
+    "build:rag": "node scripts/build-rag-index.mjs",
+    "build:search-index": "node scripts/build-search-index.mjs"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^2.0.136",
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.118.0",
+    "ai": "^5.0.279",
     "next": "16.4.2",
     "react": "19.3.0",
     "react-dom": "19.3.0",

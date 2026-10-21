@@ -17,6 +17,9 @@ export function SiteHeader({ locale }: { locale: Locale }) {
           <Link href={`/course?lang=${locale}`} className="hover:text-zinc-900 dark:hover:text-white">
             {t(locale, "navCourse")}
           </Link>
+          <Link href={`/search?lang=${locale}`} className="hover:text-zinc-900 dark:hover:text-white">
+            {t(locale, "navSearch")}
+          </Link>
           <Link href={`/demos?lang=${locale}`} className="hover:text-zinc-900 dark:hover:text-white">
             {t(locale, "navDemos")}
           </Link>
@@ -25,6 +28,12 @@ export function SiteHeader({ locale }: { locale: Locale }) {
           </Link>
           <Link href={`/progress?lang=${locale}`} className="hover:text-zinc-900 dark:hover:text-white">
             {t(locale, "navProgress")}
+          </Link>
+          <Link href={`/wrongbook?lang=${locale}`} className="hover:text-zinc-900 dark:hover:text-white">
+            {t(locale, "navWrongbook")}
+          </Link>
+          <Link href={`/assistant?lang=${locale}`} className="hover:text-zinc-900 dark:hover:text-white">
+            {t(locale, "navTutor")}
           </Link>
           <LanguageToggle locale={locale} />
           <AuthButton locale={locale} />

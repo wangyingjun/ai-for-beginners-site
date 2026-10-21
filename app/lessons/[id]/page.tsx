@@ -1,6 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BrowserRunButtons } from "@/components/BrowserRunButtons";
+import { CartPoleDemo } from "@/components/demos/CartPoleDemo";
+import { ConvKernelDemo } from "@/components/demos/ConvKernelDemo";
+import { ExpertAnimalsDemo } from "@/components/demos/ExpertAnimalsDemo";
+import { GeneticDemo } from "@/components/demos/GeneticDemo";
 import { MlpPlayground } from "@/components/demos/MlpPlayground";
 import { PerceptronDemo } from "@/components/demos/PerceptronDemo";
 import { FrameworkTabs } from "@/components/FrameworkTabs";
@@ -8,6 +12,7 @@ import { LessonMarkdown } from "@/components/LessonMarkdown";
 import { LessonVisitTracker } from "@/components/LessonVisitTracker";
 import { NotebookViewer } from "@/components/NotebookViewer";
 import { SiteFooter } from "@/components/SiteFooter";
+import { TutorChat } from "@/components/tutor/TutorChat";
 import { SiteHeader } from "@/components/SiteHeader";
 import { loadLessonMarkdown, loadStaticNotebook } from "@/lib/content";
 import { t } from "@/lib/i18n";
@@ -70,8 +75,12 @@ export default async function LessonPage({
           ? t(locale, "tierC")
           : null;
 
+  const showExpert = lesson.id === "02";
   const showPerceptron = lesson.id === "03";
   const showMlp = lesson.id === "04" || lesson.id === "05";
+  const showConv = lesson.id === "06" || lesson.id === "07";
+  const showGenetic = lesson.id === "21";
+  const showCart = lesson.id === "22";
 
   return (
     <>
@@ -134,6 +143,14 @@ export default async function LessonPage({
           )}
         </section>
 
+
+        {showExpert && (
+          <section className="mt-10 space-y-3">
+            <h2 className="text-xl font-semibold">{t(locale, "demoSection")}</h2>
+            <ExpertAnimalsDemo locale={locale} />
+          </section>
+        )}
+
         {showPerceptron && (
           <section className="mt-10 space-y-3">
             <h2 className="text-xl font-semibold">{t(locale, "demoSection")}</h2>
@@ -145,6 +162,28 @@ export default async function LessonPage({
           <section className="mt-10 space-y-3">
             <h2 className="text-xl font-semibold">{t(locale, "demoSection")}</h2>
             <MlpPlayground locale={locale} />
+          </section>
+        )}
+
+
+        {showConv && (
+          <section className="mt-10 space-y-3">
+            <h2 className="text-xl font-semibold">{t(locale, "demoSection")}</h2>
+            <ConvKernelDemo locale={locale} />
+          </section>
+        )}
+
+        {showGenetic && (
+          <section className="mt-10 space-y-3">
+            <h2 className="text-xl font-semibold">{t(locale, "demoSection")}</h2>
+            <GeneticDemo locale={locale} />
+          </section>
+        )}
+
+        {showCart && (
+          <section className="mt-10 space-y-3">
+            <h2 className="text-xl font-semibold">{t(locale, "demoSection")}</h2>
+            <CartPoleDemo locale={locale} />
           </section>
         )}
 
@@ -203,6 +242,7 @@ export default async function LessonPage({
           )}
         </nav>
       </main>
+      <TutorChat locale={locale} lessonId={lesson.id} variant="panel" />
       <SiteFooter locale={locale} />
     </>
   );
