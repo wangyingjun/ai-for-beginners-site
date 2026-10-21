@@ -1,17 +1,16 @@
-import { createOpenAI } from "@ai-sdk/openai";
 import { streamText } from "ai";
 import { NextResponse } from "next/server";
+import { LLM_API_TYPES, sanitizeUserCredentials } from "@/lib/rag/llm-settings";
 import {
   missingKeyMessage,
   providerConfigured,
-  resolveProviderConfig,
+  resolveChatModel,
 } from "@/lib/rag/provider";
 import { buildSystemPrompt, formatRetrievedContext } from "@/lib/rag/prompt";
 import { checkRateLimit } from "@/lib/rag/rate-limit";
 import { retrieveChunks } from "@/lib/rag/retrieve";
 import type { ChatCitation } from "@/lib/rag/types";
 import { createClient } from "@/lib/supabase/server";
-
 
 type IncomingMessage = { role: "user" | "assistant" | "system"; content: string };
 
@@ -20,7 +19,14 @@ type ChatBody = {
   lessonId?: string | null;
   locale?: "zh-CN" | "en";
   sessionId?: string | null;
+  /** Ephemeral per-request credentials from the browser — never stored. */
+  credentials?: unknown;
 };
+
+const NO_STORE = {
+  "Cache-Control": "no-store, no-cache, must-revalidate, private",
+  Pragma: "no-cache",
+} as const;
 
 function clientKey(req: Request, userId: string | null): string {
   if (userId) return `u:${userId}`;
@@ -28,23 +34,36 @@ function clientKey(req: Request, userId: string | null): string {
   return `ip:${fwd || "anon"}`;
 }
 
+function jsonNoStore(
+  body: unknown,
+  init?: { status?: number; headers?: Record<string, string> },
+) {
+  return NextResponse.json(body, {
+    status: init?.status ?? 200,
+    headers: { ...NO_STORE, ...init?.headers },
+  });
+}
+
 export async function POST(req: Request) {
   let body: ChatBody;
   try {
     body = (await req.json()) as ChatBody;
   } catch {
-    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+    return jsonNoStore({ error: "Invalid JSON body" }, { status: 400 });
   }
 
   const locale = body.locale === "en" ? "en" : "zh-CN";
   const messages = Array.isArray(body.messages) ? body.messages : [];
   const lastUser = [...messages].reverse().find((m) => m.role === "user");
   if (!lastUser?.content?.trim()) {
-    return NextResponse.json(
+    return jsonNoStore(
       { error: locale === "en" ? "Empty message" : "消息不能为空" },
       { status: 400 },
     );
   }
+
+  // Ephemeral user credentials — used only for this request, never written to disk/DB/logs.
+  const userCreds = sanitizeUserCredentials(body.credentials);
 
   let userId: string | null = null;
   try {
@@ -62,7 +81,7 @@ export async function POST(req: Request) {
     authenticated: Boolean(userId),
   });
   if (!rl.ok) {
-    return NextResponse.json(
+    return jsonNoStore(
       {
         error:
           locale === "en"
@@ -82,22 +101,24 @@ export async function POST(req: Request) {
     );
   }
 
-  if (!providerConfigured()) {
-    return NextResponse.json(
+  const resolved = resolveChatModel(userCreds);
+  if (!resolved) {
+    return jsonNoStore(
       {
         error: missingKeyMessage(locale),
         code: "AI_NOT_CONFIGURED",
         docs: "/docs/ai-tutor",
+        supportsUserCredentials: true,
         hint:
           locale === "en"
-            ? "Scaffold is ready: local keyword retrieval works; set OPENAI_API_KEY or AI_GATEWAY_API_KEY to enable generation."
-            : "脚手架已就绪：本地关键词检索可用；设置 OPENAI_API_KEY 或 AI_GATEWAY_API_KEY 后即可生成回答。",
+            ? "Open the setup form in the assistant UI and enter API URL, type, and key (stored in this browser only). Keyword retrieval still works once generation is configured."
+            : "请在助教界面的设置表单填写 API URL、类型与 Key（仅保存在本浏览器）。配置生成能力后，本地关键词检索仍会照常工作。",
       },
       { status: 503 },
     );
   }
 
-  const cfg = resolveProviderConfig()!;
+  // Local keyword retrieval always runs when generating (no key → no generation, retrieval unused).
   const retrieved = retrieveChunks({
     query: lastUser.content,
     locale,
@@ -113,11 +134,6 @@ export async function POST(req: Request) {
     excerpt: c.content.slice(0, 180),
   }));
 
-  const openai = createOpenAI({
-    apiKey: cfg.apiKey,
-    baseURL: cfg.baseURL,
-  });
-
   const system = [
     buildSystemPrompt(locale),
     "",
@@ -131,13 +147,12 @@ export async function POST(req: Request) {
 
   try {
     const result = streamText({
-      model: openai.chat(cfg.chatModel),
+      model: resolved.model,
       system,
       messages: chatMessages,
       temperature: 0.3,
     });
 
-    // Attach citations as a custom header (base64url JSON) for the UI.
     const citationHeader = Buffer.from(
       JSON.stringify(citations),
       "utf8",
@@ -145,15 +160,19 @@ export async function POST(req: Request) {
 
     return result.toTextStreamResponse({
       headers: {
+        ...NO_STORE,
         "X-Citations": citationHeader,
         "X-RateLimit-Limit": String(rl.limit),
         "X-RateLimit-Remaining": String(rl.remaining),
         "X-RAG-Mode": "local-keyword",
+        "X-LLM-Source": resolved.config.source,
+        "X-LLM-Api-Type": resolved.config.apiType,
       },
     });
   } catch (err) {
+    // Do not echo request credentials or full provider payloads.
     const msg = err instanceof Error ? err.message : "LLM request failed";
-    return NextResponse.json(
+    return jsonNoStore(
       {
         error: msg,
         docs: "/docs/ai-tutor",
@@ -166,8 +185,11 @@ export async function POST(req: Request) {
 /** Lightweight status for UI (no secrets). */
 export async function GET() {
   const meta = await import("@/lib/rag/retrieve").then((m) => m.getIndexMeta());
-  return NextResponse.json({
+  return jsonNoStore({
     configured: providerConfigured(),
+    serverConfigured: providerConfigured(),
+    supportsUserCredentials: true,
+    apiTypes: [...LLM_API_TYPES],
     docs: "/docs/ai-tutor",
     index: meta,
   });

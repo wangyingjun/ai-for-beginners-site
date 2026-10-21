@@ -4,7 +4,13 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Locale } from "@/lib/i18n";
 import { t } from "@/lib/i18n";
+import {
+  settingsComplete,
+  type UserLlmSettings,
+} from "@/lib/rag/llm-settings";
 import type { ChatCitation } from "@/lib/rag/types";
+import { loadUserLlmSettings } from "@/lib/rag/user-settings-client";
+import { TutorSettingsForm } from "./TutorSettingsForm";
 
 type Msg = {
   id: string;
@@ -28,8 +34,8 @@ function decodeCitations(header: string | null): ChatCitation[] {
     return JSON.parse(json) as ChatCitation[];
   } catch {
     try {
-      // base64url via Buffer polyfill-less: percent-decode path
-      const pad = header.length % 4 === 0 ? "" : "=".repeat(4 - (header.length % 4));
+      const pad =
+        header.length % 4 === 0 ? "" : "=".repeat(4 - (header.length % 4));
       const b64 = header.replace(/-/g, "+").replace(/_/g, "/") + pad;
       return JSON.parse(atob(b64)) as ChatCitation[];
     } catch {
@@ -42,20 +48,40 @@ export function TutorChat({ locale, lessonId = null, variant = "page" }: Props) 
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
-  const [configured, setConfigured] = useState<boolean | null>(null);
+  const [serverConfigured, setServerConfigured] = useState<boolean | null>(
+    null,
+  );
+  const [userSettings, setUserSettings] = useState<UserLlmSettings | null>(
+    null,
+  );
+  const [showSettings, setShowSettings] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [open, setOpen] = useState(variant === "page");
   const bottomRef = useRef<HTMLDivElement>(null);
+  const settingsHydrated = useRef(false);
+
+  useEffect(() => {
+    const local = loadUserLlmSettings();
+    setUserSettings(local);
+    settingsHydrated.current = true;
+    if (!settingsComplete(local)) {
+      setShowSettings(true);
+    }
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
     fetch("/api/chat")
       .then((r) => r.json())
-      .then((d: { configured?: boolean }) => {
-        if (!cancelled) setConfigured(Boolean(d.configured));
+      .then((d: { serverConfigured?: boolean; configured?: boolean }) => {
+        if (!cancelled) {
+          setServerConfigured(
+            Boolean(d.serverConfigured ?? d.configured),
+          );
+        }
       })
       .catch(() => {
-        if (!cancelled) setConfigured(false);
+        if (!cancelled) setServerConfigured(false);
       });
     return () => {
       cancelled = true;
@@ -63,8 +89,30 @@ export function TutorChat({ locale, lessonId = null, variant = "page" }: Props) 
   }, []);
 
   useEffect(() => {
+    if (!settingsHydrated.current) return;
+    if (
+      serverConfigured === false &&
+      !settingsComplete(userSettings)
+    ) {
+      setShowSettings(true);
+    }
+  }, [serverConfigured, userSettings]);
+
+  useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, busy]);
+
+  const generationReady =
+    settingsComplete(userSettings) || serverConfigured === true;
+
+  const statusLabel = (() => {
+    if (settingsComplete(userSettings)) return t(locale, "tutorReadyUser");
+    if (serverConfigured === true) return t(locale, "tutorReadyServer");
+    if (serverConfigured === null && !settingsHydrated.current) {
+      return t(locale, "tutorChecking");
+    }
+    return t(locale, "tutorNotConfigured");
+  })();
 
   const sendFeedback = useCallback(
     async (msgId: string, vote: 1 | -1) => {
@@ -84,9 +132,24 @@ export function TutorChat({ locale, lessonId = null, variant = "page" }: Props) 
     [],
   );
 
+  const onSettingsChange = useCallback((s: UserLlmSettings | null) => {
+    setUserSettings(s);
+    if (settingsComplete(s)) {
+      setShowSettings(false);
+      setError(null);
+    }
+  }, []);
+
   const onSend = useCallback(async () => {
     const text = input.trim();
     if (!text || busy) return;
+
+    if (!generationReady) {
+      setShowSettings(true);
+      setError(t(locale, "tutorNeedSettings"));
+      return;
+    }
+
     setError(null);
     setInput("");
     const userMsg: Msg = {
@@ -105,9 +168,11 @@ export function TutorChat({ locale, lessonId = null, variant = "page" }: Props) 
     ]);
 
     try {
+      const creds = loadUserLlmSettings();
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        cache: "no-store",
         body: JSON.stringify({
           messages: history.map((m) => ({
             role: m.role,
@@ -115,18 +180,25 @@ export function TutorChat({ locale, lessonId = null, variant = "page" }: Props) 
           })),
           lessonId,
           locale,
+          // Prefer browser settings when present; server falls back to env.
+          ...(creds ? { credentials: creds } : {}),
         }),
       });
 
       if (!res.ok) {
         const data = (await res.json().catch(() => ({}))) as {
           error?: string;
-          docs?: string;
+          code?: string;
         };
         const errText =
           data.error ||
-          (locale === "en" ? `Request failed (${res.status})` : `请求失败（${res.status}）`);
+          (locale === "en"
+            ? `Request failed (${res.status})`
+            : `请求失败（${res.status}）`);
         setError(errText);
+        if (res.status === 503 || data.code === "AI_NOT_CONFIGURED") {
+          setShowSettings(true);
+        }
         setMessages((prev) =>
           prev.map((m) =>
             m.id === assistantId
@@ -134,13 +206,12 @@ export function TutorChat({ locale, lessonId = null, variant = "page" }: Props) 
                   ...m,
                   content:
                     res.status === 503
-                      ? `${errText}\n\n→ [docs/ai-tutor.md](/docs/ai-tutor)`
+                      ? `${errText}\n\n→ ${t(locale, "tutorOpenSettings")}`
                       : errText,
                 }
               : m,
           ),
         );
-        setConfigured(res.status === 503 ? false : configured);
         return;
       }
 
@@ -162,7 +233,6 @@ export function TutorChat({ locale, lessonId = null, variant = "page" }: Props) 
           ),
         );
       }
-      setConfigured(true);
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Network error";
       setError(msg);
@@ -174,7 +244,14 @@ export function TutorChat({ locale, lessonId = null, variant = "page" }: Props) 
     } finally {
       setBusy(false);
     }
-  }, [input, busy, messages, lessonId, locale, configured]);
+  }, [
+    input,
+    busy,
+    messages,
+    lessonId,
+    locale,
+    generationReady,
+  ]);
 
   const panelShell =
     variant === "panel"
@@ -194,22 +271,32 @@ export function TutorChat({ locale, lessonId = null, variant = "page" }: Props) 
   }
 
   return (
-    <div className={panelShell} style={{ maxHeight: variant === "panel" ? "70vh" : undefined }}>
+    <div
+      className={panelShell}
+      style={{ maxHeight: variant === "panel" ? "70vh" : undefined }}
+    >
       <div className="flex items-center justify-between gap-2 border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
         <div>
           <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">
             {t(locale, "tutorTitle")}
           </h2>
           <p className="text-xs text-zinc-500">
-            {configured === false
-              ? t(locale, "tutorNotConfigured")
-              : configured === true
-                ? t(locale, "tutorReady")
-                : t(locale, "tutorChecking")}
-            {lessonId ? ` · ${t(locale, "tutorLessonContext")} ${lessonId}` : ""}
+            {statusLabel}
+            {lessonId
+              ? ` · ${t(locale, "tutorLessonContext")} ${lessonId}`
+              : ""}
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setShowSettings((v) => !v)}
+            className="rounded px-2 py-1 text-xs text-indigo-600 hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-950/40"
+          >
+            {showSettings
+              ? t(locale, "tutorHideSettings")
+              : t(locale, "tutorOpenSettings")}
+          </button>
           <Link
             href={`/assistant?lang=${locale}${lessonId ? `&lesson=${lessonId}` : ""}`}
             className="text-xs text-indigo-600 hover:underline dark:text-indigo-400"
@@ -229,9 +316,26 @@ export function TutorChat({ locale, lessonId = null, variant = "page" }: Props) 
         </div>
       </div>
 
-      <div className="flex-1 space-y-3 overflow-y-auto px-4 py-3" style={{ minHeight: "12rem" }}>
+      {showSettings && (
+        <div className="max-h-[40vh] overflow-y-auto">
+          <TutorSettingsForm
+            locale={locale}
+            compact={variant === "panel"}
+            onChange={onSettingsChange}
+          />
+        </div>
+      )}
+
+      <div
+        className="flex-1 space-y-3 overflow-y-auto px-4 py-3"
+        style={{ minHeight: "12rem" }}
+      >
         {messages.length === 0 && (
-          <p className="text-sm text-zinc-500">{t(locale, "tutorEmpty")}</p>
+          <p className="text-sm text-zinc-500">
+            {generationReady
+              ? t(locale, "tutorEmpty")
+              : t(locale, "tutorEmptyNeedSettings")}
+          </p>
         )}
         {messages.map((m) => (
           <div
@@ -242,19 +346,26 @@ export function TutorChat({ locale, lessonId = null, variant = "page" }: Props) 
                 : "mr-6 rounded-lg bg-zinc-50 px-3 py-2 text-sm dark:bg-zinc-900"
             }
           >
-            <div className="whitespace-pre-wrap break-words">{m.content || (busy ? "…" : "")}</div>
-            {m.role === "assistant" && m.citations && m.citations.length > 0 && (
-              <ul className="mt-2 space-y-1 border-t border-zinc-200 pt-2 text-xs text-zinc-600 dark:border-zinc-700 dark:text-zinc-400">
-                {m.citations.map((c, i) => (
-                  <li key={`${c.path}-${i}`}>
-                    <Link href={c.lessonHref} className="text-indigo-600 hover:underline dark:text-indigo-400">
-                      {c.lesson_id}
-                      {c.heading ? ` · ${c.heading}` : ""}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            )}
+            <div className="whitespace-pre-wrap break-words">
+              {m.content || (busy ? "…" : "")}
+            </div>
+            {m.role === "assistant" &&
+              m.citations &&
+              m.citations.length > 0 && (
+                <ul className="mt-2 space-y-1 border-t border-zinc-200 pt-2 text-xs text-zinc-600 dark:border-zinc-700 dark:text-zinc-400">
+                  {m.citations.map((c, i) => (
+                    <li key={`${c.path}-${i}`}>
+                      <Link
+                        href={c.lessonHref}
+                        className="text-indigo-600 hover:underline dark:text-indigo-400"
+                      >
+                        {c.lesson_id}
+                        {c.heading ? ` · ${c.heading}` : ""}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
             {m.role === "assistant" && m.content && !busy && (
               <div className="mt-2 flex gap-2 text-xs">
                 <button
@@ -280,9 +391,9 @@ export function TutorChat({ locale, lessonId = null, variant = "page" }: Props) 
         <div ref={bottomRef} />
       </div>
 
-      {error && configured === false && (
+      {error && !showSettings && (
         <p className="border-t border-amber-200 bg-amber-50 px-4 py-2 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-100">
-          {t(locale, "tutorConfigHint")}{" "}
+          {error}{" "}
           <Link href="/docs/ai-tutor" className="underline">
             docs/ai-tutor.md
           </Link>

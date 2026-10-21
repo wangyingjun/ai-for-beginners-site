@@ -16,6 +16,8 @@
     "build:search-index": "node scripts/build-search-index.mjs"
   },
   "dependencies": {
+    "@ai-sdk/anthropic": "^2.0.110",
+    "@ai-sdk/azure": "^2.0.143",
     "@ai-sdk/openai": "^2.0.136",
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.118.0",

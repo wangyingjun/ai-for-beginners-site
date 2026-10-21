@@ -1,29 +1,46 @@
-# AI 助教（Phase 2 RAG scaffold）
+# AI 助教（Phase 2 RAG + 用户自配 LLM）
 
-中文优先。本页说明如何启用课程助教：**仓库里不包含任何 API Key**；Yingjun 选择「先脚手架、稍后填 Key」。
+中文优先。每位学习者可在浏览器里填写自己的 LLM 凭证；**仓库与 Supabase 不保存任何 API Key**。
+
+## 推荐：在界面自行配置（localStorage）
+
+打开 [`/assistant`](/assistant) 或课程页右下角「问助教」→ **API 设置**：
+
+| 字段 | 说明 |
+|------|------|
+| **API 类型** | OpenAI 兼容 / Anthropic / Azure OpenAI |
+| **API URL** | Base URL（如 `https://api.openai.com/v1`） |
+| **API Key** | 密码输入框；仅存本浏览器 |
+| **模型 / 部署名** | 可选；Azure 填部署名 |
+
+- 保存在 **`localStorage`** 键 `ai-tutor-llm-settings-v1`；可一键清除。
+- **不会**写入 Supabase、服务端磁盘或日志。
+- 每次发问时，浏览器把 `credentials`（url / type / key）**按请求** POST 到 `/api/chat`；服务端仅在内存中用于本次 `streamText`，响应带 `Cache-Control: no-store`。
+- **优先使用**用户浏览器凭证；若请求未带凭证，再回退到服务端环境变量（见下）。
+
+### API 类型映射（Vercel AI SDK）
+
+| UI 选项 | SDK adapter | 备注 |
+|---------|-------------|------|
+| OpenAI 兼容 | `@ai-sdk/openai` `createOpenAI` | 官方 OpenAI、多数兼容网关 |
+| Anthropic | `@ai-sdk/anthropic` `createAnthropic` | 默认 `https://api.anthropic.com/v1` |
+| Azure OpenAI | `@ai-sdk/azure` `createAzure` | URL 形如 `https://{resource}.openai.azure.com/openai`；模型栏填**部署名** |
 
 ## 已经可用（无需 Key）
 
 | 能力 | 说明 |
 |------|------|
-| 语料切块 | `npm run build:rag` → `content/rag/chunks.json`（约 500–800 token/块，含 `lesson_id` / `path` / `heading` / `cell_index` / `lang`） |
-| 离线检索 | `/api/chat` 在生成前用本地关键词（BM25-ish）检索；无 embedding 也可 demo |
-| UI | 课程页右下角「问助教」面板 + [`/assistant`](/assistant) |
-| 503 提示 | 未配置 Key 时 API 返回 **503** + 指向本文档的说明；UI 同步提示 |
-| 反馈 / 限流 | 👍👎 stub（`/api/chat/feedback`）；内存软限流（匿名 10/时，登录 60/时） |
-| DB | Supabase：`doc_chunks`（pgvector）、`chat_sessions`、`chat_messages`（见 `supabase/migrations/20261021120000_phase2_ai_tutor_rag.sql`） |
+| 语料切块 | `npm run build:rag` → `content/rag/chunks.json` |
+| 离线检索 | `/api/chat` 在**生成前**用本地关键词（BM25-ish）检索；无 embedding 也可 demo |
+| UI | 课程页「问助教」+ [`/assistant`](/assistant)；缺凭证时展示**设置表单**（不只是 503） |
+| 反馈 / 限流 | 👍👎 stub；内存软限流（匿名 10/时，登录 60/时） |
+| DB | Supabase：`doc_chunks`、`chat_sessions`、`chat_messages`（**不含** API Key） |
 
-## 配置 Key 后可用
+无生成 Key 时：本地关键词检索代码路径仍保留；生成接口返回 503 + 引导填写 UI，**不会**破坏检索脚手架。
 
-| 能力 | 说明 |
-|------|------|
-| 流式生成 | Vercel AI SDK `streamText` + OpenAI 兼容 provider |
-| 引用 | 系统提示强制引用课程链接；不编造；不直接给作业答案 |
-| 向量入库 | （可选）用 embedding 模型写入 `doc_chunks.embedding`，再开 HNSW |
+## 可选：服务端环境变量（后备）
 
-## 环境变量（`.env.local` / Vercel）
-
-**不要提交真实密钥。** 复制 `.env.example` 后按需填写：
+管理员可在 `.env.local` / Vercel 配置（OpenAI 兼容路径）。**仅当请求未带用户凭证时**使用：
 
 ```bash
 # 任选其一作为 API Key
@@ -40,76 +57,56 @@ OPENAI_API_KEY=
 # 可选：模型名
 # AI_CHAT_MODEL=gpt-4o-mini
 # AI_EMBEDDING_MODEL=text-embedding-3-small
-
-# 已有 Supabase（进度 / Auth）
-NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
-# 仅服务端：切块 upsert / 管理（切勿暴露到浏览器）
-# SUPABASE_SERVICE_ROLE_KEY=
 ```
 
-检测是否已配置（不泄露密钥）：
+检测（不泄露密钥）：
 
 ```bash
 curl -s http://localhost:3000/api/chat | jq .
-# { "configured": false|true, "docs": "...", "index": { chunkCount, ... } }
+# {
+#   "configured": false|true,          # 服务端 env
+#   "serverConfigured": false|true,
+#   "supportsUserCredentials": true,
+#   "apiTypes": ["openai-compatible","anthropic","azure-openai"],
+#   "docs": "/docs/ai-tutor",
+#   "index": { chunkCount, ... }
+# }
 ```
 
-## 启用 OpenAI（或兼容网关）
+## 安全说明
 
-1. 在 [OpenAI API Keys](https://platform.openai.com/api-keys)（或你的兼容网关控制台）创建密钥。
-2. 写入本地 `.env.local` 的 `OPENAI_API_KEY=`，或 Vercel Project → Settings → Environment Variables。
-3. 若用 Azure / 代理 / AI Gateway：同时设置 `OPENAI_BASE_URL`（或 `AI_GATEWAY_BASE_URL`）与对应 Key。
-4. 重启 `npm run dev` / 重新部署。
-5. 打开 `/assistant`，发送一句话；应开始流式回答并带课程链接。
+1. **浏览器**：Key 只在 `localStorage`；清除站点数据或点「清除本地设置」即可删除。
+2. **传输**：HTTPS 下 POST body 含 Key；与把 Key 放进前端直连第三方 API 类似的信任边界——本站选择经 `/api/chat` 代理以便做 RAG + 限流，且**不落盘**。
+3. **服务端**：不把 Key 写入日志、文件或数据库；响应 `Cache-Control: no-store`。
+4. **Git**：`.env*` 已忽略；勿提交真实密钥。`.env.example` 仅占位。
 
-**本仓库当前不声称已配置任何 Key。** `configured: false` 是预期状态，直到你填入密钥。
+## 启用后行为
 
-## Embedding 模型选择
+- 流式生成：Vercel AI SDK `streamText`
+- 引用：系统提示强制课程链接；不编造；不直接给作业答案
+- 响应头：`X-LLM-Source: user|env`、`X-LLM-Api-Type`、`X-Citations`、`X-RAG-Mode: local-keyword`
+
+## Embedding（可选）
 
 | 模型 | 维度 | 备注 |
 |------|------|------|
-| `text-embedding-3-small`（默认） | **1536** | 与迁移里 `vector(1536)` 一致；性价比高 |
-| `text-embedding-3-large` | 3072（可降维） | 需改迁移维度或 `dimensions` 参数后再建索引 |
-| 网关自定义模型 | 以网关文档为准 | 必须与 `doc_chunks.embedding` 维度一致 |
+| `text-embedding-3-small`（默认） | **1536** | 与迁移 `vector(1536)` 一致 |
+| `text-embedding-3-large` | 3072（可降维） | 需改迁移或 dimensions |
 
-有 Key 且要用 pgvector 时：
-
-1. 对 `content/rag/chunks.json` 各块调用 embedding API。
-2. 用 **service role** upsert 到 `doc_chunks`（`content`, metadata, `embedding`）。
-3. 再创建 HNSW：
-
-```sql
-create index concurrently if not exists doc_chunks_embedding_hnsw
-  on public.doc_chunks
-  using hnsw (embedding vector_cosine_ops);
-```
-
-（迁移里刻意未在空表上建 HNSW，避免全 NULL embedding 失败。）
-
-MVP 演示可继续只用本地 JSON 关键词检索，不必先 upsert 向量。
-
-## 系统提示行为
-
-- 基于检索片段回答，给出 `/lessons/[id]` 链接。
-- 不确定就说不确定。
-- 鼓励思考，**不直接倾倒作业/测验标准答案**。
-- 标明「AI 生成，仅供参考」。
+有 Key 且要用 pgvector：对 `chunks.json` embedding 后用 **service role** upsert，再创建 HNSW。MVP 可继续只用本地 JSON 关键词检索。
 
 ## 相关文件
 
-- `scripts/build-rag-index.mjs` — 切块
-- `content/rag/chunks.json` — 本地索引
-- `lib/rag/*` — 检索 / provider / prompt / 限流
-- `app/api/chat/route.ts` — 流式 API
-- `components/tutor/TutorChat.tsx` — UI
+- `components/tutor/TutorChat.tsx` / `TutorSettingsForm.tsx` — UI + 设置表单
+- `lib/rag/llm-settings.ts` / `user-settings-client.ts` — 类型与 localStorage
+- `lib/rag/provider.ts` — 用户凭证优先，env 后备；多 provider
+- `app/api/chat/route.ts` — 流式 API（ephemeral credentials）
+- `scripts/build-rag-index.mjs` · `content/rag/chunks.json`
 - `supabase/migrations/20261021120000_phase2_ai_tutor_rag.sql`
 
 ## 重建索引
 
-上游内容同步后：
-
 ```bash
 npm run build:rag
-npm run build   # 确认构建仍绿
+npm run build
 ```

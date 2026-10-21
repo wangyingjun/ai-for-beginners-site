@@ -1,17 +1,35 @@
 /**
- * LLM provider abstraction via env.
- * Supports OpenAI official keys or any OpenAI-compatible gateway
- * (AI_GATEWAY_* / OPENAI_BASE_URL). No key is assumed to exist.
+ * LLM provider resolution: prefer per-request user credentials (ephemeral),
+ * else fall back to server env. Never assume a key exists; never log secrets.
  */
+
+import { createAnthropic } from "@ai-sdk/anthropic";
+import { createAzure } from "@ai-sdk/azure";
+import { createOpenAI } from "@ai-sdk/openai";
+import type { LanguageModel } from "ai";
+import {
+  DEFAULT_CHAT_MODEL,
+  type LlmApiType,
+  type UserLlmSettings,
+} from "./llm-settings";
 
 export type ProviderConfig = {
   apiKey: string;
   baseURL: string;
   chatModel: string;
   embeddingModel: string;
+  apiType: LlmApiType;
+  /** Where the key came from (for headers / UI — never includes the key). */
+  source: "user" | "env";
 };
 
-export function resolveProviderConfig(): ProviderConfig | null {
+export type ResolvedChatModel = {
+  model: LanguageModel;
+  config: ProviderConfig;
+};
+
+/** Server env only (OpenAI-compatible path). */
+export function resolveEnvProviderConfig(): ProviderConfig | null {
   const apiKey =
     process.env.OPENAI_API_KEY?.trim() ||
     process.env.AI_GATEWAY_API_KEY?.trim() ||
@@ -36,17 +54,90 @@ export function resolveProviderConfig(): ProviderConfig | null {
     process.env.OPENAI_EMBEDDING_MODEL?.trim() ||
     "text-embedding-3-small";
 
-  return { apiKey, baseURL, chatModel, embeddingModel };
+  return {
+    apiKey,
+    baseURL,
+    chatModel,
+    embeddingModel,
+    apiType: "openai-compatible",
+    source: "env",
+  };
+}
+
+/** @deprecated use resolveEnvProviderConfig — kept for call-site clarity */
+export function resolveProviderConfig(): ProviderConfig | null {
+  return resolveEnvProviderConfig();
 }
 
 export function providerConfigured(): boolean {
-  return resolveProviderConfig() !== null;
+  return resolveEnvProviderConfig() !== null;
+}
+
+/**
+ * Prefer user credentials when present; otherwise server env.
+ * User keys are request-scoped only — caller must not persist them.
+ */
+export function resolveEffectiveConfig(
+  user?: UserLlmSettings | null,
+): ProviderConfig | null {
+  if (user?.apiKey?.trim() && user?.apiUrl?.trim()) {
+    const apiType = user.apiType;
+    return {
+      apiKey: user.apiKey.trim(),
+      baseURL: user.apiUrl.trim().replace(/\/$/, ""),
+      chatModel:
+        user.chatModel?.trim() ||
+        DEFAULT_CHAT_MODEL[apiType] ||
+        "gpt-4o-mini",
+      embeddingModel:
+        process.env.AI_EMBEDDING_MODEL?.trim() ||
+        "text-embedding-3-small",
+      apiType,
+      source: "user",
+    };
+  }
+  return resolveEnvProviderConfig();
+}
+
+export function createChatModel(config: ProviderConfig): LanguageModel {
+  switch (config.apiType) {
+    case "anthropic": {
+      const anthropic = createAnthropic({
+        apiKey: config.apiKey,
+        baseURL: config.baseURL,
+      });
+      return anthropic(config.chatModel);
+    }
+    case "azure-openai": {
+      const azure = createAzure({
+        apiKey: config.apiKey,
+        baseURL: config.baseURL,
+      });
+      return azure.chat(config.chatModel);
+    }
+    case "openai-compatible":
+    default: {
+      const openai = createOpenAI({
+        apiKey: config.apiKey,
+        baseURL: config.baseURL,
+      });
+      return openai.chat(config.chatModel);
+    }
+  }
+}
+
+export function resolveChatModel(
+  user?: UserLlmSettings | null,
+): ResolvedChatModel | null {
+  const config = resolveEffectiveConfig(user);
+  if (!config) return null;
+  return { model: createChatModel(config), config };
 }
 
 /** Human-readable reason when chat is unavailable (no secrets). */
 export function missingKeyMessage(locale: "zh-CN" | "en" = "zh-CN"): string {
   if (locale === "en") {
-    return "AI tutor is not configured yet. Set OPENAI_API_KEY (or AI_GATEWAY_API_KEY) — see docs/ai-tutor.md.";
+    return "AI tutor has no LLM credentials. Configure API URL / type / key in the assistant UI (saved in this browser only), or set OPENAI_API_KEY on the server — see docs/ai-tutor.md.";
   }
-  return "AI 助教尚未配置。请设置 OPENAI_API_KEY（或 AI_GATEWAY_API_KEY），详见 docs/ai-tutor.md。";
+  return "AI 助教尚未配置 LLM。请在助教界面填写 API URL / 类型 / Key（仅保存在本浏览器），或在服务端设置 OPENAI_API_KEY，详见 docs/ai-tutor.md。";
 }
