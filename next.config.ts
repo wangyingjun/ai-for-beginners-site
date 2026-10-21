@@ -1,7 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   cacheComponents: true,
   partialPrefetching: true,
   turbopack: {
@@ -11,6 +10,19 @@ const nextConfig: NextConfig = {
         as: "*.css",
       },
     },
+  },
+  async headers() {
+    // JupyterLite stdin / SharedArrayBuffer need COOP + COEP.
+    // credentialless keeps CDN Pyodide (314.*) loadable; require-corp would break CDN.
+    return [
+      {
+        source: "/jupyterlite/:path*",
+        headers: [
+          { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
+          { key: "Cross-Origin-Embedder-Policy", value: "credentialless" },
+        ],
+      },
+    ];
   },
 };
 

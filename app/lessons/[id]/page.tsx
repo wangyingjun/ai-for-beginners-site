@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { BrowserRunButtons } from "@/components/BrowserRunButtons";
 import { ExternalRunButtons } from "@/components/ExternalRunButtons";
 import { FrameworkTabs } from "@/components/FrameworkTabs";
 import { LessonMarkdown } from "@/components/LessonMarkdown";
@@ -138,6 +139,12 @@ export default async function LessonPage({
             {staticRendered.map(({ file, cells }) => (
               <NotebookViewer key={file} title={file} cells={cells} />
             ))}
+          </section>
+        )}
+
+        {(lesson.jupyterlite?.length ?? 0) > 0 && (
+          <section className="mt-8">
+            <BrowserRunButtons locale={locale} notebooks={lesson.jupyterlite!} />
           </section>
         )}
 

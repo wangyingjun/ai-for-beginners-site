@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "sync:upstream": "node scripts/sync-upstream.mjs"
+    "sync:upstream": "node scripts/sync-upstream.mjs",
+    "prepare:jupyterlite": "node scripts/prepare-jupyterlite.mjs",
+    "build:jupyterlite": "node scripts/prepare-jupyterlite.mjs && cd jupyterlite-src && ../.venv-jupyterlite/bin/jupyter lite build --contents content --output-dir ../public/jupyterlite --apps lab --apps notebooks --apps tree --no-sourcemaps"
   },
   "dependencies": {
     "next": "16.4.2",

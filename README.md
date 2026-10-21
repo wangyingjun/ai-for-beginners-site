@@ -12,6 +12,13 @@ Chinese-first interactive teaching site scaffold based on Microsoft’s AI-For-B
 - Browser notebooks (later): JupyterLite / Pyodide
 - Content sync: sparse checkout of upstream (see `scripts/sync-upstream.md`)
 
+## JupyterLite (Tier A in-browser)
+
+Pinned: **jupyterlite-core / pyodide-kernel 0.8.6** → Pyodide **314.\*** (CDN). See `docs/jupyterlite.md`.
+
+- UI: [`/lab`](/lab) · static app: `/jupyterlite/`
+- Rebuild: `npm run build:jupyterlite` (needs local `.venv-jupyterlite`)
+
 ## Local development
 
 ```bash

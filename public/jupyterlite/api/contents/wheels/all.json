@@ -1,0 +1,29 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2026-10-21T11:18:53.272764Z",
+      "format": null,
+      "hash": null,
+      "hash_algorithm": null,
+      "last_modified": "2026-10-21T11:17:33.297474Z",
+      "mimetype": null,
+      "name": "experta-1.9.4-py3-none-any.whl",
+      "path": "wheels/experta-1.9.4-py3-none-any.whl",
+      "size": 35588,
+      "type": "file",
+      "writable": true
+    }
+  ],
+  "created": "2026-10-21T11:18:53.272764Z",
+  "format": "json",
+  "hash": null,
+  "hash_algorithm": null,
+  "last_modified": "2026-10-21T11:18:53.272764Z",
+  "mimetype": null,
+  "name": "wheels",
+  "path": "wheels",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

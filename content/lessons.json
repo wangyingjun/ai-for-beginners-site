@@ -124,7 +124,12 @@
         "en": true,
         "zh-CN": true
       },
-      "sampleContent": true
+      "sampleContent": true,
+      "jupyterlite": [
+        "Animals.ipynb",
+        "FamilyOntology.ipynb",
+        "MSConceptGraph.ipynb"
+      ]
     },
     {
       "id": "03",
@@ -155,6 +160,10 @@
       "hasStaticNotebook": true,
       "staticNotebooks": [
         "Perceptron.ipynb"
+      ],
+      "jupyterlite": [
+        "Perceptron.ipynb",
+        "PerceptronMultiClass.ipynb"
       ]
     },
     {
@@ -186,6 +195,10 @@
       "hasStaticNotebook": true,
       "staticNotebooks": [
         "OwnFramework.ipynb"
+      ],
+      "jupyterlite": [
+        "OwnFramework.ipynb",
+        "MyFW_MNIST.ipynb"
       ]
     },
     {
@@ -222,7 +235,10 @@
         "en": true,
         "zh-CN": true
       },
-      "sampleContent": true
+      "sampleContent": true,
+      "jupyterlite": [
+        "LabFrameworks.ipynb"
+      ]
     },
     {
       "id": "06",
@@ -249,7 +265,10 @@
         "en": true,
         "zh-CN": true
       },
-      "sampleContent": true
+      "sampleContent": true,
+      "jupyterlite": [
+        "OpenCV.ipynb"
+      ]
     },
     {
       "id": "07",
@@ -712,6 +731,9 @@
       "sampleContent": true,
       "hasStaticNotebook": true,
       "staticNotebooks": [
+        "Genetic.ipynb"
+      ],
+      "jupyterlite": [
         "Genetic.ipynb"
       ]
     },
