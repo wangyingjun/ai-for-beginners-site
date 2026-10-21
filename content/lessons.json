@@ -1,0 +1,362 @@
+{
+  "upstream": {
+    "repo": "microsoft/AI-For-Beginners",
+    "commit": "392d0df",
+    "license": "MIT"
+  },
+  "modules": [
+    { "id": "1-Intro", "title": { "zh-CN": "人工智能导论", "en": "Introduction to AI" }, "order": 1 },
+    { "id": "2-Symbolic", "title": { "zh-CN": "符号人工智能", "en": "Symbolic AI" }, "order": 2 },
+    { "id": "3-NeuralNetworks", "title": { "zh-CN": "神经网络入门", "en": "Introduction to Neural Networks" }, "order": 3 },
+    { "id": "4-ComputerVision", "title": { "zh-CN": "计算机视觉", "en": "Computer Vision" }, "order": 4 },
+    { "id": "5-NLP", "title": { "zh-CN": "自然语言处理", "en": "Natural Language Processing" }, "order": 5 },
+    { "id": "6-Other", "title": { "zh-CN": "其他 AI 技术", "en": "Other AI Techniques" }, "order": 6 },
+    { "id": "7-Ethics", "title": { "zh-CN": "AI 伦理", "en": "AI Ethics" }, "order": 7 },
+    { "id": "X-Extras", "title": { "zh-CN": "扩展内容", "en": "Extras" }, "order": 8 }
+  ],
+  "lessons": [
+    {
+      "id": "01",
+      "slug": "01-intro",
+      "module": "1-Intro",
+      "path": "lessons/1-Intro",
+      "title": { "zh-CN": "人工智能简介与历史", "en": "Introduction and History of AI" },
+      "hasNotebook": false,
+      "frameworks": [],
+      "hasLab": false,
+      "tier": null,
+      "sampleContent": true
+    },
+    {
+      "id": "02",
+      "slug": "02-symbolic",
+      "module": "2-Symbolic",
+      "path": "lessons/2-Symbolic",
+      "title": { "zh-CN": "知识表示与专家系统", "en": "Knowledge Representation and Expert Systems" },
+      "hasNotebook": true,
+      "frameworks": ["numpy"],
+      "hasLab": false,
+      "tier": "A",
+      "notebooks": [
+        { "framework": "numpy", "file": "Animals.ipynb" },
+        { "framework": "numpy", "file": "FamilyOntology.ipynb" },
+        { "framework": "numpy", "file": "MSConceptGraph.ipynb" }
+      ]
+    },
+    {
+      "id": "03",
+      "slug": "03-perceptron",
+      "module": "3-NeuralNetworks",
+      "path": "lessons/3-NeuralNetworks/03-Perceptron",
+      "title": { "zh-CN": "感知机", "en": "Perceptron" },
+      "hasNotebook": true,
+      "frameworks": ["numpy"],
+      "hasLab": true,
+      "tier": "A",
+      "notebooks": [{ "framework": "numpy", "file": "Perceptron.ipynb" }],
+      "sampleContent": true
+    },
+    {
+      "id": "04",
+      "slug": "04-own-framework",
+      "module": "3-NeuralNetworks",
+      "path": "lessons/3-NeuralNetworks/04-OwnFramework",
+      "title": { "zh-CN": "多层感知机与自建框架", "en": "Multi-Layered Perceptron and Creating our own Framework" },
+      "hasNotebook": true,
+      "frameworks": ["numpy"],
+      "hasLab": true,
+      "tier": "A",
+      "notebooks": [{ "framework": "numpy", "file": "OwnFramework.ipynb" }]
+    },
+    {
+      "id": "05",
+      "slug": "05-frameworks",
+      "module": "3-NeuralNetworks",
+      "path": "lessons/3-NeuralNetworks/05-Frameworks",
+      "title": { "zh-CN": "框架入门（PyTorch/TensorFlow）与过拟合", "en": "Intro to Frameworks (PyTorch/TensorFlow) and Overfitting" },
+      "hasNotebook": true,
+      "frameworks": ["pytorch", "tensorflow"],
+      "hasLab": true,
+      "tier": "B",
+      "notebooks": [
+        { "framework": "pytorch", "file": "IntroPyTorch.ipynb" },
+        { "framework": "tensorflow", "file": "IntroKeras.ipynb" },
+        { "framework": "tensorflow", "file": "IntroKerasTF.ipynb" }
+      ]
+    },
+    {
+      "id": "06",
+      "slug": "06-intro-cv",
+      "module": "4-ComputerVision",
+      "path": "lessons/4-ComputerVision/06-IntroCV",
+      "title": { "zh-CN": "计算机视觉入门 · OpenCV", "en": "Intro to Computer Vision · OpenCV" },
+      "hasNotebook": true,
+      "frameworks": ["numpy"],
+      "hasLab": true,
+      "tier": "A",
+      "notebooks": [{ "framework": "numpy", "file": "OpenCV.ipynb" }]
+    },
+    {
+      "id": "07",
+      "slug": "07-convnets",
+      "module": "4-ComputerVision",
+      "path": "lessons/4-ComputerVision/07-ConvNets",
+      "title": { "zh-CN": "卷积神经网络", "en": "Convolutional Neural Networks" },
+      "hasNotebook": true,
+      "frameworks": ["pytorch", "tensorflow"],
+      "hasLab": true,
+      "tier": "B",
+      "notebooks": [
+        { "framework": "pytorch", "file": "ConvNetsPyTorch.ipynb" },
+        { "framework": "tensorflow", "file": "ConvNetsTF.ipynb" }
+      ]
+    },
+    {
+      "id": "08",
+      "slug": "08-transfer-learning",
+      "module": "4-ComputerVision",
+      "path": "lessons/4-ComputerVision/08-TransferLearning",
+      "title": { "zh-CN": "预训练网络与迁移学习", "en": "Pre-trained Networks and Transfer Learning" },
+      "hasNotebook": true,
+      "frameworks": ["pytorch", "tensorflow"],
+      "hasLab": true,
+      "tier": "C",
+      "notebooks": [
+        { "framework": "pytorch", "file": "TransferLearningPyTorch.ipynb" },
+        { "framework": "tensorflow", "file": "TransferLearningTF.ipynb" }
+      ]
+    },
+    {
+      "id": "09",
+      "slug": "09-autoencoders",
+      "module": "4-ComputerVision",
+      "path": "lessons/4-ComputerVision/09-Autoencoders",
+      "title": { "zh-CN": "自编码器", "en": "Autoencoders" },
+      "hasNotebook": true,
+      "frameworks": ["pytorch", "tensorflow"],
+      "hasLab": false,
+      "tier": "C",
+      "notebooks": [
+        { "framework": "pytorch", "file": "AutoEncodersPyTorch.ipynb" },
+        { "framework": "tensorflow", "file": "AutoencodersTF.ipynb" }
+      ]
+    },
+    {
+      "id": "10",
+      "slug": "10-gans",
+      "module": "4-ComputerVision",
+      "path": "lessons/4-ComputerVision/10-GANs",
+      "title": { "zh-CN": "生成对抗网络与风格迁移", "en": "GANs and Style Transfer" },
+      "hasNotebook": true,
+      "frameworks": ["pytorch", "tensorflow"],
+      "hasLab": false,
+      "tier": "C",
+      "notebooks": [
+        { "framework": "pytorch", "file": "GANPyTorch.ipynb" },
+        { "framework": "tensorflow", "file": "GANTF.ipynb" }
+      ]
+    },
+    {
+      "id": "11",
+      "slug": "11-object-detection",
+      "module": "4-ComputerVision",
+      "path": "lessons/4-ComputerVision/11-ObjectDetection",
+      "title": { "zh-CN": "目标检测", "en": "Object Detection" },
+      "hasNotebook": true,
+      "frameworks": ["tensorflow"],
+      "hasLab": false,
+      "tier": "C",
+      "notebooks": [{ "framework": "tensorflow", "file": "ObjectDetection.ipynb" }]
+    },
+    {
+      "id": "12",
+      "slug": "12-segmentation",
+      "module": "4-ComputerVision",
+      "path": "lessons/4-ComputerVision/12-Segmentation",
+      "title": { "zh-CN": "语义分割", "en": "Semantic Segmentation" },
+      "hasNotebook": true,
+      "frameworks": ["pytorch", "tensorflow"],
+      "hasLab": true,
+      "tier": "C",
+      "notebooks": [
+        { "framework": "pytorch", "file": "SemanticSegmentationPytorch.ipynb" },
+        { "framework": "tensorflow", "file": "SemanticSegmentationTF.ipynb" }
+      ]
+    },
+    {
+      "id": "13",
+      "slug": "13-text-rep",
+      "module": "5-NLP",
+      "path": "lessons/5-NLP/13-TextRep",
+      "title": { "zh-CN": "文本表示 · BoW/TF-IDF", "en": "Text Representation · BoW/TF-IDF" },
+      "hasNotebook": true,
+      "frameworks": ["pytorch", "tensorflow"],
+      "hasLab": false,
+      "tier": "B",
+      "notebooks": [
+        { "framework": "pytorch", "file": "TextRepresentationPyTorch.ipynb" },
+        { "framework": "tensorflow", "file": "TextRepresentationTF.ipynb" }
+      ]
+    },
+    {
+      "id": "14",
+      "slug": "14-embeddings",
+      "module": "5-NLP",
+      "path": "lessons/5-NLP/14-Embeddings",
+      "title": { "zh-CN": "语义词嵌入 · Word2Vec 与 GloVe", "en": "Semantic Word Embeddings · Word2Vec and GloVe" },
+      "hasNotebook": true,
+      "frameworks": ["pytorch", "tensorflow"],
+      "hasLab": false,
+      "tier": "C",
+      "notebooks": [
+        { "framework": "pytorch", "file": "EmbeddingsPyTorch.ipynb" },
+        { "framework": "tensorflow", "file": "EmbeddingsTF.ipynb" }
+      ]
+    },
+    {
+      "id": "15",
+      "slug": "15-language-modeling",
+      "module": "5-NLP",
+      "path": "lessons/5-NLP/15-LanguageModeling",
+      "title": { "zh-CN": "语言模型 · 训练自己的嵌入", "en": "Language Modeling · Training your own embeddings" },
+      "hasNotebook": true,
+      "frameworks": ["pytorch", "tensorflow"],
+      "hasLab": true,
+      "tier": "B",
+      "notebooks": [
+        { "framework": "pytorch", "file": "CBoW-PyTorch.ipynb" },
+        { "framework": "tensorflow", "file": "CBoW-TF.ipynb" }
+      ]
+    },
+    {
+      "id": "16",
+      "slug": "16-rnn",
+      "module": "5-NLP",
+      "path": "lessons/5-NLP/16-RNN",
+      "title": { "zh-CN": "循环神经网络", "en": "Recurrent Neural Networks" },
+      "hasNotebook": true,
+      "frameworks": ["pytorch", "tensorflow"],
+      "hasLab": false,
+      "tier": "B",
+      "notebooks": [
+        { "framework": "pytorch", "file": "RNNPyTorch.ipynb" },
+        { "framework": "tensorflow", "file": "RNNTF.ipynb" }
+      ]
+    },
+    {
+      "id": "17",
+      "slug": "17-generative",
+      "module": "5-NLP",
+      "path": "lessons/5-NLP/17-GenerativeNetworks",
+      "title": { "zh-CN": "生成式循环网络", "en": "Generative Recurrent Networks" },
+      "hasNotebook": true,
+      "frameworks": ["pytorch", "tensorflow"],
+      "hasLab": true,
+      "tier": "B",
+      "notebooks": [
+        { "framework": "pytorch", "file": "GenerativePyTorch.ipynb" },
+        { "framework": "tensorflow", "file": "GenerativeTF.ipynb" }
+      ]
+    },
+    {
+      "id": "18",
+      "slug": "18-transformers",
+      "module": "5-NLP",
+      "path": "lessons/5-NLP/18-Transformers",
+      "title": { "zh-CN": "Transformers · BERT", "en": "Transformers · BERT" },
+      "hasNotebook": true,
+      "frameworks": ["pytorch", "tensorflow"],
+      "hasLab": false,
+      "tier": "C",
+      "notebooks": [
+        { "framework": "pytorch", "file": "TransformersPyTorch.ipynb" },
+        { "framework": "tensorflow", "file": "TransformersTF.ipynb" }
+      ]
+    },
+    {
+      "id": "19",
+      "slug": "19-ner",
+      "module": "5-NLP",
+      "path": "lessons/5-NLP/19-NER",
+      "title": { "zh-CN": "命名实体识别", "en": "Named Entity Recognition" },
+      "hasNotebook": true,
+      "frameworks": ["tensorflow"],
+      "hasLab": true,
+      "tier": "B",
+      "notebooks": [{ "framework": "tensorflow", "file": "NER-TF.ipynb" }]
+    },
+    {
+      "id": "20",
+      "slug": "20-lang-models",
+      "module": "5-NLP",
+      "path": "lessons/5-NLP/20-LangModels",
+      "title": { "zh-CN": "大语言模型、提示工程与少样本任务", "en": "Large Language Models, Prompt Programming and Few-Shot Tasks" },
+      "hasNotebook": true,
+      "frameworks": ["pytorch"],
+      "hasLab": false,
+      "tier": "B",
+      "notebooks": [{ "framework": "pytorch", "file": "GPT-PyTorch.ipynb" }]
+    },
+    {
+      "id": "21",
+      "slug": "21-genetic",
+      "module": "6-Other",
+      "path": "lessons/6-Other/21-GeneticAlgorithms",
+      "title": { "zh-CN": "遗传算法", "en": "Genetic Algorithms" },
+      "hasNotebook": true,
+      "frameworks": ["numpy"],
+      "hasLab": false,
+      "tier": "A",
+      "notebooks": [{ "framework": "numpy", "file": "Genetic.ipynb" }]
+    },
+    {
+      "id": "22",
+      "slug": "22-deep-rl",
+      "module": "6-Other",
+      "path": "lessons/6-Other/22-DeepRL",
+      "title": { "zh-CN": "深度强化学习", "en": "Deep Reinforcement Learning" },
+      "hasNotebook": true,
+      "frameworks": ["pytorch", "tensorflow"],
+      "hasLab": true,
+      "tier": "B",
+      "notebooks": [
+        { "framework": "pytorch", "file": "CartPole-RL-PyTorch.ipynb" },
+        { "framework": "tensorflow", "file": "CartPole-RL-TF.ipynb" }
+      ]
+    },
+    {
+      "id": "23",
+      "slug": "23-multiagent",
+      "module": "6-Other",
+      "path": "lessons/6-Other/23-MultiagentSystems",
+      "title": { "zh-CN": "多智能体系统", "en": "Multi-Agent Systems" },
+      "hasNotebook": false,
+      "frameworks": [],
+      "hasLab": false,
+      "tier": null
+    },
+    {
+      "id": "24",
+      "slug": "24-ethics",
+      "module": "7-Ethics",
+      "path": "lessons/7-Ethics",
+      "title": { "zh-CN": "AI 伦理与负责任的 AI", "en": "AI Ethics and Responsible AI" },
+      "hasNotebook": false,
+      "frameworks": [],
+      "hasLab": false,
+      "tier": null
+    },
+    {
+      "id": "X1",
+      "slug": "x1-multimodal",
+      "module": "X-Extras",
+      "path": "lessons/X-Extras/X1-MultiModal",
+      "title": { "zh-CN": "多模态 · CLIP", "en": "Multi-Modal · CLIP" },
+      "hasNotebook": true,
+      "frameworks": ["pytorch"],
+      "hasLab": false,
+      "tier": "C",
+      "notebooks": [{ "framework": "pytorch", "file": "Clip.ipynb" }]
+    }
+  ]
+}

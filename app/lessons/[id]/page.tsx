@@ -1,0 +1,187 @@
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { ExternalRunButtons } from "@/components/ExternalRunButtons";
+import { FrameworkTabs } from "@/components/FrameworkTabs";
+import { LessonMarkdown } from "@/components/LessonMarkdown";
+import { SiteFooter } from "@/components/SiteFooter";
+import { SiteHeader } from "@/components/SiteHeader";
+import { t } from "@/lib/i18n";
+import { resolveLocale } from "@/lib/locale";
+import {
+  adjacentLessons,
+  getLessonById,
+  getLessons,
+  getModule,
+  githubBlobUrl,
+  localizedTitle,
+} from "@/lib/lessons";
+
+export function generateStaticParams() {
+  return getLessons().map((l) => ({ id: l.id }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const lesson = getLessonById(id);
+  if (!lesson) return { title: "Lesson" };
+  return { title: lesson.title["zh-CN"] };
+}
+
+export default async function LessonPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ lang?: string }>;
+}) {
+  const { id } = await params;
+  const locale = await resolveLocale(searchParams);
+  const lesson = getLessonById(id);
+  if (!lesson) notFound();
+
+  const mod = getModule(lesson.module);
+  const { prev, next } = adjacentLessons(lesson.id);
+  const notebooks = lesson.notebooks ?? [];
+  const hasSample = Boolean(lesson.sampleContent);
+
+  const tierLabel =
+    lesson.tier === "A"
+      ? t(locale, "tierA")
+      : lesson.tier === "B"
+        ? t(locale, "tierB")
+        : lesson.tier === "C"
+          ? t(locale, "tierC")
+          : null;
+
+  return (
+    <>
+      <SiteHeader locale={locale} />
+      <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-10">
+        <Link
+          href={`/course?lang=${locale}`}
+          className="text-sm text-indigo-600 hover:underline dark:text-indigo-400"
+        >
+          ← {t(locale, "backToIndex")}
+        </Link>
+
+        <header className="mt-4 space-y-2">
+          {mod && (
+            <p className="text-sm text-zinc-500">
+              {localizedTitle(mod, locale)}
+            </p>
+          )}
+          <h1 className="text-3xl font-bold tracking-tight">
+            <span className="mr-2 font-mono text-lg text-zinc-400">
+              {lesson.id}
+            </span>
+            {localizedTitle(lesson, locale)}
+          </h1>
+          <div className="flex flex-wrap gap-2 text-xs">
+            {tierLabel && (
+              <span className="rounded-full bg-amber-50 px-2 py-0.5 text-amber-800 dark:bg-amber-950 dark:text-amber-200">
+                {t(locale, "tier")}: {tierLabel}
+              </span>
+            )}
+            {!lesson.hasNotebook && (
+              <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-zinc-600 dark:bg-zinc-800">
+                {t(locale, "readingOnly")}
+              </span>
+            )}
+            <a
+              href={githubBlobUrl(lesson.path, "README.md")}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-full bg-zinc-100 px-2 py-0.5 text-zinc-600 underline dark:bg-zinc-800"
+            >
+              GitHub README
+            </a>
+          </div>
+        </header>
+
+        <section className="mt-8 space-y-4">
+          {hasSample ? (
+            <>
+              <p className="text-sm text-zinc-500">{t(locale, "sampleNote")}</p>
+              <LessonMarkdown slug={lesson.slug} locale={locale} />
+            </>
+          ) : (
+            <p className="rounded-lg border border-dashed border-zinc-300 bg-zinc-50 p-4 text-sm text-zinc-600 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300">
+              {t(locale, "placeholderBody")}
+            </p>
+          )}
+        </section>
+
+        {lesson.hasNotebook && notebooks.length > 0 && (
+          <section className="mt-10 space-y-4">
+            <h2 className="text-xl font-semibold">{t(locale, "notebooks")}</h2>
+            <FrameworkTabs notebooks={notebooks}>
+              {(active) => (
+                <div className="space-y-4 rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-950">
+                  <p className="font-mono text-sm text-zinc-500">
+                    {lesson.path}/{active.file}
+                  </p>
+                  <ExternalRunButtons
+                    locale={locale}
+                    path={lesson.path}
+                    file={active.file}
+                  />
+                  <div className="rounded-lg border border-dashed border-zinc-300 bg-zinc-50 p-6 dark:border-zinc-700 dark:bg-zinc-900">
+                    <p className="font-medium text-zinc-800 dark:text-zinc-100">
+                      {t(locale, "notebookOutput")}
+                    </p>
+                    <p className="mt-1 text-sm text-zinc-500">
+                      {t(locale, "notebookOutputHint")}
+                    </p>
+                    <div className="mt-4 space-y-2 font-mono text-xs text-zinc-400">
+                      <div className="rounded bg-zinc-900/90 p-3 text-emerald-300">
+                        # cell 0 — markdown
+                        <br />
+                        ## {active.file}
+                      </div>
+                      <div className="rounded bg-zinc-900/90 p-3 text-sky-300">
+                        # cell 1 — code (placeholder)
+                        <br />
+                        print(&quot;Hello from {active.framework}&quot;)
+                      </div>
+                      <div className="rounded bg-zinc-200 p-3 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-200">
+                        Hello from {active.framework}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </FrameworkTabs>
+          </section>
+        )}
+
+        <nav className="mt-12 flex items-center justify-between border-t border-zinc-200 pt-6 text-sm dark:border-zinc-800">
+          {prev ? (
+            <Link
+              href={`/lessons/${prev.id}?lang=${locale}`}
+              className="text-indigo-600 hover:underline dark:text-indigo-400"
+            >
+              ← {t(locale, "prev")}: {localizedTitle(prev, locale)}
+            </Link>
+          ) : (
+            <span />
+          )}
+          {next ? (
+            <Link
+              href={`/lessons/${next.id}?lang=${locale}`}
+              className="text-right text-indigo-600 hover:underline dark:text-indigo-400"
+            >
+              {t(locale, "next")}: {localizedTitle(next, locale)} →
+            </Link>
+          ) : (
+            <span />
+          )}
+        </nav>
+      </main>
+      <SiteFooter locale={locale} />
+    </>
+  );
+}
