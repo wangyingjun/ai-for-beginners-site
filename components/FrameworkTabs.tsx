@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { ExternalRunButtons } from "@/components/ExternalRunButtons";
+import { t, type Locale } from "@/lib/i18n";
 
 type Notebook = { framework: string; file: string };
 
@@ -13,10 +15,14 @@ const LABELS: Record<string, string> = {
 
 export function FrameworkTabs({
   notebooks,
-  children,
+  locale,
+  path,
+  staticFiles,
 }: {
   notebooks: Notebook[];
-  children: (active: Notebook) => React.ReactNode;
+  locale: Locale;
+  path: string;
+  staticFiles: string[];
 }) {
   const unique = notebooks.filter(
     (n, i, arr) => arr.findIndex((x) => x.framework === n.framework) === i,
@@ -27,8 +33,27 @@ export function FrameworkTabs({
 
   if (!active) return null;
 
+  const panel = (
+    <div className="space-y-4 rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-950">
+      <p className="font-mono text-sm text-zinc-500">
+        {path}/{active.file}
+      </p>
+      <ExternalRunButtons locale={locale} path={path} file={active.file} />
+      {!staticFiles.includes(active.file) && (
+        <div className="rounded-lg border border-dashed border-zinc-300 bg-zinc-50 p-6 dark:border-zinc-700 dark:bg-zinc-900">
+          <p className="font-medium text-zinc-800 dark:text-zinc-100">
+            {t(locale, "notebookOutput")}
+          </p>
+          <p className="mt-1 text-sm text-zinc-500">
+            {t(locale, "notebookOutputHint")}
+          </p>
+        </div>
+      )}
+    </div>
+  );
+
   if (unique.length <= 1) {
-    return <>{children(active)}</>;
+    return panel;
   }
 
   return (
@@ -49,7 +74,7 @@ export function FrameworkTabs({
           </button>
         ))}
       </div>
-      {children(active)}
+      {panel}
     </div>
   );
 }

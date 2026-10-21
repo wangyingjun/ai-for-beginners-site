@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BrowserRunButtons } from "@/components/BrowserRunButtons";
-import { ExternalRunButtons } from "@/components/ExternalRunButtons";
 import { FrameworkTabs } from "@/components/FrameworkTabs";
 import { LessonMarkdown } from "@/components/LessonMarkdown";
 import { NotebookViewer } from "@/components/NotebookViewer";
@@ -151,30 +150,12 @@ export default async function LessonPage({
         {lesson.hasNotebook && notebooks.length > 0 && (
           <section className="mt-10 space-y-4">
             <h2 className="text-xl font-semibold">{t(locale, "notebooks")}</h2>
-            <FrameworkTabs notebooks={notebooks}>
-              {(active) => (
-                <div className="space-y-4 rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-950">
-                  <p className="font-mono text-sm text-zinc-500">
-                    {lesson.path}/{active.file}
-                  </p>
-                  <ExternalRunButtons
-                    locale={locale}
-                    path={lesson.path}
-                    file={active.file}
-                  />
-                  {!staticFiles.includes(active.file) && (
-                    <div className="rounded-lg border border-dashed border-zinc-300 bg-zinc-50 p-6 dark:border-zinc-700 dark:bg-zinc-900">
-                      <p className="font-medium text-zinc-800 dark:text-zinc-100">
-                        {t(locale, "notebookOutput")}
-                      </p>
-                      <p className="mt-1 text-sm text-zinc-500">
-                        {t(locale, "notebookOutputHint")}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              )}
-            </FrameworkTabs>
+            <FrameworkTabs
+              notebooks={notebooks}
+              locale={locale}
+              path={lesson.path}
+              staticFiles={staticFiles}
+            />
           </section>
         )}
 
