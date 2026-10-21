@@ -36,7 +36,8 @@ export function ProgressClient({ locale }: { locale: Locale }) {
         .select("lesson_id,item_type,item_id,status,updated_at");
       if (!error && data) setRemoteCount(data.length);
 
-      // Merge local → remote (best-effort)
+      // Merge local progress → remote (upsert is idempotent).
+      // Quiz attempts are written at submit time only — do not re-insert here.
       const local = loadLocalProgress();
       if (local.items.length > 0) {
         const rows = local.items.map((i) => ({
@@ -49,15 +50,6 @@ export function ProgressClient({ locale }: { locale: Locale }) {
         }));
         await supabase.from("progress").upsert(rows, {
           onConflict: "user_id,lesson_id,item_type,item_id",
-        });
-      }
-      for (const a of local.quizAttempts.slice(0, 20)) {
-        await supabase.from("quiz_attempts").insert({
-          user_id: user.id,
-          quiz_id: a.quizId,
-          answers: a.answers,
-          score: a.score,
-          created_at: a.createdAt,
         });
       }
     })();
