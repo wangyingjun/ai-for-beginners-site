@@ -51,8 +51,14 @@ npm run build   # must pass before deploy
 | `/lab` | JupyterLite Tier A browser lab |
 | `/quiz/[id]` | Pre/post quizzes (mk_id 101–124 / 201–224; legacy 1–46 also resolve) |
 | `/progress` | Local + cloud learning progress |
+| `/classes` | Teacher classes: create + invite codes |
+| `/classes/[id]` | Roster + progress / quiz heatmaps (teacher) |
+| `/join` | Join a class via invite code (`?code=`) |
+| `/wrongbook` | Wrong-answer book from local quiz attempts |
+| `/search` | Site search over lesson titles/bodies |
 | `/assistant` | AI 助教（RAG；浏览器自配 LLM 或服务端 Key） |
 | `/docs/ai-tutor` | AI 助教启用文档 |
+| `/docs/auth` | Auth / OAuth / classes setup |
 | `/auth/callback` | Supabase OAuth code exchange |
 
 ## Content

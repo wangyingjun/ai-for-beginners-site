@@ -85,3 +85,18 @@ npm run dev
 ```
 
 Use `http://localhost:3000/auth/callback` as listed above.
+
+## Teacher classes (Phase 2)
+
+- Routes: `/classes` (list/create), `/classes/[id]` (roster + progress/quiz heatmaps), `/join?code=` (join by invite).
+- Tables: `classes`, `class_members` (migration `phase2_classes`).
+- RLS: teachers see only their classes and member `profiles` / `progress` / `quiz_attempts`; students see own data and classes they joined.
+- Invite join uses RPCs `lookup_class_by_invite` / `join_class_by_invite` (security definer) so invite codes are not listed publicly.
+- **Requires GitHub login.** Until OAuth is configured (steps above), the UI explains that class features need login and links here.
+
+### Verify classes
+
+1. Sign in → `/classes` → create a class → copy invite code.
+2. Second account → `/join?code=…` → join.
+3. Teacher opens `/classes/[id]` → roster counts + heatmaps (empty until members have progress/quizzes).
+
