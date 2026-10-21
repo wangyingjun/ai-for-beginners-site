@@ -16,6 +16,9 @@ export function SiteHeader({ locale }: { locale: Locale }) {
           <Link href={`/course?lang=${locale}`} className="hover:text-zinc-900 dark:hover:text-white">
             {t(locale, "navCourse")}
           </Link>
+          <Link href={`/demos?lang=${locale}`} className="hover:text-zinc-900 dark:hover:text-white">
+            {t(locale, "navDemos")}
+          </Link>
           <Link href={`/lab?lang=${locale}`} className="hover:text-zinc-900 dark:hover:text-white">
             Lab
           </Link>

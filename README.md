@@ -19,6 +19,12 @@ Pinned: **jupyterlite-core / pyodide-kernel 0.8.6** → Pyodide **314.\*** (CDN)
 - UI: [`/lab`](/lab) · static app: `/jupyterlite/`
 - Rebuild: `npm run build:jupyterlite` (needs local `.venv-jupyterlite`)
 
+## Interactive demos (pure TypeScript)
+
+- Perceptron (`/demos/perceptron`): click-to-label 2D points, step/epoch training, live decision boundary.
+- MLP Playground (`/demos/mlp`): TensorFlow Playground–style (Apache-2.0 attribution); datasets, hidden layers, activations, L2, live heatmap.
+- Core algorithms: `lib/ml/{perceptron,mlp,datasets}.ts` — no TF.js / Python required.
+
 ## Local development
 
 ```bash
@@ -39,6 +45,10 @@ npm run build   # must pass before deploy
 | `/` | Home (Chinese-first intro + attribution) |
 | `/course` | Course index (~25 lessons from `content/lessons.json`) |
 | `/lessons/[id]` | Lesson page: lang toggle, framework tabs, notebook/output stubs, Colab/Codespaces/Binder buttons |
+| `/demos` | Interactive demos index |
+| `/demos/perceptron` | Perceptron decision-boundary playground (also embedded on lesson 03) |
+| `/demos/mlp` | MLP playground — layers / activation / L2 (also on lessons 04 & 05) |
+| `/lab` | JupyterLite Tier A browser lab |
 
 ## Content
 
@@ -76,4 +86,4 @@ Never vendor the full 2.3 GB upstream tree into this repository.
 
 ## Phase status
 
-Phase 1 MVP step 1: content site scaffold. Next: wire Supabase Auth, Vercel project env vars, and GitHub Actions sparse sync PR bot.
+Phase 1 MVP: content site + JupyterLite Tier A + flagship demos (perceptron, MLP). Next: quizzes, Supabase Auth/progress, sync PR bot.

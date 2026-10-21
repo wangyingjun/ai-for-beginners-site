@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BrowserRunButtons } from "@/components/BrowserRunButtons";
+import { MlpPlayground } from "@/components/demos/MlpPlayground";
+import { PerceptronDemo } from "@/components/demos/PerceptronDemo";
 import { FrameworkTabs } from "@/components/FrameworkTabs";
 import { LessonMarkdown } from "@/components/LessonMarkdown";
 import { NotebookViewer } from "@/components/NotebookViewer";
@@ -67,6 +69,9 @@ export default async function LessonPage({
           ? t(locale, "tierC")
           : null;
 
+  const showPerceptron = lesson.id === "03";
+  const showMlp = lesson.id === "04" || lesson.id === "05";
+
   return (
     <>
       <SiteHeader locale={locale} />
@@ -126,6 +131,20 @@ export default async function LessonPage({
             </p>
           )}
         </section>
+
+        {showPerceptron && (
+          <section className="mt-10 space-y-3">
+            <h2 className="text-xl font-semibold">{t(locale, "demoSection")}</h2>
+            <PerceptronDemo locale={locale} />
+          </section>
+        )}
+
+        {showMlp && (
+          <section className="mt-10 space-y-3">
+            <h2 className="text-xl font-semibold">{t(locale, "demoSection")}</h2>
+            <MlpPlayground locale={locale} />
+          </section>
+        )}
 
         {staticRendered.length > 0 && (
           <section className="mt-10 space-y-8">
