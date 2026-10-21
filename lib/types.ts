@@ -24,6 +24,9 @@ export type LessonManifest = {
   tier: RuntimeTier | null;
   notebooks?: NotebookRef[];
   sampleContent?: boolean;
+  hasLocalMarkdown?: { en?: boolean; "zh-CN"?: boolean };
+  hasStaticNotebook?: boolean;
+  staticNotebooks?: string[];
 };
 
 export type ModuleManifest = {
@@ -37,6 +40,7 @@ export type ContentManifest = {
     repo: string;
     commit: string;
     license: string;
+    syncedAt?: string;
   };
   modules: ModuleManifest[];
   lessons: LessonManifest[];

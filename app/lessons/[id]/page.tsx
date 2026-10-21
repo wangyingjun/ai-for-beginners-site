@@ -3,8 +3,10 @@ import { notFound } from "next/navigation";
 import { ExternalRunButtons } from "@/components/ExternalRunButtons";
 import { FrameworkTabs } from "@/components/FrameworkTabs";
 import { LessonMarkdown } from "@/components/LessonMarkdown";
+import { NotebookViewer } from "@/components/NotebookViewer";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
+import { loadLessonMarkdown, loadStaticNotebook } from "@/lib/content";
 import { t } from "@/lib/i18n";
 import { resolveLocale } from "@/lib/locale";
 import {
@@ -46,7 +48,15 @@ export default async function LessonPage({
   const mod = getModule(lesson.module);
   const { prev, next } = adjacentLessons(lesson.id);
   const notebooks = lesson.notebooks ?? [];
-  const hasSample = Boolean(lesson.sampleContent);
+  const md = await loadLessonMarkdown(lesson.id, locale);
+  const hasMd = Boolean(md);
+
+  const staticFiles = lesson.staticNotebooks ?? [];
+  const staticRendered = [];
+  for (const file of staticFiles) {
+    const cells = await loadStaticNotebook(lesson.id, file);
+    if (cells) staticRendered.push({ file, cells });
+  }
 
   const tierLabel =
     lesson.tier === "A"
@@ -91,6 +101,11 @@ export default async function LessonPage({
                 {t(locale, "readingOnly")}
               </span>
             )}
+            {hasMd && (
+              <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">
+                Markdown
+              </span>
+            )}
             <a
               href={githubBlobUrl(lesson.path, "README.md")}
               target="_blank"
@@ -103,17 +118,28 @@ export default async function LessonPage({
         </header>
 
         <section className="mt-8 space-y-4">
-          {hasSample ? (
-            <>
-              <p className="text-sm text-zinc-500">{t(locale, "sampleNote")}</p>
-              <LessonMarkdown slug={lesson.slug} locale={locale} />
-            </>
+          {hasMd ? (
+            <LessonMarkdown lessonId={lesson.id} locale={locale} />
           ) : (
             <p className="rounded-lg border border-dashed border-zinc-300 bg-zinc-50 p-4 text-sm text-zinc-600 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300">
               {t(locale, "placeholderBody")}
             </p>
           )}
         </section>
+
+        {staticRendered.length > 0 && (
+          <section className="mt-10 space-y-8">
+            <h2 className="text-xl font-semibold">
+              {t(locale, "notebookOutput")}
+            </h2>
+            <p className="text-sm text-zinc-500">
+              {t(locale, "notebookOutputHint")}
+            </p>
+            {staticRendered.map(({ file, cells }) => (
+              <NotebookViewer key={file} title={file} cells={cells} />
+            ))}
+          </section>
+        )}
 
         {lesson.hasNotebook && notebooks.length > 0 && (
           <section className="mt-10 space-y-4">
@@ -129,29 +155,16 @@ export default async function LessonPage({
                     path={lesson.path}
                     file={active.file}
                   />
-                  <div className="rounded-lg border border-dashed border-zinc-300 bg-zinc-50 p-6 dark:border-zinc-700 dark:bg-zinc-900">
-                    <p className="font-medium text-zinc-800 dark:text-zinc-100">
-                      {t(locale, "notebookOutput")}
-                    </p>
-                    <p className="mt-1 text-sm text-zinc-500">
-                      {t(locale, "notebookOutputHint")}
-                    </p>
-                    <div className="mt-4 space-y-2 font-mono text-xs text-zinc-400">
-                      <div className="rounded bg-zinc-900/90 p-3 text-emerald-300">
-                        # cell 0 — markdown
-                        <br />
-                        ## {active.file}
-                      </div>
-                      <div className="rounded bg-zinc-900/90 p-3 text-sky-300">
-                        # cell 1 — code (placeholder)
-                        <br />
-                        print(&quot;Hello from {active.framework}&quot;)
-                      </div>
-                      <div className="rounded bg-zinc-200 p-3 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-200">
-                        Hello from {active.framework}
-                      </div>
+                  {!staticFiles.includes(active.file) && (
+                    <div className="rounded-lg border border-dashed border-zinc-300 bg-zinc-50 p-6 dark:border-zinc-700 dark:bg-zinc-900">
+                      <p className="font-medium text-zinc-800 dark:text-zinc-100">
+                        {t(locale, "notebookOutput")}
+                      </p>
+                      <p className="mt-1 text-sm text-zinc-500">
+                        {t(locale, "notebookOutputHint")}
+                      </p>
                     </div>
-                  </div>
+                  )}
                 </div>
               )}
             </FrameworkTabs>

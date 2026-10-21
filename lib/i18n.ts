@@ -29,7 +29,7 @@ const dict = {
     openBinder: "在 Binder 打开",
     notebookOutput: "Notebook 输出（静态占位）",
     notebookOutputHint:
-      "MVP 阶段展示上游已保存的输出；后续将同步真实 notebook。",
+      "以下为上游已保存的静态输出（Tier A 抽样）。其余 notebook 请用 Colab / Codespaces / Binder 打开。",
     language: "语言",
     backToIndex: "返回课程目录",
     attribution:
@@ -39,7 +39,7 @@ const dict = {
     introBody:
       "本站将 microsoft/AI-For-Beginners 的 12 周 / 24+1 课整理为结构化学习体验：中文优先、中英切换，静态展示 notebook 输出，并为 PyTorch / TensorFlow 双版本提供标签页；后续接入 JupyterLite、测验、进度与 AI 助教。",
     phaseNote: "当前为 Phase 1 MVP 脚手架：内容清单与页面路由已就绪，上游同步与 Supabase / Vercel 接线稍后进行。",
-    sampleNote: "以下为示例正文（来自上游 README 抽样），正式内容由同步脚本导入。",
+    sampleNote: "正文来自上游 README（sparse sync）。图片路径已改写到本站静态资源。",
     placeholderBody: "本课正文将在上游内容同步后展示。可先通过下方按钮在外部环境打开 Notebook。",
     lab: "实验",
     prev: "上一课",
@@ -69,7 +69,7 @@ const dict = {
     openBinder: "Open in Binder",
     notebookOutput: "Notebook output (static placeholder)",
     notebookOutputHint:
-      "MVP shows placeholders for upstream saved outputs; real notebooks sync later.",
+      "Static saved outputs from upstream (Tier A sample). Open other notebooks via Colab / Codespaces / Binder.",
     language: "Language",
     backToIndex: "Back to course index",
     attribution:
@@ -81,7 +81,7 @@ const dict = {
     phaseNote:
       "Phase 1 MVP scaffold: content manifest and routes are ready. Upstream sync and Supabase/Vercel wiring follow.",
     sampleNote:
-      "Sample body below (excerpted from upstream READMEs). Full content arrives via the sync pipeline.",
+      "Body from upstream README (sparse sync). Image paths rewritten to local static assets.",
     placeholderBody:
       "Lesson body will appear after upstream sync. Use the buttons below to open notebooks externally for now.",
     lab: "Lab",

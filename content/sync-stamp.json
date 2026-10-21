@@ -1,0 +1,24 @@
+{
+  "upstreamCommit": "392d0df",
+  "syncedAt": "2026-10-21T11:02:58.103Z",
+  "lessonsWithMd": 25,
+  "notebooks": [
+    {
+      "lessonId": "03",
+      "file": "Perceptron.ipynb",
+      "bytes": 136963
+    },
+    {
+      "lessonId": "04",
+      "file": "OwnFramework.ipynb",
+      "bytes": 455453
+    },
+    {
+      "lessonId": "21",
+      "file": "Genetic.ipynb",
+      "bytes": 33166
+    }
+  ],
+  "imagesCopied": 122,
+  "imagesSkipped": 7
+}

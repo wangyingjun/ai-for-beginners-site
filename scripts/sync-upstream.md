@@ -1,42 +1,27 @@
-# Upstream sync plan
+# Upstream sync
 
-Source: [microsoft/AI-For-Beginners](https://github.com/microsoft/AI-For-Beginners) (MIT), pinned baseline commit `392d0df`.
+Source: [microsoft/AI-For-Beginners](https://github.com/microsoft/AI-For-Beginners) @ `392d0df` (MIT).
 
-## Goals
-
-- Keep this site repo **lean** (no 2.3 GB tree).
-- Sparse-checkout only what we need for zh-CN + en curriculum pages.
-- Emit a content package consumed by Next.js SSG; never edit upstream files in place (use `overlays/`).
-
-## Sparse paths
-
-```
-lessons/
-etc/quiz-src/
-etc/quiz-app/src/assets/translations/
-data/
-examples/
-translations/zh-CN/
-```
-
-Exclude bulk `translations/` (other locales) and most of `translated_images/` until needed.
-
-## Pipeline (later GitHub Action)
-
-1. Sparse clone / fetch upstream at a tracked SHA.
-2. Diff against last synced SHA; only rebuild changed lessons.
-3. Parse root README curriculum table → refresh `content/lessons.json`.
-4. remark/rehype Markdown; nbformat → structured notebook JSON (static outputs).
-5. Classify runtime tiers A/B/C (see Tier A report under `/workspace/aifb-validate` in the build machine; pointer in README).
-6. Open PR `Sync upstream @<sha>`.
-
-## Local stub
+## What the stub copies
 
 ```bash
-node scripts/sync-upstream.mjs --dry-run
-node scripts/sync-upstream.mjs --sample   # needs sibling clone at ../AI-For-Beginners
+npm run sync:upstream
+# or: node scripts/sync-upstream.mjs
+# UPSTREAM_PATH=/path/to/clone node scripts/sync-upstream.mjs --dry-run
 ```
 
-## Attribution
+Into this repo (lean):
 
-Curriculum content remains Copyright (c) Microsoft Corporation under MIT. Site scaffolding is separately MIT-licensed; see `LICENSE` and `LICENSE-upstream`.
+| Target | Content |
+|--------|---------|
+| `content/lessons/<id>/README.en.md` | English lesson README (image paths rewritten) |
+| `content/lessons/<id>/README.zh-CN.md` | zh-CN translation README |
+| `public/lessons/<id>/images/` | Relative images ≤450KB each (skips huge GIFs / DALL·E assets) |
+| `public/lessons/<id>/module-images/` | Module-level `../images/` when referenced |
+| `content/lessons/<id>/notebooks/*.ipynb` | Tier A samples: Perceptron, OwnFramework, Genetic |
+
+Does **not** copy: full `translations/` tree, `sketchnotes/` (13MB), `translated_images/`, datasets, or the 2.3GB upstream checkout.
+
+## Later (GitHub Actions)
+
+Sparse-checkout → parse curriculum → PR `Sync upstream @<sha>`. See `docs/方案.md`.

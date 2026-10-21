@@ -1,0 +1,98 @@
+import { readFile } from "fs/promises";
+import path from "path";
+import type { Locale } from "@/lib/i18n";
+
+export async function loadLessonMarkdown(
+  lessonId: string,
+  locale: Locale,
+): Promise<string | null> {
+  const base = path.join(process.cwd(), "content", "lessons", lessonId);
+  const preferred =
+    locale === "zh-CN"
+      ? path.join(base, "README.zh-CN.md")
+      : path.join(base, "README.en.md");
+  const fallback =
+    locale === "zh-CN"
+      ? path.join(base, "README.en.md")
+      : path.join(base, "README.zh-CN.md");
+
+  for (const candidate of [preferred, fallback]) {
+    try {
+      return await readFile(candidate, "utf8");
+    } catch {
+      /* try next */
+    }
+  }
+  return null;
+}
+
+export type NotebookCell = {
+  cell_type: string;
+  source: string;
+  outputs?: NotebookOutput[];
+  execution_count?: number | null;
+};
+
+export type NotebookOutput = {
+  output_type: string;
+  text?: string;
+  data?: Record<string, string>;
+  name?: string;
+};
+
+function joinSource(source: string | string[] | undefined): string {
+  if (!source) return "";
+  return Array.isArray(source) ? source.join("") : source;
+}
+
+function joinData(value: string | string[] | undefined): string {
+  if (!value) return "";
+  return Array.isArray(value) ? value.join("") : value;
+}
+
+export async function loadStaticNotebook(
+  lessonId: string,
+  fileName: string,
+): Promise<NotebookCell[] | null> {
+  const file = path.join(
+    process.cwd(),
+    "content",
+    "lessons",
+    lessonId,
+    "notebooks",
+    fileName,
+  );
+  try {
+    const raw = await readFile(file, "utf8");
+    const nb = JSON.parse(raw) as {
+      cells: Array<{
+        cell_type: string;
+        source: string | string[];
+        outputs?: Array<{
+          output_type: string;
+          text?: string | string[];
+          data?: Record<string, string | string[]>;
+          name?: string;
+        }>;
+        execution_count?: number | null;
+      }>;
+    };
+    return nb.cells.map((c) => ({
+      cell_type: c.cell_type,
+      source: joinSource(c.source),
+      execution_count: c.execution_count ?? null,
+      outputs: (c.outputs || []).map((o) => ({
+        output_type: o.output_type,
+        name: o.name,
+        text: joinSource(o.text),
+        data: o.data
+          ? Object.fromEntries(
+              Object.entries(o.data).map(([k, v]) => [k, joinData(v)]),
+            )
+          : undefined,
+      })),
+    }));
+  } catch {
+    return null;
+  }
+}

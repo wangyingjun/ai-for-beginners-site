@@ -36,9 +36,11 @@ npm run build   # must pass before deploy
 ## Content
 
 - Manifest: `content/lessons.json` (ids, zh/en titles, module, frameworks, tier, notebooks)
-- Sample bodies: `content/samples/*.md` (lean excerpts from upstream; full sync later)
+- Lesson Markdown: `content/lessons/<id>/README.{en,zh-CN}.md` for **all 25** lessons (sparse sync)
+- Images: `public/lessons/<id>/…` (size-capped; sketchnotes omitted)
+- Static notebooks (Tier A sample): Perceptron, OwnFramework, Genetic under `content/lessons/<id>/notebooks/`
 - Architecture plan: `docs/方案.md`
-- Tier A validation notes (build machine): see `/workspace/aifb-validate/tier-a-report.md` when available locally — **10 notebooks confirmed browser-runnable** in Phase 0
+- Tier A validation: `/workspace/aifb-validate/tier-a-report.md` on the build machine — **10 notebooks** confirmed browser-runnable in Phase 0
 
 ## Environment
 
