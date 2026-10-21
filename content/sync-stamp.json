@@ -1,43 +1,619 @@
 {
   "upstreamCommit": "392d0df",
-  "syncedAt": "2026-10-21T11:02:58.103Z",
+  "syncedAt": "2026-10-21T12:08:59.102Z",
   "lessonsWithMd": 25,
   "notebooks": [
+    {
+      "lessonId": "02",
+      "file": "Animals.ipynb",
+      "locale": "en",
+      "bytes": 14538
+    },
+    {
+      "lessonId": "02",
+      "file": "zh-CN/Animals.ipynb",
+      "locale": "zh-CN",
+      "bytes": 14956
+    },
+    {
+      "lessonId": "02",
+      "file": "FamilyOntology.ipynb",
+      "locale": "en",
+      "bytes": 18360
+    },
+    {
+      "lessonId": "02",
+      "file": "zh-CN/FamilyOntology.ipynb",
+      "locale": "zh-CN",
+      "bytes": 18783
+    },
+    {
+      "lessonId": "02",
+      "file": "MSConceptGraph.ipynb",
+      "locale": "en",
+      "bytes": 17151
+    },
+    {
+      "lessonId": "02",
+      "file": "zh-CN/MSConceptGraph.ipynb",
+      "locale": "zh-CN",
+      "bytes": 17725
+    },
     {
       "lessonId": "03",
       "file": "Perceptron.ipynb",
       "locale": "en",
-      "bytes": 136963
+      "bytes": 130664
     },
     {
       "lessonId": "03",
       "file": "zh-CN/Perceptron.ipynb",
       "locale": "zh-CN",
-      "bytes": 136761
+      "bytes": 130406
+    },
+    {
+      "lessonId": "03",
+      "file": "lab/PerceptronMultiClass.ipynb",
+      "locale": "en",
+      "bytes": 30804
+    },
+    {
+      "lessonId": "03",
+      "file": "zh-CN/lab/PerceptronMultiClass.ipynb",
+      "locale": "zh-CN",
+      "bytes": 31449
     },
     {
       "lessonId": "04",
       "file": "OwnFramework.ipynb",
       "locale": "en",
-      "bytes": 455453
+      "bytes": 448628
     },
     {
       "lessonId": "04",
       "file": "zh-CN/OwnFramework.ipynb",
       "locale": "zh-CN",
-      "bytes": 453402
+      "bytes": 446621
+    },
+    {
+      "lessonId": "04",
+      "file": "lab/MyFW_MNIST.ipynb",
+      "locale": "en",
+      "bytes": 3746
+    },
+    {
+      "lessonId": "04",
+      "file": "zh-CN/lab/MyFW_MNIST.ipynb",
+      "locale": "zh-CN",
+      "bytes": 4317
+    },
+    {
+      "lessonId": "05",
+      "file": "IntroKeras.ipynb",
+      "locale": "en",
+      "bytes": 97890
+    },
+    {
+      "lessonId": "05",
+      "file": "zh-CN/IntroKeras.ipynb",
+      "locale": "zh-CN",
+      "bytes": 97873
+    },
+    {
+      "lessonId": "05",
+      "file": "IntroKerasTF.ipynb",
+      "locale": "en",
+      "bytes": 143812
+    },
+    {
+      "lessonId": "05",
+      "file": "zh-CN/IntroKerasTF.ipynb",
+      "locale": "zh-CN",
+      "bytes": 143749
+    },
+    {
+      "lessonId": "05",
+      "file": "IntroPyTorch.ipynb",
+      "locale": "en",
+      "bytes": 407469
+    },
+    {
+      "lessonId": "05",
+      "file": "zh-CN/IntroPyTorch.ipynb",
+      "locale": "zh-CN",
+      "bytes": 407113
+    },
+    {
+      "lessonId": "05",
+      "file": "lab/LabFrameworks.ipynb",
+      "locale": "en",
+      "bytes": 10510
+    },
+    {
+      "lessonId": "05",
+      "file": "zh-CN/lab/LabFrameworks.ipynb",
+      "locale": "zh-CN",
+      "bytes": 11191
+    },
+    {
+      "lessonId": "06",
+      "file": "OpenCV.ipynb",
+      "locale": "en",
+      "bytes": 241959
+    },
+    {
+      "lessonId": "06",
+      "file": "zh-CN/OpenCV.ipynb",
+      "locale": "zh-CN",
+      "bytes": 242246
+    },
+    {
+      "lessonId": "06",
+      "file": "lab/MovementDetection.ipynb",
+      "locale": "en",
+      "bytes": 2149
+    },
+    {
+      "lessonId": "06",
+      "file": "zh-CN/lab/MovementDetection.ipynb",
+      "locale": "zh-CN",
+      "bytes": 2650
+    },
+    {
+      "lessonId": "07",
+      "file": "ConvNetsPyTorch.ipynb",
+      "locale": "en",
+      "bytes": 150230
+    },
+    {
+      "lessonId": "07",
+      "file": "zh-CN/ConvNetsPyTorch.ipynb",
+      "locale": "zh-CN",
+      "bytes": 150170
+    },
+    {
+      "lessonId": "07",
+      "file": "ConvNetsTF.ipynb",
+      "locale": "en",
+      "bytes": 196237
+    },
+    {
+      "lessonId": "07",
+      "file": "zh-CN/ConvNetsTF.ipynb",
+      "locale": "zh-CN",
+      "bytes": 196095
+    },
+    {
+      "lessonId": "07",
+      "file": "lab/PetFaces.ipynb",
+      "locale": "en",
+      "bytes": 28069
+    },
+    {
+      "lessonId": "07",
+      "file": "zh-CN/lab/PetFaces.ipynb",
+      "locale": "zh-CN",
+      "bytes": 28649
+    },
+    {
+      "lessonId": "08",
+      "file": "AdversarialCat_TF.ipynb",
+      "locale": "en",
+      "bytes": 513429
+    },
+    {
+      "lessonId": "08",
+      "file": "zh-CN/AdversarialCat_TF.ipynb",
+      "locale": "zh-CN",
+      "bytes": 513861
+    },
+    {
+      "lessonId": "08",
+      "file": "Dropout.ipynb",
+      "locale": "en",
+      "bytes": 32781
+    },
+    {
+      "lessonId": "08",
+      "file": "zh-CN/Dropout.ipynb",
+      "locale": "zh-CN",
+      "bytes": 33465
+    },
+    {
+      "lessonId": "08",
+      "file": "TransferLearningPyTorch.ipynb",
+      "locale": "en",
+      "bytes": 94328
+    },
+    {
+      "lessonId": "08",
+      "file": "zh-CN/TransferLearningPyTorch.ipynb",
+      "locale": "zh-CN",
+      "bytes": 94268
+    },
+    {
+      "lessonId": "08",
+      "file": "TransferLearningTF.ipynb",
+      "locale": "en",
+      "bytes": 135783
+    },
+    {
+      "lessonId": "08",
+      "file": "zh-CN/TransferLearningTF.ipynb",
+      "locale": "zh-CN",
+      "bytes": 135100
+    },
+    {
+      "lessonId": "09",
+      "file": "AutoEncodersPyTorch.ipynb",
+      "locale": "en",
+      "bytes": 322827
+    },
+    {
+      "lessonId": "09",
+      "file": "zh-CN/AutoEncodersPyTorch.ipynb",
+      "locale": "zh-CN",
+      "bytes": 323371
+    },
+    {
+      "lessonId": "09",
+      "file": "AutoencodersTF.ipynb",
+      "locale": "en",
+      "bytes": 401084
+    },
+    {
+      "lessonId": "09",
+      "file": "zh-CN/AutoencodersTF.ipynb",
+      "locale": "zh-CN",
+      "bytes": 401517
+    },
+    {
+      "lessonId": "10",
+      "file": "GANPyTorch.ipynb",
+      "locale": "en",
+      "bytes": 599185
+    },
+    {
+      "lessonId": "10",
+      "file": "zh-CN/GANPyTorch.ipynb",
+      "locale": "zh-CN",
+      "bytes": 599703
+    },
+    {
+      "lessonId": "10",
+      "file": "GANTF.ipynb",
+      "locale": "en",
+      "bytes": 659525
+    },
+    {
+      "lessonId": "10",
+      "file": "zh-CN/GANTF.ipynb",
+      "locale": "zh-CN",
+      "bytes": 659970
+    },
+    {
+      "lessonId": "10",
+      "file": "StyleTransfer_Keras.ipynb",
+      "locale": "en",
+      "bytes": 22059
+    },
+    {
+      "lessonId": "10",
+      "file": "zh-CN/StyleTransfer_Keras.ipynb",
+      "locale": "zh-CN",
+      "bytes": 25374
+    },
+    {
+      "lessonId": "11",
+      "file": "ObjectDetection.ipynb",
+      "locale": "en",
+      "bytes": 97764
+    },
+    {
+      "lessonId": "11",
+      "file": "zh-CN/ObjectDetection.ipynb",
+      "locale": "zh-CN",
+      "bytes": 98360
+    },
+    {
+      "lessonId": "12",
+      "file": "SemanticSegmentationPytorch.ipynb",
+      "locale": "en",
+      "bytes": 54931
+    },
+    {
+      "lessonId": "12",
+      "file": "zh-CN/SemanticSegmentationPytorch.ipynb",
+      "locale": "zh-CN",
+      "bytes": 55184
+    },
+    {
+      "lessonId": "12",
+      "file": "SemanticSegmentationTF.ipynb",
+      "locale": "en",
+      "bytes": 135975
+    },
+    {
+      "lessonId": "12",
+      "file": "zh-CN/SemanticSegmentationTF.ipynb",
+      "locale": "zh-CN",
+      "bytes": 136636
+    },
+    {
+      "lessonId": "12",
+      "file": "lab/BodySegmentation.ipynb",
+      "locale": "en",
+      "bytes": 2595
+    },
+    {
+      "lessonId": "12",
+      "file": "zh-CN/lab/BodySegmentation.ipynb",
+      "locale": "zh-CN",
+      "bytes": 3275
+    },
+    {
+      "lessonId": "13",
+      "file": "TextRepresentationPyTorch.ipynb",
+      "locale": "en",
+      "bytes": 17391
+    },
+    {
+      "lessonId": "13",
+      "file": "zh-CN/TextRepresentationPyTorch.ipynb",
+      "locale": "zh-CN",
+      "bytes": 17408
+    },
+    {
+      "lessonId": "13",
+      "file": "TextRepresentationTF.ipynb",
+      "locale": "en",
+      "bytes": 21811
+    },
+    {
+      "lessonId": "13",
+      "file": "zh-CN/TextRepresentationTF.ipynb",
+      "locale": "zh-CN",
+      "bytes": 21871
+    },
+    {
+      "lessonId": "14",
+      "file": "EmbeddingsPyTorch.ipynb",
+      "locale": "en",
+      "bytes": 22884
+    },
+    {
+      "lessonId": "14",
+      "file": "zh-CN/EmbeddingsPyTorch.ipynb",
+      "locale": "zh-CN",
+      "bytes": 22779
+    },
+    {
+      "lessonId": "14",
+      "file": "EmbeddingsTF.ipynb",
+      "locale": "en",
+      "bytes": 24414
+    },
+    {
+      "lessonId": "14",
+      "file": "zh-CN/EmbeddingsTF.ipynb",
+      "locale": "zh-CN",
+      "bytes": 23901
+    },
+    {
+      "lessonId": "15",
+      "file": "CBoW-PyTorch.ipynb",
+      "locale": "en",
+      "bytes": 13694
+    },
+    {
+      "lessonId": "15",
+      "file": "zh-CN/CBoW-PyTorch.ipynb",
+      "locale": "zh-CN",
+      "bytes": 14324
+    },
+    {
+      "lessonId": "15",
+      "file": "CBoW-TF.ipynb",
+      "locale": "en",
+      "bytes": 89180
+    },
+    {
+      "lessonId": "15",
+      "file": "zh-CN/CBoW-TF.ipynb",
+      "locale": "zh-CN",
+      "bytes": 89862
+    },
+    {
+      "lessonId": "16",
+      "file": "RNNPyTorch.ipynb",
+      "locale": "en",
+      "bytes": 20480
+    },
+    {
+      "lessonId": "16",
+      "file": "zh-CN/RNNPyTorch.ipynb",
+      "locale": "zh-CN",
+      "bytes": 19877
+    },
+    {
+      "lessonId": "16",
+      "file": "RNNTF.ipynb",
+      "locale": "en",
+      "bytes": 20068
+    },
+    {
+      "lessonId": "16",
+      "file": "zh-CN/RNNTF.ipynb",
+      "locale": "zh-CN",
+      "bytes": 19447
+    },
+    {
+      "lessonId": "17",
+      "file": "GenerativePyTorch.ipynb",
+      "locale": "en",
+      "bytes": 17859
+    },
+    {
+      "lessonId": "17",
+      "file": "zh-CN/GenerativePyTorch.ipynb",
+      "locale": "zh-CN",
+      "bytes": 18170
+    },
+    {
+      "lessonId": "17",
+      "file": "GenerativeTF.ipynb",
+      "locale": "en",
+      "bytes": 23714
+    },
+    {
+      "lessonId": "17",
+      "file": "zh-CN/GenerativeTF.ipynb",
+      "locale": "zh-CN",
+      "bytes": 23823
+    },
+    {
+      "lessonId": "18",
+      "file": "TransformersPyTorch.ipynb",
+      "locale": "en",
+      "bytes": 15181
+    },
+    {
+      "lessonId": "18",
+      "file": "zh-CN/TransformersPyTorch.ipynb",
+      "locale": "zh-CN",
+      "bytes": 15141
+    },
+    {
+      "lessonId": "18",
+      "file": "TransformersTF.ipynb",
+      "locale": "en",
+      "bytes": 35366
+    },
+    {
+      "lessonId": "18",
+      "file": "zh-CN/TransformersTF.ipynb",
+      "locale": "zh-CN",
+      "bytes": 34290
+    },
+    {
+      "lessonId": "19",
+      "file": "NER-TF.ipynb",
+      "locale": "en",
+      "bytes": 11382
+    },
+    {
+      "lessonId": "19",
+      "file": "zh-CN/NER-TF.ipynb",
+      "locale": "zh-CN",
+      "bytes": 11990
+    },
+    {
+      "lessonId": "20",
+      "file": "GPT-PyTorch.ipynb",
+      "locale": "en",
+      "bytes": 17924
+    },
+    {
+      "lessonId": "20",
+      "file": "zh-CN/GPT-PyTorch.ipynb",
+      "locale": "zh-CN",
+      "bytes": 18409
+    },
+    {
+      "lessonId": "21",
+      "file": "Diophantine.ipynb",
+      "locale": "en",
+      "bytes": 854
+    },
+    {
+      "lessonId": "21",
+      "file": "zh-CN/Diophantine.ipynb",
+      "locale": "zh-CN",
+      "bytes": 1494
     },
     {
       "lessonId": "21",
       "file": "Genetic.ipynb",
       "locale": "en",
-      "bytes": 33166
+      "bytes": 27085
     },
     {
       "lessonId": "21",
       "file": "zh-CN/Genetic.ipynb",
       "locale": "zh-CN",
-      "bytes": 30432
+      "bytes": 26878
+    },
+    {
+      "lessonId": "22",
+      "file": "CartPole-RL-PyTorch.ipynb",
+      "locale": "en",
+      "bytes": 15353
+    },
+    {
+      "lessonId": "22",
+      "file": "zh-CN/CartPole-RL-PyTorch.ipynb",
+      "locale": "zh-CN",
+      "bytes": 15624
+    },
+    {
+      "lessonId": "22",
+      "file": "CartPole-RL-TF.ipynb",
+      "locale": "en",
+      "bytes": 68121
+    },
+    {
+      "lessonId": "22",
+      "file": "zh-CN/CartPole-RL-TF.ipynb",
+      "locale": "zh-CN",
+      "bytes": 68387
+    },
+    {
+      "lessonId": "22",
+      "file": "lab/MountainCar.ipynb",
+      "locale": "en",
+      "bytes": 1734
+    },
+    {
+      "lessonId": "22",
+      "file": "zh-CN/lab/MountainCar.ipynb",
+      "locale": "zh-CN",
+      "bytes": 2284
+    },
+    {
+      "lessonId": "22",
+      "file": "notebook.ipynb",
+      "locale": "en",
+      "bytes": 506904
+    },
+    {
+      "lessonId": "22",
+      "file": "zh-CN/notebook.ipynb",
+      "locale": "zh-CN",
+      "bytes": 507300
+    },
+    {
+      "lessonId": "X1",
+      "file": "Clip.ipynb",
+      "locale": "en",
+      "bytes": 5120
+    },
+    {
+      "lessonId": "X1",
+      "file": "zh-CN/Clip.ipynb",
+      "locale": "zh-CN",
+      "bytes": 5753
+    }
+  ],
+  "skippedStatic": [
+    {
+      "lessonId": "08",
+      "file": "lab/OxfordPets.ipynb",
+      "reason": "oversized/junk"
+    },
+    {
+      "lessonId": "10",
+      "file": "StyleTransfer.ipynb",
+      "reason": "oversized/junk"
     }
   ],
   "imagesCopied": 122,

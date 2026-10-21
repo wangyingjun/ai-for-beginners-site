@@ -3,7 +3,7 @@
     "repo": "microsoft/AI-For-Beginners",
     "commit": "392d0df",
     "license": "MIT",
-    "syncedAt": "2026-10-21T11:02:58.103Z"
+    "syncedAt": "2026-10-21T12:08:59.102Z"
   },
   "modules": [
     {
@@ -89,7 +89,10 @@
       "hasLocalMarkdown": {
         "en": true,
         "zh-CN": true
-      }
+      },
+      "staticNotebooks": [],
+      "hasStaticNotebook": false,
+      "labNotebooks": []
     },
     {
       "id": "02",
@@ -129,7 +132,14 @@
         "Animals.ipynb",
         "FamilyOntology.ipynb",
         "MSConceptGraph.ipynb"
-      ]
+      ],
+      "staticNotebooks": [
+        "Animals.ipynb",
+        "FamilyOntology.ipynb",
+        "MSConceptGraph.ipynb"
+      ],
+      "hasStaticNotebook": true,
+      "labNotebooks": []
     },
     {
       "id": "03",
@@ -150,6 +160,10 @@
         {
           "framework": "numpy",
           "file": "Perceptron.ipynb"
+        },
+        {
+          "framework": "numpy",
+          "file": "lab/PerceptronMultiClass.ipynb"
         }
       ],
       "sampleContent": true,
@@ -159,11 +173,15 @@
       },
       "hasStaticNotebook": true,
       "staticNotebooks": [
-        "Perceptron.ipynb"
+        "Perceptron.ipynb",
+        "lab/PerceptronMultiClass.ipynb"
       ],
       "jupyterlite": [
         "Perceptron.ipynb",
         "PerceptronMultiClass.ipynb"
+      ],
+      "labNotebooks": [
+        "lab/PerceptronMultiClass.ipynb"
       ]
     },
     {
@@ -185,6 +203,10 @@
         {
           "framework": "numpy",
           "file": "OwnFramework.ipynb"
+        },
+        {
+          "framework": "numpy",
+          "file": "lab/MyFW_MNIST.ipynb"
         }
       ],
       "hasLocalMarkdown": {
@@ -194,11 +216,15 @@
       "sampleContent": true,
       "hasStaticNotebook": true,
       "staticNotebooks": [
-        "OwnFramework.ipynb"
+        "OwnFramework.ipynb",
+        "lab/MyFW_MNIST.ipynb"
       ],
       "jupyterlite": [
         "OwnFramework.ipynb",
         "MyFW_MNIST.ipynb"
+      ],
+      "labNotebooks": [
+        "lab/MyFW_MNIST.ipynb"
       ]
     },
     {
@@ -212,16 +238,13 @@
       },
       "hasNotebook": true,
       "frameworks": [
+        "tensorflow",
         "pytorch",
-        "tensorflow"
+        "numpy"
       ],
       "hasLab": true,
       "tier": "B",
       "notebooks": [
-        {
-          "framework": "pytorch",
-          "file": "IntroPyTorch.ipynb"
-        },
         {
           "framework": "tensorflow",
           "file": "IntroKeras.ipynb"
@@ -229,6 +252,14 @@
         {
           "framework": "tensorflow",
           "file": "IntroKerasTF.ipynb"
+        },
+        {
+          "framework": "pytorch",
+          "file": "IntroPyTorch.ipynb"
+        },
+        {
+          "framework": "numpy",
+          "file": "lab/LabFrameworks.ipynb"
         }
       ],
       "hasLocalMarkdown": {
@@ -238,6 +269,16 @@
       "sampleContent": true,
       "jupyterlite": [
         "LabFrameworks.ipynb"
+      ],
+      "staticNotebooks": [
+        "IntroKeras.ipynb",
+        "IntroKerasTF.ipynb",
+        "IntroPyTorch.ipynb",
+        "lab/LabFrameworks.ipynb"
+      ],
+      "hasStaticNotebook": true,
+      "labNotebooks": [
+        "lab/LabFrameworks.ipynb"
       ]
     },
     {
@@ -259,6 +300,10 @@
         {
           "framework": "numpy",
           "file": "OpenCV.ipynb"
+        },
+        {
+          "framework": "numpy",
+          "file": "lab/MovementDetection.ipynb"
         }
       ],
       "hasLocalMarkdown": {
@@ -268,6 +313,14 @@
       "sampleContent": true,
       "jupyterlite": [
         "OpenCV.ipynb"
+      ],
+      "staticNotebooks": [
+        "OpenCV.ipynb",
+        "lab/MovementDetection.ipynb"
+      ],
+      "hasStaticNotebook": true,
+      "labNotebooks": [
+        "lab/MovementDetection.ipynb"
       ]
     },
     {
@@ -282,7 +335,8 @@
       "hasNotebook": true,
       "frameworks": [
         "pytorch",
-        "tensorflow"
+        "tensorflow",
+        "numpy"
       ],
       "hasLab": true,
       "tier": "B",
@@ -294,13 +348,26 @@
         {
           "framework": "tensorflow",
           "file": "ConvNetsTF.ipynb"
+        },
+        {
+          "framework": "numpy",
+          "file": "lab/PetFaces.ipynb"
         }
       ],
       "hasLocalMarkdown": {
         "en": true,
         "zh-CN": true
       },
-      "sampleContent": true
+      "sampleContent": true,
+      "staticNotebooks": [
+        "ConvNetsPyTorch.ipynb",
+        "ConvNetsTF.ipynb",
+        "lab/PetFaces.ipynb"
+      ],
+      "hasStaticNotebook": true,
+      "labNotebooks": [
+        "lab/PetFaces.ipynb"
+      ]
     },
     {
       "id": "08",
@@ -313,12 +380,21 @@
       },
       "hasNotebook": true,
       "frameworks": [
-        "pytorch",
-        "tensorflow"
+        "tensorflow",
+        "numpy",
+        "pytorch"
       ],
       "hasLab": true,
       "tier": "C",
       "notebooks": [
+        {
+          "framework": "tensorflow",
+          "file": "AdversarialCat_TF.ipynb"
+        },
+        {
+          "framework": "numpy",
+          "file": "Dropout.ipynb"
+        },
         {
           "framework": "pytorch",
           "file": "TransferLearningPyTorch.ipynb"
@@ -326,13 +402,27 @@
         {
           "framework": "tensorflow",
           "file": "TransferLearningTF.ipynb"
+        },
+        {
+          "framework": "numpy",
+          "file": "lab/OxfordPets.ipynb"
         }
       ],
       "hasLocalMarkdown": {
         "en": true,
         "zh-CN": true
       },
-      "sampleContent": true
+      "sampleContent": true,
+      "staticNotebooks": [
+        "AdversarialCat_TF.ipynb",
+        "Dropout.ipynb",
+        "TransferLearningPyTorch.ipynb",
+        "TransferLearningTF.ipynb"
+      ],
+      "hasStaticNotebook": true,
+      "labNotebooks": [
+        "lab/OxfordPets.ipynb"
+      ]
     },
     {
       "id": "09",
@@ -364,7 +454,13 @@
         "en": true,
         "zh-CN": true
       },
-      "sampleContent": true
+      "sampleContent": true,
+      "staticNotebooks": [
+        "AutoEncodersPyTorch.ipynb",
+        "AutoencodersTF.ipynb"
+      ],
+      "hasStaticNotebook": true,
+      "labNotebooks": []
     },
     {
       "id": "10",
@@ -378,7 +474,8 @@
       "hasNotebook": true,
       "frameworks": [
         "pytorch",
-        "tensorflow"
+        "tensorflow",
+        "numpy"
       ],
       "hasLab": false,
       "tier": "C",
@@ -390,13 +487,28 @@
         {
           "framework": "tensorflow",
           "file": "GANTF.ipynb"
+        },
+        {
+          "framework": "numpy",
+          "file": "StyleTransfer.ipynb"
+        },
+        {
+          "framework": "tensorflow",
+          "file": "StyleTransfer_Keras.ipynb"
         }
       ],
       "hasLocalMarkdown": {
         "en": true,
         "zh-CN": true
       },
-      "sampleContent": true
+      "sampleContent": true,
+      "staticNotebooks": [
+        "GANPyTorch.ipynb",
+        "GANTF.ipynb",
+        "StyleTransfer_Keras.ipynb"
+      ],
+      "hasStaticNotebook": true,
+      "labNotebooks": []
     },
     {
       "id": "11",
@@ -409,13 +521,13 @@
       },
       "hasNotebook": true,
       "frameworks": [
-        "tensorflow"
+        "numpy"
       ],
-      "hasLab": false,
+      "hasLab": true,
       "tier": "C",
       "notebooks": [
         {
-          "framework": "tensorflow",
+          "framework": "numpy",
           "file": "ObjectDetection.ipynb"
         }
       ],
@@ -423,7 +535,12 @@
         "en": true,
         "zh-CN": true
       },
-      "sampleContent": true
+      "sampleContent": true,
+      "staticNotebooks": [
+        "ObjectDetection.ipynb"
+      ],
+      "hasStaticNotebook": true,
+      "labNotebooks": []
     },
     {
       "id": "12",
@@ -437,7 +554,8 @@
       "hasNotebook": true,
       "frameworks": [
         "pytorch",
-        "tensorflow"
+        "tensorflow",
+        "numpy"
       ],
       "hasLab": true,
       "tier": "C",
@@ -449,13 +567,26 @@
         {
           "framework": "tensorflow",
           "file": "SemanticSegmentationTF.ipynb"
+        },
+        {
+          "framework": "numpy",
+          "file": "lab/BodySegmentation.ipynb"
         }
       ],
       "hasLocalMarkdown": {
         "en": true,
         "zh-CN": true
       },
-      "sampleContent": true
+      "sampleContent": true,
+      "staticNotebooks": [
+        "SemanticSegmentationPytorch.ipynb",
+        "SemanticSegmentationTF.ipynb",
+        "lab/BodySegmentation.ipynb"
+      ],
+      "hasStaticNotebook": true,
+      "labNotebooks": [
+        "lab/BodySegmentation.ipynb"
+      ]
     },
     {
       "id": "13",
@@ -487,7 +618,13 @@
         "en": true,
         "zh-CN": true
       },
-      "sampleContent": true
+      "sampleContent": true,
+      "staticNotebooks": [
+        "TextRepresentationPyTorch.ipynb",
+        "TextRepresentationTF.ipynb"
+      ],
+      "hasStaticNotebook": true,
+      "labNotebooks": []
     },
     {
       "id": "14",
@@ -519,7 +656,13 @@
         "en": true,
         "zh-CN": true
       },
-      "sampleContent": true
+      "sampleContent": true,
+      "staticNotebooks": [
+        "EmbeddingsPyTorch.ipynb",
+        "EmbeddingsTF.ipynb"
+      ],
+      "hasStaticNotebook": true,
+      "labNotebooks": []
     },
     {
       "id": "15",
@@ -551,7 +694,13 @@
         "en": true,
         "zh-CN": true
       },
-      "sampleContent": true
+      "sampleContent": true,
+      "staticNotebooks": [
+        "CBoW-PyTorch.ipynb",
+        "CBoW-TF.ipynb"
+      ],
+      "hasStaticNotebook": true,
+      "labNotebooks": []
     },
     {
       "id": "16",
@@ -583,7 +732,13 @@
         "en": true,
         "zh-CN": true
       },
-      "sampleContent": true
+      "sampleContent": true,
+      "staticNotebooks": [
+        "RNNPyTorch.ipynb",
+        "RNNTF.ipynb"
+      ],
+      "hasStaticNotebook": true,
+      "labNotebooks": []
     },
     {
       "id": "17",
@@ -615,7 +770,13 @@
         "en": true,
         "zh-CN": true
       },
-      "sampleContent": true
+      "sampleContent": true,
+      "staticNotebooks": [
+        "GenerativePyTorch.ipynb",
+        "GenerativeTF.ipynb"
+      ],
+      "hasStaticNotebook": true,
+      "labNotebooks": []
     },
     {
       "id": "18",
@@ -647,7 +808,13 @@
         "en": true,
         "zh-CN": true
       },
-      "sampleContent": true
+      "sampleContent": true,
+      "staticNotebooks": [
+        "TransformersPyTorch.ipynb",
+        "TransformersTF.ipynb"
+      ],
+      "hasStaticNotebook": true,
+      "labNotebooks": []
     },
     {
       "id": "19",
@@ -674,7 +841,12 @@
         "en": true,
         "zh-CN": true
       },
-      "sampleContent": true
+      "sampleContent": true,
+      "staticNotebooks": [
+        "NER-TF.ipynb"
+      ],
+      "hasStaticNotebook": true,
+      "labNotebooks": []
     },
     {
       "id": "20",
@@ -701,7 +873,12 @@
         "en": true,
         "zh-CN": true
       },
-      "sampleContent": true
+      "sampleContent": true,
+      "staticNotebooks": [
+        "GPT-PyTorch.ipynb"
+      ],
+      "hasStaticNotebook": true,
+      "labNotebooks": []
     },
     {
       "id": "21",
@@ -721,6 +898,10 @@
       "notebooks": [
         {
           "framework": "numpy",
+          "file": "Diophantine.ipynb"
+        },
+        {
+          "framework": "numpy",
           "file": "Genetic.ipynb"
         }
       ],
@@ -731,11 +912,13 @@
       "sampleContent": true,
       "hasStaticNotebook": true,
       "staticNotebooks": [
+        "Diophantine.ipynb",
         "Genetic.ipynb"
       ],
       "jupyterlite": [
         "Genetic.ipynb"
-      ]
+      ],
+      "labNotebooks": []
     },
     {
       "id": "22",
@@ -749,7 +932,8 @@
       "hasNotebook": true,
       "frameworks": [
         "pytorch",
-        "tensorflow"
+        "tensorflow",
+        "numpy"
       ],
       "hasLab": true,
       "tier": "B",
@@ -761,13 +945,31 @@
         {
           "framework": "tensorflow",
           "file": "CartPole-RL-TF.ipynb"
+        },
+        {
+          "framework": "numpy",
+          "file": "lab/MountainCar.ipynb"
+        },
+        {
+          "framework": "numpy",
+          "file": "notebook.ipynb"
         }
       ],
       "hasLocalMarkdown": {
         "en": true,
         "zh-CN": true
       },
-      "sampleContent": true
+      "sampleContent": true,
+      "staticNotebooks": [
+        "CartPole-RL-PyTorch.ipynb",
+        "CartPole-RL-TF.ipynb",
+        "lab/MountainCar.ipynb",
+        "notebook.ipynb"
+      ],
+      "hasStaticNotebook": true,
+      "labNotebooks": [
+        "lab/MountainCar.ipynb"
+      ]
     },
     {
       "id": "23",
@@ -786,7 +988,10 @@
         "en": true,
         "zh-CN": true
       },
-      "sampleContent": true
+      "sampleContent": true,
+      "staticNotebooks": [],
+      "hasStaticNotebook": false,
+      "labNotebooks": []
     },
     {
       "id": "24",
@@ -805,7 +1010,10 @@
         "en": true,
         "zh-CN": true
       },
-      "sampleContent": true
+      "sampleContent": true,
+      "staticNotebooks": [],
+      "hasStaticNotebook": false,
+      "labNotebooks": []
     },
     {
       "id": "X1",
@@ -818,13 +1026,13 @@
       },
       "hasNotebook": true,
       "frameworks": [
-        "pytorch"
+        "numpy"
       ],
       "hasLab": false,
       "tier": "C",
       "notebooks": [
         {
-          "framework": "pytorch",
+          "framework": "numpy",
           "file": "Clip.ipynb"
         }
       ],
@@ -832,7 +1040,12 @@
         "en": true,
         "zh-CN": true
       },
-      "sampleContent": true
+      "sampleContent": true,
+      "staticNotebooks": [
+        "Clip.ipynb"
+      ],
+      "hasStaticNotebook": true,
+      "labNotebooks": []
     }
   ]
 }

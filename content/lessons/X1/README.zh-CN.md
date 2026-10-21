@@ -66,7 +66,7 @@ DALL-E是一个基于GPT-3的版本，能够根据提示生成图像。它使用
 DALL-E 1和2的主要区别在于，后者能够生成更真实的图像和艺术作品。
 
 以下是使用DALL-E生成图像的示例：
-![DALL-E生成的图片](/lessons/X1/images/a_closeup_watercolor_portrait_of_young_male_teacher_of_literature_with_a_book.png) |  ![DALL-E生成的图片](/lessons/X1/images/a_closeup_oil_portrait_of_young_female_teacher_of_computer_science_with_a_computer.png) | ![DALL-E生成的图片](/lessons/X1/images/a_closeup_oil_portrait_of_old_male_teacher_of_math.png)
+![DALL-E生成的图片](/translated_images/zh-CN/DALL·E%202023-06-20%2015.56.56%20-%20a%20closeup%20watercolor%20portrait%20of%20young%20male%20teacher%20of%20literature%20with%20a%20book.6c235e8271d9ed10ce985d86aeb241a58518958647973af136912116b9518fce.png) |  ![DALL-E生成的图片](/translated_images/zh-CN/DALL·E%202023-06-20%2015.57.43%20-%20a%20closeup%20oil%20portrait%20of%20young%20female%20teacher%20of%20computer%20science%20with%20a%20computer.f21dc4166340b6c8b4d1cb57efd1e22127407f9b28c9ac7afe11344065369e64.png) | ![DALL-E生成的图片](/translated_images/zh-CN/DALL·E%202023-06-20%2015.58.42%20-%20%20a%20closeup%20oil%20portrait%20of%20old%20male%20teacher%20of%20mathematics%20in%20front%20of%20blackboard.d331c2dfbdc3f7c46aa65c0809066f5e7ed4b49609cd259852e760df21051e4a.png)
 ----|----|----
 从提示*一张年轻男性文学教师拿着书的水彩特写肖像*生成的图片 | 从提示*一张年轻女性计算机科学教师拿着电脑的油画特写肖像*生成的图片 | 从提示*一张老年男性数学教师站在黑板前的油画特写肖像*生成的图片
 
