@@ -25,7 +25,7 @@
 
 一种简化的平衡问题被称为 **CartPole** 问题。在 CartPole 世界中，我们有一个可以左右移动的水平滑块，目标是在滑块上方保持一个垂直杆的平衡。
 
-<img alt="a cartpole" src="../../../../../translated_images/zh-CN/cartpole.f52a67f27e058170.webp" width="200"/>
+<img alt="a cartpole" src="/translated_images/zh-CN/cartpole.f52a67f27e058170.webp" width="200"/>
 
 要创建和使用这个环境，我们需要几行 Python 代码：
 

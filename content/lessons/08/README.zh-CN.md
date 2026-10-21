@@ -20,7 +20,7 @@ Keras 和 PyTorch 都包含函数，可以轻松加载一些常见架构的预�
 
 以下是 VGG-16 网络从一张猫的图片中提取的示例特征：
 
-![VGG-16 提取的特征](../../../../../translated_images/zh-CN/features.6291f9c7ba3a0b95.webp)
+![VGG-16 提取的特征](/translated_images/zh-CN/features.6291f9c7ba3a0b95.webp)
 
 ## 猫与狗数据集
 
@@ -39,19 +39,19 @@ Keras 和 PyTorch 都包含函数，可以轻松加载一些常见架构的预�
 
 我们可以采取的一种方法是从一个随机图像开始，然后尝试使用**梯度下降优化**技术调整该图像，使网络认为它是一只猫。
 
-![图像优化循环](../../../../../translated_images/zh-CN/ideal-cat-loop.999fbb8ff306e044.webp)
+![图像优化循环](/translated_images/zh-CN/ideal-cat-loop.999fbb8ff306e044.webp)
 
 然而，如果我们这样做，我们会得到一些非常类似于随机噪声的东西。这是因为*有很多方法可以让网络认为输入图像是一只猫*，包括一些在视觉上没有意义的方式。虽然这些图像包含了许多典型的猫的模式，但没有任何约束使它们在视觉上具有辨识度。
 
 为了改善结果，我们可以在损失函数中添加另一个项，称为**变化损失**。它是一种度量，显示图像中相邻像素的相似程度。最小化变化损失可以使图像更平滑，并消除噪声，从而揭示更具视觉吸引力的模式。以下是一些这样的“理想”图像示例，它们被高概率分类为猫和斑马：
 
-![理想猫](../../../../../translated_images/zh-CN/ideal-cat.203dd4597643d6b0.webp) | ![理想斑马](../../../../../translated_images/zh-CN/ideal-zebra.7f70e8b54ee15a7a.webp)
+![理想猫](/translated_images/zh-CN/ideal-cat.203dd4597643d6b0.webp) | ![理想斑马](/translated_images/zh-CN/ideal-zebra.7f70e8b54ee15a7a.webp)
 -----|-----
 *理想猫* | *理想斑马*
 
 类似的方法可以用来对神经网络进行所谓的**对抗性攻击**。假设我们想欺骗一个神经网络，让一只狗看起来像一只猫。如果我们拿一张被网络识别为狗的狗的图片，然后稍微调整它，直到网络开始将其分类为猫：
 
-![狗的图片](../../../../../translated_images/zh-CN/original-dog.8f68a67d2fe0911f.webp) | ![被分类为猫的狗的图片](../../../../../translated_images/zh-CN/adversarial-dog.d9fc7773b0142b89.webp)
+![狗的图片](/translated_images/zh-CN/original-dog.8f68a67d2fe0911f.webp) | ![被分类为猫的狗的图片](/translated_images/zh-CN/adversarial-dog.d9fc7773b0142b89.webp)
 -----|-----
 *狗的原始图片* | *被分类为猫的狗的图片*
 

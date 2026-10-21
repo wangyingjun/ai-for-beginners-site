@@ -52,7 +52,7 @@ ask turtles [
 
 NetLogo的一个优点是它包含一个可供尝试的工作模型库。进入**File &rightarrow; Models Library**，你会发现许多类别的模型可供选择。
 
-<img alt="NetLogo模型库" src="../../../../../translated_images/zh-CN/NetLogo-ModelLib.efe023afb4763c05.webp" width="60%"/>
+<img alt="NetLogo模型库" src="/translated_images/zh-CN/NetLogo-ModelLib.efe023afb4763c05.webp" width="60%"/>
 
 > Dmitry Soshnikov提供的模型库截图
 
@@ -62,7 +62,7 @@ NetLogo的一个优点是它包含一个可供尝试的工作模型库。进入*
 
 打开模型后，你会进入NetLogo的主界面。以下是一个描述狼和羊种群的示例模型，考虑到有限资源（草地）。
 
-![NetLogo主界面](../../../../../translated_images/zh-CN/NetLogo-Main.32653711ec1a01b3.webp)
+![NetLogo主界面](/translated_images/zh-CN/NetLogo-Main.32653711ec1a01b3.webp)
 
 > Dmitry Soshnikov提供的截图
 

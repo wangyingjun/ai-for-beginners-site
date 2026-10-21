@@ -8,7 +8,7 @@
 
 GAN的核心思想是使用两个神经网络相互对抗进行训练：
 
-<img src="../../../../../translated_images/zh-CN/gan_architecture.8f3a5ab62b8d5d69.webp" width="70%"/>
+<img src="/translated_images/zh-CN/gan_architecture.8f3a5ab62b8d5d69.webp" width="70%"/>
 
 > 图片来源：[Dmitry Soshnikov](http://soshnikov.com)
 
@@ -32,7 +32,7 @@ GAN的核心思想是使用两个神经网络相互对抗进行训练：
 
 > ✅ 由于卷积层是通过线性滤波器遍历图像实现的，反卷积本质上与卷积类似，可以使用相同的层逻辑实现。
 
-<img src="../../../../../translated_images/zh-CN/gan_arch_detail.46b95fd366f8e543.webp" width="70%"/>
+<img src="/translated_images/zh-CN/gan_arch_detail.46b95fd366f8e543.webp" width="70%"/>
 
 > 图片来源：[Dmitry Soshnikov](http://soshnikov.com)
 

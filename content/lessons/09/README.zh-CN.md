@@ -10,7 +10,7 @@
 
 由于我们训练自动编码器的目标是尽可能捕捉原始图像的信息以实现准确的重建，网络会尝试找到输入图像的最佳**嵌入**以捕捉其意义。
 
-![自动编码器示意图](../../../../../translated_images/zh-CN/autoencoder_schema.5e6fc9ad98a5eb61.webp)
+![自动编码器示意图](/translated_images/zh-CN/autoencoder_schema.5e6fc9ad98a5eb61.webp)
 
 > 图片来源：[Keras 博客](https://blog.keras.io/building-autoencoders-in-keras.html)
 
@@ -37,7 +37,7 @@ VAE 是一种自动编码器，它学习预测潜在参数的**统计分布**，
 * 从分布 N(z<sub>mean</sub>,exp(z<sub>log\_sigma</sub>)) 中抽取一个向量 `sample`
 * 解码器尝试使用 `sample` 作为输入向量解码原始图像
 
-<img src="../../../../../translated_images/zh-CN/vae.464c465a5b6a9e25.webp" width="50%">
+<img src="/translated_images/zh-CN/vae.464c465a5b6a9e25.webp" width="50%">
 
 > 图片来源：[Isaak Dykeman 的博客文章](https://ijdykeman.github.io/ml/2016/12/21/cvae.html)
 
@@ -48,13 +48,13 @@ VAE 是一种自动编码器，它学习预测潜在参数的**统计分布**，
 
 VAE 的一个重要优势是它可以相对轻松地生成新图像，因为我们知道从哪个分布中抽取潜在向量。例如，如果我们在 MNIST 数据集上用 2D 潜在向量训练 VAE，我们可以通过改变潜在向量的分量来获得不同的数字：
 
-<img alt="vaemnist" src="../../../../../translated_images/zh-CN/vaemnist.cab9e602dc08dc50.webp" width="50%"/>
+<img alt="vaemnist" src="/translated_images/zh-CN/vaemnist.cab9e602dc08dc50.webp" width="50%"/>
 
 > 图片来源：[Dmitry Soshnikov](http://soshnikov.com)
 
 观察图像如何相互融合，当我们从潜在参数空间的不同部分获取潜在向量时，图像开始逐渐变化。我们还可以将这个空间可视化为二维：
 
-<img alt="vaemnist cluster" src="../../../../../translated_images/zh-CN/vaemnist-diag.694315f775d5d666.webp" width="50%"/> 
+<img alt="vaemnist cluster" src="/translated_images/zh-CN/vaemnist-diag.694315f775d5d666.webp" width="50%"/> 
 
 > 图片来源：[Dmitry Soshnikov](http://soshnikov.com)
 

@@ -56,7 +56,7 @@
 
 注意，这些表达式的最左部分是相同的，因此我们可以从损失函数开始，沿着计算图“向后”计算导数。因此，多层感知机的训练方法被称为**反向传播（backpropagation）**，简称“反向传播”。
 
-<img alt="计算图" src="../../../../../translated_images/zh-CN/ComputeGraphGrad.4626252c0de03507.webp"/>
+<img alt="计算图" src="/translated_images/zh-CN/ComputeGraphGrad.4626252c0de03507.webp"/>
 
 > TODO: 图片引用
 

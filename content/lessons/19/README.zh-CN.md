@@ -8,7 +8,7 @@
 
 假设你想开发一个类似于亚马逊Alexa或谷歌助手的自然语言聊天机器人。智能聊天机器人的工作方式是通过对输入句子进行文本分类来“理解”用户的需求。分类的结果是所谓的**意图**，它决定了聊天机器人应该执行什么操作。
 
-<img alt="Bot NER" src="../../../../../translated_images/zh-CN/bot-ner.4b09235dbb0ad275.webp" width="50%"/>
+<img alt="Bot NER" src="/translated_images/zh-CN/bot-ner.4b09235dbb0ad275.webp" width="50%"/>
 
 > 图片由作者提供
 
@@ -49,7 +49,7 @@ NER模型本质上是**标记分类模型**，因为对于每个输入标记，�
 
 由于我们需要在标记和类别之间建立一一对应关系，我们可以从下图中训练一个最右侧的**多对多**神经网络模型：
 
-![展示常见循环神经网络模式的图片。](../../../../../translated_images/zh-CN/unreasonable-effectiveness-of-rnn.541ead816778f42d.webp)
+![展示常见循环神经网络模式的图片。](/translated_images/zh-CN/unreasonable-effectiveness-of-rnn.541ead816778f42d.webp)
 
 > *图片来自[这篇博客文章](http://karpathy.github.io/2015/05/21/rnn-effectiveness/)作者为[Andrej Karpathy](http://karpathy.github.io/)。NER标记分类模型对应于此图片中最右侧的网络架构。*
 

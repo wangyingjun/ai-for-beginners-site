@@ -15,9 +15,9 @@ import {
   mkdirSync,
   readFileSync,
   readdirSync,
+  rmSync,
   statSync,
   writeFileSync,
-  rmSync,
 } from "fs";
 import { dirname, join, relative, extname } from "path";
 import { fileURLToPath } from "url";
@@ -168,6 +168,11 @@ function rewriteMarkdown(md, lessonId) {
     /!\[[^\]]*\]\(\.\.\/sketchnotes\/[^)]+\)/g,
     "<!-- sketchnote omitted in MVP sparse sync -->",
   );
+  // zh-CN Co-op Translator images: ../../../../translated_images/zh-CN/foo.webp → /translated_images/zh-CN/foo.webp
+  out = out.replace(
+    /(\(\s*|src=["'])(?:\.\.\/)+(translated_images\/[^)"'\s]+)/g,
+    (_m, prefix, path) => `${prefix}/${path}`,
+  );
   return out;
 }
 
@@ -225,6 +230,50 @@ function syncNotebooks() {
   return synced;
 }
 
+
+function copyTranslatedImages() {
+  // Collect refs from rewritten MD and copy only those files (lean)
+  const refs = new Set();
+  const lessonsDir = join(root, "content", "lessons");
+  if (!existsSync(lessonsDir)) return { copied: 0, missing: 0 };
+  for (const id of readdirSync(lessonsDir)) {
+    const dir = join(lessonsDir, id);
+    if (!statSync(dir).isDirectory()) continue;
+    for (const f of readdirSync(dir)) {
+      if (!f.endsWith(".md")) continue;
+      const text = readFileSync(join(dir, f), "utf8");
+      const re = /\/?(translated_images\/[^\s)"']+)/g;
+      let m;
+      while ((m = re.exec(text))) refs.add(m[1]);
+    }
+  }
+  let copied = 0, missing = 0, skipped = 0;
+  for (const rel of refs) {
+    const from = join(UPSTREAM, rel);
+    const to = join(root, "public", rel);
+    if (!existsSync(from)) {
+      // try URL-decoded
+      try {
+        const decoded = decodeURIComponent(rel);
+        if (existsSync(join(UPSTREAM, decoded))) {
+          if (!dryRun) {
+            ensureDir(dirname(to));
+            // skip copying URL-encoded oddities; leave for manual map
+          }
+        }
+      } catch {}
+      missing++;
+      continue;
+    }
+    const size = statSync(from).size;
+    if (size > MAX_IMAGE_BYTES) { skipped++; continue; }
+    if (copyOne(from, to)) copied++;
+  }
+  console.log(`translated_images: copied ${copied}, missing ${missing}, skipped ${skipped}`);
+  return { copied, missing, skipped };
+}
+
+
 function main() {
   if (!existsSync(UPSTREAM)) {
     console.error(`Upstream not found: ${UPSTREAM}`);
@@ -257,6 +306,8 @@ function main() {
 
   console.log("Notebooks:");
   summary.notebooks = syncNotebooks();
+  console.log("translated_images:");
+  summary.translated = copyTranslatedImages();
 
   manifest.upstream.commit = PINNED;
   manifest.upstream.syncedAt = new Date().toISOString();

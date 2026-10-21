@@ -16,7 +16,7 @@
 
 如果我们想用神经网络解决自然语言处理（NLP）任务，我们需要一种方法将文本表示为张量。计算机已经通过诸如 ASCII 或 UTF-8 等编码将文本字符表示为数字，这些数字映射到屏幕上的字体。
 
-<img alt="显示字符映射到 ASCII 和二进制表示的图示" src="../../../../../translated_images/zh-CN/ascii-character-map.18ed6aa7f3b0a7ff.webp" width="50%"/>
+<img alt="显示字符映射到 ASCII 和二进制表示的图示" src="/translated_images/zh-CN/ascii-character-map.18ed6aa7f3b0a7ff.webp" width="50%"/>
 
 > [图片来源](https://www.seobility.net/en/wiki/ASCII)
 
@@ -39,7 +39,7 @@
 
 在解决文本分类等任务时，我们需要能够用一个固定大小的向量表示文本，这个向量将作为最终密集分类器的输入。最简单的方法之一是组合所有单个单词的表示，例如通过将它们相加。如果我们将每个单词的独热编码相加，我们将得到一个频率向量，显示每个单词在文本中出现的次数。这种文本表示被称为**词袋模型**（BoW）。
 
-<img src="../../../../../translated_images/zh-CN/bow.3811869cff59368d.webp" width="90%"/>
+<img src="/translated_images/zh-CN/bow.3811869cff59368d.webp" width="90%"/>
 
 > 图片由作者提供
 

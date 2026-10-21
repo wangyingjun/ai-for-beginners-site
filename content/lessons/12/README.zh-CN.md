@@ -11,7 +11,7 @@
 
 例如，对于实例分割，这些羊是不同的对象；而对于语义分割，所有的羊都被表示为一个类别。
 
-<img src="../../../../../translated_images/zh-CN/instance_vs_semantic.eee9812bebf8cd45.webp" width="50%">
+<img src="/translated_images/zh-CN/instance_vs_semantic.eee9812bebf8cd45.webp" width="50%">
 
 > 图片来源于[这篇博客文章](https://nirmalamurali.medium.com/image-classification-vs-semantic-segmentation-vs-instance-segmentation-625c33a08d50)
 
@@ -20,7 +20,7 @@
 * **编码器**从输入图像中提取特征
 * **解码器**将这些特征转换为**掩码图像**，其大小与通道数对应于类别数量。
 
-<img src="../../../../../translated_images/zh-CN/segm.92442f2cb42ff4fa.webp" width="80%">
+<img src="/translated_images/zh-CN/segm.92442f2cb42ff4fa.webp" width="80%">
 
 > 图片来源于[这篇论文](https://arxiv.org/pdf/2001.05566.pdf)
 
@@ -34,7 +34,7 @@
 
 > ✅ 这种技术特别适用于这种类型的医学影像，但你还能想到哪些其他的实际应用场景？
 
-<img alt="navi" src="../../../../../translated_images/zh-CN/navi.2f20b727910110ea.webp"/>
+<img alt="navi" src="/translated_images/zh-CN/navi.2f20b727910110ea.webp"/>
 
 > 图片来源于PH<sup>2</sup>数据库
 
