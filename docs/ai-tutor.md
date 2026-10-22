@@ -4,11 +4,30 @@
 
 技术路线：**不绑定单一闭源厂商**。生成侧走标准 **OpenAI-compatible** `POST /v1/chat/completions`（Ollama、LM Studio、vLLM、DeepSeek、硅基流动、OpenRouter 等均可）；检索侧用构建期 `content/rag/chunks.json` 的**开源关键词检索**（BM25-ish），回答必须带课程引用。可选后续再接开源 embedding + Supabase pgvector。
 
+## 开源聊天 UI（前端）
+
+对话表面使用成熟的开源组件库，**不**手写 MessageList / Composer：
+
+| 包 | 用途 |
+|----|------|
+| **[`@assistant-ui/react`](https://www.assistant-ui.com/)** | Thread / Message / Composer 原语 + `useExternalStoreRuntime` |
+| **[`@assistant-ui/react-markdown`](https://www.assistant-ui.com/docs/ui/markdown)** | 助教回复 Markdown（流式） |
+
+- 入口：`components/assistant-ui/thread.tsx`（`ThreadPrimitive` 等）+ `markdown-text.tsx`
+- 薄封装：`components/tutor/TutorChat.tsx`（设置栏、RAG / 混合流式、`ExternalStoreRuntime`）
+- 设置表单仍为 `TutorSettingsForm.tsx`（localStorage 凭证）
+- 选用 **ExternalStoreRuntime**（而非仅 AI SDK `useChatRuntime`）是为了保留 **本机 Ollama 浏览器直连** + `/api/rag` 混合路径，同时云端仍走 `/api/chat`（Vercel AI SDK `streamText`）
+
+```bash
+npm install @assistant-ui/react @assistant-ui/react-markdown
+```
+
 ## 架构（简图）
 
 ```
 学习者浏览器
   ├─ localStorage: API URL / 模型 / Key
+  ├─ @assistant-ui/react Thread（OSS UI）
   ├─ 本机 Ollama / LM Studio ──(浏览器直连 SSE)──► localhost:11434/v1
   └─ 云端 DeepSeek / SiliconFlow / … ──(经本站代理)──► /api/chat
                                                           │
@@ -77,8 +96,8 @@
 | 语料切块 | `npm run build:rag` → `content/rag/chunks.json` |
 | 离线检索 | `/api/rag` + `/api/chat` 生成前关键词检索；无 embedding 也可工作 |
 | 空检索 | UI 显示诚实提示；系统提示要求勿编造 |
-| UI | 课程页「问助教」+ [`/assistant`](/assistant)；流式 + Markdown + 引用链到 `/lessons/{id}` |
-| 反馈 / 限流 | 👍👎 stub；内存软限流 |
+| UI | **assistant-ui** Thread + 课程页「问助教」+ [`/assistant`](/assistant)；流式 Markdown + 引用链到 `/lessons/{id}` |
+| 反馈 / 限流 | 👍👎 via FeedbackAdapter；内存软限流 |
 | DB | Supabase：`doc_chunks`、`chat_sessions`、`chat_messages`（**不含** API Key；向量入库可选） |
 
 ## 可选：服务端环境变量（后备）
@@ -109,13 +128,14 @@ curl -s http://localhost:3000/api/rag | jq .
 ## RAG 与引用
 
 - **当前**：本地 JSON 关键词检索（`X-RAG-Mode: local-keyword`），课内加权，中英偏好。
-- **引用**：响应头 `X-Citations`（UTF-8 安全）+ 回答内 Markdown 链接；UI 列出 `/lessons/{id}`。
+- **引用**：响应头 `X-Citations`（UTF-8 安全）+ 回答内 Markdown 链接；UI 列出 `/lessons/{id}`（assistant-ui 消息 `metadata.custom`）。
 - **空命中**：`X-Citations-Empty: 1` + 界面黄字提示，不假装有依据。
 - **可选进阶**：用开源/兼容 embedding API 写入 Supabase `doc_chunks`（见迁移），再改 `retrieve.ts` 做混合召回——非 MVP 必需。
 
 ## 相关文件
 
-- `components/tutor/TutorChat.tsx` / `TutorSettingsForm.tsx` / `TutorMarkdown.tsx`
+- `components/assistant-ui/thread.tsx` · `markdown-text.tsx` — **OSS chat UI**
+- `components/tutor/TutorChat.tsx` · `TutorSettingsForm.tsx` — 设置 + RAG 运行时胶水
 - `lib/rag/llm-settings.ts` — 预设与 OpenAI 兼容类型
 - `lib/rag/openai-compatible-stream.ts` — 浏览器 SSE
 - `lib/rag/provider.ts` — 服务端 Vercel AI SDK adapter

@@ -71,7 +71,7 @@ export async function POST(req: Request) {
   // Ephemeral user credentials — used only for this request, never written to disk/DB/logs.
   const userCreds = sanitizeUserCredentials(body.credentials);
 
-  // Localhost endpoints must be called from the browser (see TutorChat hybrid path).
+  // Localhost endpoints must be called from the browser (see TutorChat + assistant-ui ExternalStoreRuntime hybrid path).
   if (userCreds && isLocalOpenAIEndpoint(userCreds.apiUrl)) {
     return jsonNoStore(
       {

@@ -1,7 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  AssistantRuntimeProvider,
+  generateId,
+  useExternalStoreRuntime,
+  type AppendMessage,
+  type ThreadMessageLike,
+} from "@assistant-ui/react";
+import { TutorThread } from "@/components/assistant-ui/thread";
 import type { Locale } from "@/lib/i18n";
 import { t } from "@/lib/i18n";
 import { decodeCitationsHeader } from "@/lib/rag/citations-header";
@@ -13,16 +21,15 @@ import {
 import { streamOpenAICompatibleChat } from "@/lib/rag/openai-compatible-stream";
 import type { ChatCitation } from "@/lib/rag/types";
 import { loadUserLlmSettings } from "@/lib/rag/user-settings-client";
-import { TutorMarkdown } from "./TutorMarkdown";
 import { TutorSettingsForm } from "./TutorSettingsForm";
 
-type Msg = {
+type TutorMsg = {
   id: string;
   role: "user" | "assistant";
   content: string;
   citations?: ChatCitation[];
   ragEmpty?: boolean;
-  feedback?: 1 | -1 | null;
+  running?: boolean;
 };
 
 type Props = {
@@ -66,10 +73,29 @@ async function prepareRag(opts: {
   };
 }
 
+function convertMessage(message: TutorMsg): ThreadMessageLike {
+  return {
+    role: message.role,
+    id: message.id,
+    content: [{ type: "text", text: message.content }],
+    status:
+      message.role === "assistant"
+        ? message.running
+          ? { type: "running" }
+          : { type: "complete", reason: "stop" }
+        : undefined,
+    metadata: {
+      custom: {
+        citations: message.citations,
+        ragEmpty: message.ragEmpty,
+      },
+    },
+  };
+}
+
 export function TutorChat({ locale, lessonId = null, variant = "page" }: Props) {
-  const [messages, setMessages] = useState<Msg[]>([]);
-  const [input, setInput] = useState("");
-  const [busy, setBusy] = useState(false);
+  const [messages, setMessages] = useState<TutorMsg[]>([]);
+  const [isRunning, setIsRunning] = useState(false);
   const [serverConfigured, setServerConfigured] = useState<boolean | null>(
     null,
   );
@@ -79,9 +105,10 @@ export function TutorChat({ locale, lessonId = null, variant = "page" }: Props) 
   const [showSettings, setShowSettings] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [open, setOpen] = useState(variant === "page");
-  const bottomRef = useRef<HTMLDivElement>(null);
   const settingsHydrated = useRef(false);
   const abortRef = useRef<AbortController | null>(null);
+  const messagesRef = useRef(messages);
+  messagesRef.current = messages;
 
   useEffect(() => {
     const local = loadUserLlmSettings();
@@ -119,10 +146,6 @@ export function TutorChat({ locale, lessonId = null, variant = "page" }: Props) 
   }, [serverConfigured, userSettings]);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, busy]);
-
-  useEffect(() => {
     return () => {
       abortRef.current?.abort();
     };
@@ -148,24 +171,6 @@ export function TutorChat({ locale, lessonId = null, variant = "page" }: Props) 
     return t(locale, "tutorNotConfigured");
   })();
 
-  const sendFeedback = useCallback(
-    async (msgId: string, vote: 1 | -1) => {
-      setMessages((prev) =>
-        prev.map((m) => (m.id === msgId ? { ...m, feedback: vote } : m)),
-      );
-      try {
-        await fetch("/api/chat/feedback", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ vote, localOnly: true }),
-        });
-      } catch {
-        /* stub */
-      }
-    },
-    [],
-  );
-
   const onSettingsChange = useCallback((s: UserLlmSettings | null) => {
     setUserSettings(s);
     if (settingsComplete(s)) {
@@ -174,178 +179,254 @@ export function TutorChat({ locale, lessonId = null, variant = "page" }: Props) 
     }
   }, []);
 
-  const onSend = useCallback(async () => {
-    const text = input.trim();
-    if (!text || busy) return;
+  const onNew = useCallback(
+    async (message: AppendMessage) => {
+      const part = message.content.find((p) => p.type === "text");
+      const text = part && part.type === "text" ? part.text.trim() : "";
+      if (!text) return;
 
-    if (!generationReady) {
-      setShowSettings(true);
-      setError(t(locale, "tutorNeedSettings"));
-      return;
-    }
-
-    setError(null);
-    setInput("");
-    const userMsg: Msg = {
-      id: `u-${Date.now()}`,
-      role: "user",
-      content: text,
-    };
-    const history = [...messages, userMsg];
-    setMessages(history);
-    setBusy(true);
-
-    const assistantId = `a-${Date.now()}`;
-    setMessages((prev) => [
-      ...prev,
-      { id: assistantId, role: "assistant", content: "" },
-    ]);
-
-    abortRef.current?.abort();
-    const ac = new AbortController();
-    abortRef.current = ac;
-
-    try {
-      const creds = loadUserLlmSettings();
-      const useClientStream =
-        creds &&
-        creds.apiType === "openai-compatible" &&
-        isLocalOpenAIEndpoint(creds.apiUrl);
-
-      if (useClientStream && creds) {
-        // 1) Server keyword RAG  2) Browser → local Ollama / LM Studio
-        const rag = await prepareRag({
-          query: text,
-          lessonId,
-          locale,
-        });
-        setMessages((prev) =>
-          prev.map((m) =>
-            m.id === assistantId
-              ? {
-                  ...m,
-                  citations: rag.citations,
-                  ragEmpty: rag.empty,
-                }
-              : m,
-          ),
-        );
-
-        const prior = history
-          .filter((m) => m.role === "user" || m.role === "assistant")
-          .slice(-12)
-          .map((m) => ({
-            role: m.role as "user" | "assistant",
-            content: m.content,
-          }));
-
-        await streamOpenAICompatibleChat({
-          settings: creds,
-          messages: prior,
-          system: rag.system,
-          signal: ac.signal,
-          onDelta: (acc) => {
-            setMessages((prev) =>
-              prev.map((m) =>
-                m.id === assistantId
-                  ? {
-                      ...m,
-                      content: acc,
-                      citations: rag.citations,
-                      ragEmpty: rag.empty,
-                    }
-                  : m,
-              ),
-            );
-          },
-        });
+      if (!generationReady) {
+        setShowSettings(true);
+        setError(t(locale, "tutorNeedSettings"));
         return;
       }
 
-      // Cloud / remote OpenAI-compatible (or Anthropic / Azure): server proxy
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        cache: "no-store",
-        signal: ac.signal,
-        body: JSON.stringify({
-          messages: history.map((m) => ({
-            role: m.role,
-            content: m.content,
-          })),
-          lessonId,
-          locale,
-          ...(creds ? { credentials: creds } : {}),
-        }),
-      });
+      setError(null);
+      const userMsg: TutorMsg = {
+        id: generateId(),
+        role: "user",
+        content: text,
+      };
+      const history = [...messagesRef.current, userMsg];
+      setMessages(history);
 
-      if (!res.ok) {
-        const data = (await res.json().catch(() => ({}))) as {
-          error?: string;
-          code?: string;
-        };
-        const errText =
-          data.error ||
-          (locale === "en"
-            ? `Request failed (${res.status})`
-            : `请求失败（${res.status}）`);
-        setError(errText);
-        if (res.status === 503 || data.code === "AI_NOT_CONFIGURED") {
-          setShowSettings(true);
+      const assistantId = generateId();
+      setMessages((prev) => [
+        ...prev,
+        { id: assistantId, role: "assistant", content: "", running: true },
+      ]);
+      setIsRunning(true);
+
+      abortRef.current?.abort();
+      const ac = new AbortController();
+      abortRef.current = ac;
+
+      try {
+        const creds = loadUserLlmSettings();
+        const useClientStream =
+          creds &&
+          creds.apiType === "openai-compatible" &&
+          isLocalOpenAIEndpoint(creds.apiUrl);
+
+        if (useClientStream && creds) {
+          const rag = await prepareRag({
+            query: text,
+            lessonId,
+            locale,
+          });
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === assistantId
+                ? {
+                    ...m,
+                    citations: rag.citations,
+                    ragEmpty: rag.empty,
+                  }
+                : m,
+            ),
+          );
+
+          const prior = history
+            .filter((m) => m.role === "user" || m.role === "assistant")
+            .slice(-12)
+            .map((m) => ({
+              role: m.role as "user" | "assistant",
+              content: m.content,
+            }));
+
+          await streamOpenAICompatibleChat({
+            settings: creds,
+            messages: prior,
+            system: rag.system,
+            signal: ac.signal,
+            onDelta: (acc) => {
+              setMessages((prev) =>
+                prev.map((m) =>
+                  m.id === assistantId
+                    ? {
+                        ...m,
+                        content: acc,
+                        citations: rag.citations,
+                        ragEmpty: rag.empty,
+                        running: true,
+                      }
+                    : m,
+                ),
+              );
+            },
+          });
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === assistantId ? { ...m, running: false } : m,
+            ),
+          );
+          return;
+        }
+
+        const res = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          cache: "no-store",
+          signal: ac.signal,
+          body: JSON.stringify({
+            messages: history.map((m) => ({
+              role: m.role,
+              content: m.content,
+            })),
+            lessonId,
+            locale,
+            ...(creds ? { credentials: creds } : {}),
+          }),
+        });
+
+        if (!res.ok) {
+          const data = (await res.json().catch(() => ({}))) as {
+            error?: string;
+            code?: string;
+          };
+          const errText =
+            data.error ||
+            (locale === "en"
+              ? `Request failed (${res.status})`
+              : `请求失败（${res.status}）`);
+          setError(errText);
+          if (res.status === 503 || data.code === "AI_NOT_CONFIGURED") {
+            setShowSettings(true);
+          }
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === assistantId
+                ? {
+                    ...m,
+                    content:
+                      res.status === 503
+                        ? `${errText}\n\n→ ${t(locale, "tutorOpenSettings")}`
+                        : errText,
+                    running: false,
+                  }
+                : m,
+            ),
+          );
+          return;
+        }
+
+        const citations = decodeCitationsHeader(res.headers.get("X-Citations"));
+        const ragEmpty = res.headers.get("X-Citations-Empty") === "1";
+        const reader = res.body?.getReader();
+        if (!reader) throw new Error("No response body");
+        const decoder = new TextDecoder();
+        let acc = "";
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          acc += decoder.decode(value, { stream: true });
+          const snapshot = acc;
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === assistantId
+                ? {
+                    ...m,
+                    content: snapshot,
+                    citations,
+                    ragEmpty,
+                    running: true,
+                  }
+                : m,
+            ),
+          );
         }
         setMessages((prev) =>
           prev.map((m) =>
-            m.id === assistantId
-              ? {
-                  ...m,
-                  content:
-                    res.status === 503
-                      ? `${errText}\n\n→ ${t(locale, "tutorOpenSettings")}`
-                      : errText,
-                }
-              : m,
+            m.id === assistantId ? { ...m, running: false } : m,
           ),
         );
-        return;
-      }
-
-      const citations = decodeCitationsHeader(res.headers.get("X-Citations"));
-      const ragEmpty = res.headers.get("X-Citations-Empty") === "1";
-      const reader = res.body?.getReader();
-      if (!reader) throw new Error("No response body");
-      const decoder = new TextDecoder();
-      let acc = "";
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        acc += decoder.decode(value, { stream: true });
-        const snapshot = acc;
+      } catch (e) {
+        if (e instanceof DOMException && e.name === "AbortError") {
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === assistantId ? { ...m, running: false } : m,
+            ),
+          );
+          return;
+        }
+        const msg = e instanceof Error ? e.message : "Network error";
+        setError(msg);
         setMessages((prev) =>
           prev.map((m) =>
             m.id === assistantId
-              ? {
-                  ...m,
-                  content: snapshot,
-                  citations,
-                  ragEmpty,
-                }
+              ? { ...m, content: msg, running: false }
               : m,
           ),
         );
+      } finally {
+        setIsRunning(false);
       }
-    } catch (e) {
-      if (e instanceof DOMException && e.name === "AbortError") return;
-      const msg = e instanceof Error ? e.message : "Network error";
-      setError(msg);
-      setMessages((prev) =>
-        prev.map((m) =>
-          m.id === assistantId ? { ...m, content: msg } : m,
-        ),
-      );
-    } finally {
-      setBusy(false);
-    }
-  }, [input, busy, messages, lessonId, locale, generationReady]);
+    },
+    [lessonId, locale, generationReady],
+  );
+
+  const onCancel = useCallback(async () => {
+    abortRef.current?.abort();
+    setIsRunning(false);
+    setMessages((prev) =>
+      prev.map((m) => (m.running ? { ...m, running: false } : m)),
+    );
+  }, []);
+
+  const feedbackAdapter = useMemo(
+    () => ({
+      submit: (feedback: {
+        message: { id: string };
+        type: "positive" | "negative";
+      }) => {
+        void fetch("/api/chat/feedback", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            vote: feedback.type === "positive" ? 1 : -1,
+            localOnly: true,
+            messageId: feedback.message.id,
+          }),
+        }).catch(() => {
+          /* stub */
+        });
+      },
+    }),
+    [],
+  );
+
+  const runtime = useExternalStoreRuntime({
+    isRunning,
+    messages,
+    convertMessage,
+    onNew,
+    onCancel,
+    isSendDisabled: !generationReady,
+    adapters: { feedback: feedbackAdapter },
+  });
+
+  const threadLabels = useMemo(
+    () => ({
+      empty: generationReady
+        ? t(locale, "tutorEmpty")
+        : t(locale, "tutorEmptyNeedSettings"),
+      placeholder: t(locale, "tutorPlaceholder"),
+      send: t(locale, "tutorSend"),
+      citations: t(locale, "tutorCitations"),
+      ragEmpty: t(locale, "tutorRagEmpty"),
+    }),
+    [locale, generationReady],
+  );
 
   const panelShell =
     variant === "panel"
@@ -367,9 +448,12 @@ export function TutorChat({ locale, lessonId = null, variant = "page" }: Props) 
   return (
     <div
       className={panelShell}
-      style={{ maxHeight: variant === "panel" ? "70vh" : undefined }}
+      style={{
+        maxHeight: variant === "panel" ? "70vh" : undefined,
+        height: variant === "page" ? "min(70vh, 36rem)" : undefined,
+      }}
     >
-      <div className="flex items-center justify-between gap-2 border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
+      <div className="flex shrink-0 items-center justify-between gap-2 border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
         <div>
           <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">
             {t(locale, "tutorTitle")}
@@ -411,7 +495,7 @@ export function TutorChat({ locale, lessonId = null, variant = "page" }: Props) 
       </div>
 
       {showSettings && (
-        <div className="max-h-[40vh] overflow-y-auto">
+        <div className="max-h-[40vh] shrink-0 overflow-y-auto">
           <TutorSettingsForm
             locale={locale}
             compact={variant === "panel"}
@@ -420,87 +504,8 @@ export function TutorChat({ locale, lessonId = null, variant = "page" }: Props) 
         </div>
       )}
 
-      <div
-        className="flex-1 space-y-3 overflow-y-auto px-4 py-3"
-        style={{ minHeight: "12rem" }}
-      >
-        {messages.length === 0 && (
-          <p className="text-sm text-zinc-500">
-            {generationReady
-              ? t(locale, "tutorEmpty")
-              : t(locale, "tutorEmptyNeedSettings")}
-          </p>
-        )}
-        {messages.map((m) => (
-          <div
-            key={m.id}
-            className={
-              m.role === "user"
-                ? "ml-6 rounded-lg bg-indigo-50 px-3 py-2 text-sm dark:bg-indigo-950/40"
-                : "mr-6 rounded-lg bg-zinc-50 px-3 py-2 text-sm dark:bg-zinc-900"
-            }
-          >
-            {m.role === "user" ? (
-              <div className="whitespace-pre-wrap break-words">{m.content}</div>
-            ) : (
-              <>
-                {m.content ? (
-                  <TutorMarkdown content={m.content} />
-                ) : (
-                  <div className="text-zinc-400">{busy ? "…" : ""}</div>
-                )}
-                {m.ragEmpty && (
-                  <p className="mt-2 text-xs text-amber-700 dark:text-amber-300">
-                    {t(locale, "tutorRagEmpty")}
-                  </p>
-                )}
-                {m.citations && m.citations.length > 0 && (
-                  <ul className="mt-2 space-y-1 border-t border-zinc-200 pt-2 text-xs text-zinc-600 dark:border-zinc-700 dark:text-zinc-400">
-                    <li className="font-medium text-zinc-500">
-                      {t(locale, "tutorCitations")}
-                    </li>
-                    {m.citations.map((c, i) => (
-                      <li key={`${c.path}-${i}`}>
-                        <Link
-                          href={c.lessonHref}
-                          className="text-indigo-600 hover:underline dark:text-indigo-400"
-                        >
-                          {c.lesson_id}
-                          {c.heading ? ` · ${c.heading}` : ""}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-                {m.content && !busy && (
-                  <div className="mt-2 flex gap-2 text-xs">
-                    <button
-                      type="button"
-                      className={`rounded px-2 py-0.5 ${m.feedback === 1 ? "bg-emerald-100 text-emerald-800" : "bg-zinc-100 text-zinc-600 dark:bg-zinc-800"}`}
-                      onClick={() => sendFeedback(m.id, 1)}
-                      aria-label="thumbs up"
-                    >
-                      👍
-                    </button>
-                    <button
-                      type="button"
-                      className={`rounded px-2 py-0.5 ${m.feedback === -1 ? "bg-rose-100 text-rose-800" : "bg-zinc-100 text-zinc-600 dark:bg-zinc-800"}`}
-                      onClick={() => sendFeedback(m.id, -1)}
-                      aria-label="thumbs down"
-                    >
-                      👎
-                    </button>
-                  </div>
-                )}
-              </>
-            )}
-          </div>
-        ))}
-        <div ref={bottomRef} />
-      </div>
-
       {error && !showSettings && (
-        <p className="border-t border-amber-200 bg-amber-50 px-4 py-2 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-100">
+        <p className="shrink-0 border-b border-amber-200 bg-amber-50 px-4 py-2 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-100">
           {error}{" "}
           <Link href="/docs/ai-tutor" className="underline">
             docs/ai-tutor.md
@@ -508,29 +513,11 @@ export function TutorChat({ locale, lessonId = null, variant = "page" }: Props) 
         </p>
       )}
 
-      <form
-        className="flex gap-2 border-t border-zinc-200 p-3 dark:border-zinc-800"
-        onSubmit={(e) => {
-          e.preventDefault();
-          void onSend();
-        }}
-      >
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder={t(locale, "tutorPlaceholder")}
-          className="flex-1 rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm outline-none focus:border-indigo-500 dark:border-zinc-700 dark:bg-zinc-900"
-          disabled={busy}
-        />
-        <button
-          type="submit"
-          disabled={busy || !input.trim()}
-          className="rounded-lg bg-indigo-600 px-3 py-2 text-sm font-medium text-white disabled:opacity-50 hover:bg-indigo-500"
-        >
-          {t(locale, "tutorSend")}
-        </button>
-      </form>
+      <div className="min-h-0 flex-1">
+        <AssistantRuntimeProvider runtime={runtime}>
+          <TutorThread labels={threadLabels} className="flex h-full flex-col" />
+        </AssistantRuntimeProvider>
+      </div>
     </div>
   );
 }
