@@ -19,6 +19,7 @@ import {
   type UserLlmSettings,
 } from "@/lib/rag/llm-settings";
 import { streamOpenAICompatibleChat } from "@/lib/rag/openai-compatible-stream";
+import { stripReasoningBlocks } from "@/lib/rag/strip-reasoning";
 import type { ChatCitation } from "@/lib/rag/types";
 import { loadUserLlmSettings } from "@/lib/rag/user-settings-client";
 import { TutorSettingsForm } from "./TutorSettingsForm";
@@ -74,10 +75,14 @@ async function prepareRag(opts: {
 }
 
 function convertMessage(message: TutorMsg): ThreadMessageLike {
+  const text =
+    message.role === "assistant"
+      ? stripReasoningBlocks(message.content)
+      : message.content;
   return {
     role: message.role,
     id: message.id,
-    content: [{ type: "text", text: message.content }],
+    content: [{ type: "text", text }],
     status:
       message.role === "assistant"
         ? message.running
@@ -250,12 +255,13 @@ export function TutorChat({ locale, lessonId = null, variant = "page" }: Props) 
             system: rag.system,
             signal: ac.signal,
             onDelta: (acc) => {
+              const visible = stripReasoningBlocks(acc);
               setMessages((prev) =>
                 prev.map((m) =>
                   m.id === assistantId
                     ? {
                         ...m,
-                        content: acc,
+                        content: visible,
                         citations: rag.citations,
                         ragEmpty: rag.empty,
                         running: true,
@@ -267,7 +273,13 @@ export function TutorChat({ locale, lessonId = null, variant = "page" }: Props) 
           });
           setMessages((prev) =>
             prev.map((m) =>
-              m.id === assistantId ? { ...m, running: false } : m,
+              m.id === assistantId
+                ? {
+                    ...m,
+                    content: stripReasoningBlocks(m.content),
+                    running: false,
+                  }
+                : m,
             ),
           );
           return;
@@ -330,7 +342,7 @@ export function TutorChat({ locale, lessonId = null, variant = "page" }: Props) 
           const { done, value } = await reader.read();
           if (done) break;
           acc += decoder.decode(value, { stream: true });
-          const snapshot = acc;
+          const snapshot = stripReasoningBlocks(acc);
           setMessages((prev) =>
             prev.map((m) =>
               m.id === assistantId
@@ -347,7 +359,13 @@ export function TutorChat({ locale, lessonId = null, variant = "page" }: Props) 
         }
         setMessages((prev) =>
           prev.map((m) =>
-            m.id === assistantId ? { ...m, running: false } : m,
+            m.id === assistantId
+              ? {
+                  ...m,
+                  content: stripReasoningBlocks(m.content),
+                  running: false,
+                }
+              : m,
           ),
         );
       } catch (e) {
@@ -430,8 +448,8 @@ export function TutorChat({ locale, lessonId = null, variant = "page" }: Props) 
 
   const panelShell =
     variant === "panel"
-      ? "fixed bottom-4 right-4 z-40 flex w-[min(100vw-2rem,24rem)] flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-xl dark:border-zinc-700 dark:bg-zinc-950"
-      : "flex w-full flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950";
+      ? "fixed bottom-4 right-4 z-40 flex min-h-0 w-[min(100vw-2rem,24rem)] flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-xl dark:border-zinc-700 dark:bg-zinc-950"
+      : "flex min-h-0 w-full flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950";
 
   if (variant === "panel" && !open) {
     return (
@@ -449,8 +467,9 @@ export function TutorChat({ locale, lessonId = null, variant = "page" }: Props) 
     <div
       className={panelShell}
       style={{
-        maxHeight: variant === "panel" ? "70vh" : undefined,
-        height: variant === "page" ? "min(70vh, 36rem)" : undefined,
+        // Definite height (not only max-height) so flex children get a
+        // bounded box and ThreadPrimitive.Viewport can overflow-y-scroll.
+        height: "min(70vh, 36rem)",
       }}
     >
       <div className="flex shrink-0 items-center justify-between gap-2 border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
@@ -513,9 +532,12 @@ export function TutorChat({ locale, lessonId = null, variant = "page" }: Props) 
         </p>
       )}
 
-      <div className="min-h-0 flex-1">
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
         <AssistantRuntimeProvider runtime={runtime}>
-          <TutorThread labels={threadLabels} className="flex h-full flex-col" />
+          <TutorThread
+            labels={threadLabels}
+            className="flex h-full min-h-0 flex-col"
+          />
         </AssistantRuntimeProvider>
       </div>
     </div>

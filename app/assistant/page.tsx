@@ -23,7 +23,7 @@ export default async function AssistantPage({
   return (
     <>
       <SiteHeader locale={locale} />
-      <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 py-10">
+      <main className="mx-auto flex w-full max-w-3xl min-h-0 flex-1 flex-col gap-4 px-4 py-8">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">{t(locale, "tutorTitle")}</h1>
           <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">

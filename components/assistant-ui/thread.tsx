@@ -88,10 +88,17 @@ function UserMessage() {
   );
 }
 
+/** Hide structured Reasoning parts if a runtime ever emits them. */
+function HiddenReasoning() {
+  return null;
+}
+
 function AssistantMessage({ labels }: { labels: TutorThreadLabels }) {
   return (
     <MessagePrimitive.Root className="mr-6 rounded-lg bg-zinc-50 px-3 py-2 text-sm dark:bg-zinc-900">
-      <MessagePrimitive.Parts components={{ Text: MarkdownText }} />
+      <MessagePrimitive.Parts
+        components={{ Text: MarkdownText, Reasoning: HiddenReasoning }}
+      />
       <MessagePrimitive.Error>
         <ErrorPrimitive.Root className="mt-2 text-xs text-rose-600 dark:text-rose-400">
           <ErrorPrimitive.Message />
@@ -119,7 +126,7 @@ function AssistantMessage({ labels }: { labels: TutorThreadLabels }) {
 
 function Composer({ labels }: { labels: TutorThreadLabels }) {
   return (
-    <ComposerPrimitive.Root className="flex gap-2 border-t border-zinc-200 p-3 dark:border-zinc-800">
+    <ComposerPrimitive.Root className="flex gap-2 border-t border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-950">
       <ComposerPrimitive.Input
         placeholder={labels.placeholder}
         rows={1}
@@ -141,38 +148,43 @@ function Composer({ labels }: { labels: TutorThreadLabels }) {
 }
 
 /**
- * Conversation surface built from @assistant-ui/react primitives
- * (Thread / Message / Composer) — not a custom MessageList.
+ * Stock @assistant-ui/react Thread surface (Root → Viewport → Messages +
+ * sticky ViewportFooter/Composer). Height chain uses min-h-0 so the Viewport
+ * is the only scroll container — do not wrap this in another overflow-y-auto.
  */
 export function TutorThread({ labels, className }: Props) {
   return (
     <ThreadPrimitive.Root
       className={
         className ??
-        "flex h-full min-h-[16rem] flex-col bg-white dark:bg-zinc-950"
+        "flex h-full min-h-0 flex-col bg-white dark:bg-zinc-950"
       }
     >
-      <ThreadPrimitive.Viewport className="flex flex-1 flex-col gap-3 overflow-y-auto px-4 py-3">
-        <AuiIf condition={(s) => s.thread.isEmpty}>
-          <p className="text-sm text-zinc-500">{labels.empty}</p>
-        </AuiIf>
+      <ThreadPrimitive.Viewport className="relative flex min-h-0 flex-1 flex-col overflow-x-hidden overflow-y-scroll">
+        <div className="mx-auto flex w-full min-h-0 flex-1 flex-col px-4 pt-3">
+          <AuiIf condition={(s) => s.thread.isEmpty}>
+            <p className="text-sm text-zinc-500">{labels.empty}</p>
+          </AuiIf>
 
-        <ThreadPrimitive.Messages>
-          {({ message }) =>
-            message.role === "user" ? (
-              <UserMessage />
-            ) : (
-              <AssistantMessage labels={labels} />
-            )
-          }
-        </ThreadPrimitive.Messages>
+          <div className="mb-2 flex flex-col gap-3 empty:hidden">
+            <ThreadPrimitive.Messages>
+              {({ message }) =>
+                message.role === "user" ? (
+                  <UserMessage />
+                ) : (
+                  <AssistantMessage labels={labels} />
+                )
+              }
+            </ThreadPrimitive.Messages>
+          </div>
 
-        <ThreadPrimitive.ViewportFooter className="sticky bottom-0 mt-auto bg-white dark:bg-zinc-950">
-          <ThreadPrimitive.ScrollToBottom className="absolute bottom-full left-1/2 mb-2 -translate-x-1/2 rounded-full border border-zinc-200 bg-white p-1.5 text-zinc-500 shadow-sm disabled:invisible dark:border-zinc-700 dark:bg-zinc-900">
-            <ArrowDownIcon className="size-4" />
-          </ThreadPrimitive.ScrollToBottom>
-          <Composer labels={labels} />
-        </ThreadPrimitive.ViewportFooter>
+          <ThreadPrimitive.ViewportFooter className="sticky bottom-0 mt-auto flex flex-col bg-white dark:bg-zinc-950">
+            <ThreadPrimitive.ScrollToBottom className="absolute bottom-full left-1/2 mb-2 -translate-x-1/2 rounded-full border border-zinc-200 bg-white p-1.5 text-zinc-500 shadow-sm disabled:invisible dark:border-zinc-700 dark:bg-zinc-900">
+              <ArrowDownIcon className="size-4" />
+            </ThreadPrimitive.ScrollToBottom>
+            <Composer labels={labels} />
+          </ThreadPrimitive.ViewportFooter>
+        </div>
       </ThreadPrimitive.Viewport>
     </ThreadPrimitive.Root>
   );

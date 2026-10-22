@@ -13,8 +13,9 @@
 | **[`@assistant-ui/react`](https://www.assistant-ui.com/)** | Thread / Message / Composer 原语 + `useExternalStoreRuntime` |
 | **[`@assistant-ui/react-markdown`](https://www.assistant-ui.com/docs/ui/markdown)** | 助教回复 Markdown（流式） |
 
-- 入口：`components/assistant-ui/thread.tsx`（`ThreadPrimitive` 等）+ `markdown-text.tsx`
-- 薄封装：`components/tutor/TutorChat.tsx`（设置栏、RAG / 混合流式、`ExternalStoreRuntime`）
+- 入口：`components/assistant-ui/thread.tsx`（官方 `ThreadPrimitive.Root` → `Viewport` → sticky `ViewportFooter`/`Composer`）+ `markdown-text.tsx`
+- 薄封装：`components/tutor/TutorChat.tsx`（设置栏、RAG / 混合流式、`ExternalStoreRuntime`）；**不要**再包一层自定义 `overflow-y-auto`，滚动只交给 `ThreadPrimitive.Viewport`（`min-h-0` + 固定面板高度）
+- 推理标签：流式文本经 `lib/rag/strip-reasoning.ts` 去掉 `<thinking>` / `<think>` / `<reasoning>` 等块后再写入消息；`MessagePrimitive.Parts` 的 `Reasoning` 槽位也显式隐藏
 - 设置表单仍为 `TutorSettingsForm.tsx`（localStorage 凭证）
 - 选用 **ExternalStoreRuntime**（而非仅 AI SDK `useChatRuntime`）是为了保留 **本机 Ollama 浏览器直连** + `/api/rag` 混合路径，同时云端仍走 `/api/chat`（Vercel AI SDK `streamText`）
 
