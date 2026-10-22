@@ -4,12 +4,16 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Locale } from "@/lib/i18n";
 import { t } from "@/lib/i18n";
+import { decodeCitationsHeader } from "@/lib/rag/citations-header";
 import {
+  isLocalOpenAIEndpoint,
   settingsComplete,
   type UserLlmSettings,
 } from "@/lib/rag/llm-settings";
+import { streamOpenAICompatibleChat } from "@/lib/rag/openai-compatible-stream";
 import type { ChatCitation } from "@/lib/rag/types";
 import { loadUserLlmSettings } from "@/lib/rag/user-settings-client";
+import { TutorMarkdown } from "./TutorMarkdown";
 import { TutorSettingsForm } from "./TutorSettingsForm";
 
 type Msg = {
@@ -17,6 +21,7 @@ type Msg = {
   role: "user" | "assistant";
   content: string;
   citations?: ChatCitation[];
+  ragEmpty?: boolean;
   feedback?: 1 | -1 | null;
 };
 
@@ -27,21 +32,38 @@ type Props = {
   variant?: "page" | "panel";
 };
 
-function decodeCitations(header: string | null): ChatCitation[] {
-  if (!header) return [];
-  try {
-    const json = atob(header.replace(/-/g, "+").replace(/_/g, "/"));
-    return JSON.parse(json) as ChatCitation[];
-  } catch {
-    try {
-      const pad =
-        header.length % 4 === 0 ? "" : "=".repeat(4 - (header.length % 4));
-      const b64 = header.replace(/-/g, "+").replace(/_/g, "/") + pad;
-      return JSON.parse(atob(b64)) as ChatCitation[];
-    } catch {
-      return [];
-    }
+type RagPrepare = {
+  system: string;
+  citations: ChatCitation[];
+  empty: boolean;
+};
+
+async function prepareRag(opts: {
+  query: string;
+  lessonId: string | null;
+  locale: Locale;
+}): Promise<RagPrepare> {
+  const res = await fetch("/api/rag", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    cache: "no-store",
+    body: JSON.stringify({
+      query: opts.query,
+      lessonId: opts.lessonId,
+      locale: opts.locale,
+      topK: 6,
+    }),
+  });
+  if (!res.ok) {
+    const data = (await res.json().catch(() => ({}))) as { error?: string };
+    throw new Error(data.error || `RAG HTTP ${res.status}`);
   }
+  const data = (await res.json()) as RagPrepare;
+  return {
+    system: data.system,
+    citations: data.citations ?? [],
+    empty: Boolean(data.empty),
+  };
 }
 
 export function TutorChat({ locale, lessonId = null, variant = "page" }: Props) {
@@ -59,6 +81,7 @@ export function TutorChat({ locale, lessonId = null, variant = "page" }: Props) 
   const [open, setOpen] = useState(variant === "page");
   const bottomRef = useRef<HTMLDivElement>(null);
   const settingsHydrated = useRef(false);
+  const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     const local = loadUserLlmSettings();
@@ -90,10 +113,7 @@ export function TutorChat({ locale, lessonId = null, variant = "page" }: Props) 
 
   useEffect(() => {
     if (!settingsHydrated.current) return;
-    if (
-      serverConfigured === false &&
-      !settingsComplete(userSettings)
-    ) {
+    if (serverConfigured === false && !settingsComplete(userSettings)) {
       setShowSettings(true);
     }
   }, [serverConfigured, userSettings]);
@@ -102,11 +122,25 @@ export function TutorChat({ locale, lessonId = null, variant = "page" }: Props) 
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, busy]);
 
+  useEffect(() => {
+    return () => {
+      abortRef.current?.abort();
+    };
+  }, []);
+
   const generationReady =
     settingsComplete(userSettings) || serverConfigured === true;
 
   const statusLabel = (() => {
-    if (settingsComplete(userSettings)) return t(locale, "tutorReadyUser");
+    if (settingsComplete(userSettings)) {
+      const local =
+        userSettings &&
+        userSettings.apiType === "openai-compatible" &&
+        isLocalOpenAIEndpoint(userSettings.apiUrl);
+      return local
+        ? t(locale, "tutorReadyLocal")
+        : t(locale, "tutorReadyUser");
+    }
     if (serverConfigured === true) return t(locale, "tutorReadyServer");
     if (serverConfigured === null && !settingsHydrated.current) {
       return t(locale, "tutorChecking");
@@ -167,12 +201,73 @@ export function TutorChat({ locale, lessonId = null, variant = "page" }: Props) 
       { id: assistantId, role: "assistant", content: "" },
     ]);
 
+    abortRef.current?.abort();
+    const ac = new AbortController();
+    abortRef.current = ac;
+
     try {
       const creds = loadUserLlmSettings();
+      const useClientStream =
+        creds &&
+        creds.apiType === "openai-compatible" &&
+        isLocalOpenAIEndpoint(creds.apiUrl);
+
+      if (useClientStream && creds) {
+        // 1) Server keyword RAG  2) Browser → local Ollama / LM Studio
+        const rag = await prepareRag({
+          query: text,
+          lessonId,
+          locale,
+        });
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === assistantId
+              ? {
+                  ...m,
+                  citations: rag.citations,
+                  ragEmpty: rag.empty,
+                }
+              : m,
+          ),
+        );
+
+        const prior = history
+          .filter((m) => m.role === "user" || m.role === "assistant")
+          .slice(-12)
+          .map((m) => ({
+            role: m.role as "user" | "assistant",
+            content: m.content,
+          }));
+
+        await streamOpenAICompatibleChat({
+          settings: creds,
+          messages: prior,
+          system: rag.system,
+          signal: ac.signal,
+          onDelta: (acc) => {
+            setMessages((prev) =>
+              prev.map((m) =>
+                m.id === assistantId
+                  ? {
+                      ...m,
+                      content: acc,
+                      citations: rag.citations,
+                      ragEmpty: rag.empty,
+                    }
+                  : m,
+              ),
+            );
+          },
+        });
+        return;
+      }
+
+      // Cloud / remote OpenAI-compatible (or Anthropic / Azure): server proxy
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         cache: "no-store",
+        signal: ac.signal,
         body: JSON.stringify({
           messages: history.map((m) => ({
             role: m.role,
@@ -180,7 +275,6 @@ export function TutorChat({ locale, lessonId = null, variant = "page" }: Props) 
           })),
           lessonId,
           locale,
-          // Prefer browser settings when present; server falls back to env.
           ...(creds ? { credentials: creds } : {}),
         }),
       });
@@ -215,7 +309,8 @@ export function TutorChat({ locale, lessonId = null, variant = "page" }: Props) 
         return;
       }
 
-      const citations = decodeCitations(res.headers.get("X-Citations"));
+      const citations = decodeCitationsHeader(res.headers.get("X-Citations"));
+      const ragEmpty = res.headers.get("X-Citations-Empty") === "1";
       const reader = res.body?.getReader();
       if (!reader) throw new Error("No response body");
       const decoder = new TextDecoder();
@@ -228,12 +323,18 @@ export function TutorChat({ locale, lessonId = null, variant = "page" }: Props) 
         setMessages((prev) =>
           prev.map((m) =>
             m.id === assistantId
-              ? { ...m, content: snapshot, citations }
+              ? {
+                  ...m,
+                  content: snapshot,
+                  citations,
+                  ragEmpty,
+                }
               : m,
           ),
         );
       }
     } catch (e) {
+      if (e instanceof DOMException && e.name === "AbortError") return;
       const msg = e instanceof Error ? e.message : "Network error";
       setError(msg);
       setMessages((prev) =>
@@ -244,14 +345,7 @@ export function TutorChat({ locale, lessonId = null, variant = "page" }: Props) 
     } finally {
       setBusy(false);
     }
-  }, [
-    input,
-    busy,
-    messages,
-    lessonId,
-    locale,
-    generationReady,
-  ]);
+  }, [input, busy, messages, lessonId, locale, generationReady]);
 
   const panelShell =
     variant === "panel"
@@ -346,45 +440,59 @@ export function TutorChat({ locale, lessonId = null, variant = "page" }: Props) 
                 : "mr-6 rounded-lg bg-zinc-50 px-3 py-2 text-sm dark:bg-zinc-900"
             }
           >
-            <div className="whitespace-pre-wrap break-words">
-              {m.content || (busy ? "…" : "")}
-            </div>
-            {m.role === "assistant" &&
-              m.citations &&
-              m.citations.length > 0 && (
-                <ul className="mt-2 space-y-1 border-t border-zinc-200 pt-2 text-xs text-zinc-600 dark:border-zinc-700 dark:text-zinc-400">
-                  {m.citations.map((c, i) => (
-                    <li key={`${c.path}-${i}`}>
-                      <Link
-                        href={c.lessonHref}
-                        className="text-indigo-600 hover:underline dark:text-indigo-400"
-                      >
-                        {c.lesson_id}
-                        {c.heading ? ` · ${c.heading}` : ""}
-                      </Link>
+            {m.role === "user" ? (
+              <div className="whitespace-pre-wrap break-words">{m.content}</div>
+            ) : (
+              <>
+                {m.content ? (
+                  <TutorMarkdown content={m.content} />
+                ) : (
+                  <div className="text-zinc-400">{busy ? "…" : ""}</div>
+                )}
+                {m.ragEmpty && (
+                  <p className="mt-2 text-xs text-amber-700 dark:text-amber-300">
+                    {t(locale, "tutorRagEmpty")}
+                  </p>
+                )}
+                {m.citations && m.citations.length > 0 && (
+                  <ul className="mt-2 space-y-1 border-t border-zinc-200 pt-2 text-xs text-zinc-600 dark:border-zinc-700 dark:text-zinc-400">
+                    <li className="font-medium text-zinc-500">
+                      {t(locale, "tutorCitations")}
                     </li>
-                  ))}
-                </ul>
-              )}
-            {m.role === "assistant" && m.content && !busy && (
-              <div className="mt-2 flex gap-2 text-xs">
-                <button
-                  type="button"
-                  className={`rounded px-2 py-0.5 ${m.feedback === 1 ? "bg-emerald-100 text-emerald-800" : "bg-zinc-100 text-zinc-600 dark:bg-zinc-800"}`}
-                  onClick={() => sendFeedback(m.id, 1)}
-                  aria-label="thumbs up"
-                >
-                  👍
-                </button>
-                <button
-                  type="button"
-                  className={`rounded px-2 py-0.5 ${m.feedback === -1 ? "bg-rose-100 text-rose-800" : "bg-zinc-100 text-zinc-600 dark:bg-zinc-800"}`}
-                  onClick={() => sendFeedback(m.id, -1)}
-                  aria-label="thumbs down"
-                >
-                  👎
-                </button>
-              </div>
+                    {m.citations.map((c, i) => (
+                      <li key={`${c.path}-${i}`}>
+                        <Link
+                          href={c.lessonHref}
+                          className="text-indigo-600 hover:underline dark:text-indigo-400"
+                        >
+                          {c.lesson_id}
+                          {c.heading ? ` · ${c.heading}` : ""}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                {m.content && !busy && (
+                  <div className="mt-2 flex gap-2 text-xs">
+                    <button
+                      type="button"
+                      className={`rounded px-2 py-0.5 ${m.feedback === 1 ? "bg-emerald-100 text-emerald-800" : "bg-zinc-100 text-zinc-600 dark:bg-zinc-800"}`}
+                      onClick={() => sendFeedback(m.id, 1)}
+                      aria-label="thumbs up"
+                    >
+                      👍
+                    </button>
+                    <button
+                      type="button"
+                      className={`rounded px-2 py-0.5 ${m.feedback === -1 ? "bg-rose-100 text-rose-800" : "bg-zinc-100 text-zinc-600 dark:bg-zinc-800"}`}
+                      onClick={() => sendFeedback(m.id, -1)}
+                      aria-label="thumbs down"
+                    >
+                      👎
+                    </button>
+                  </div>
+                )}
+              </>
             )}
           </div>
         ))}

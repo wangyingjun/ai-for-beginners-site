@@ -8,7 +8,12 @@ import {
   DEFAULT_API_URL,
   DEFAULT_CHAT_MODEL,
   LLM_API_TYPES,
+  LLM_PRESETS,
+  PRESET_DEFS,
+  applyPreset,
+  isLocalOpenAIEndpoint,
   type LlmApiType,
+  type LlmPreset,
   type UserLlmSettings,
 } from "@/lib/rag/llm-settings";
 import {
@@ -26,12 +31,11 @@ type Props = {
 };
 
 export function TutorSettingsForm({ locale, onChange, compact }: Props) {
+  const [preset, setPreset] = useState<LlmPreset>("ollama");
   const [apiType, setApiType] = useState<LlmApiType>("openai-compatible");
-  const [apiUrl, setApiUrl] = useState(DEFAULT_API_URL["openai-compatible"]);
+  const [apiUrl, setApiUrl] = useState(PRESET_DEFS.ollama.apiUrl);
   const [apiKey, setApiKey] = useState("");
-  const [chatModel, setChatModel] = useState(
-    DEFAULT_CHAT_MODEL["openai-compatible"],
-  );
+  const [chatModel, setChatModel] = useState(PRESET_DEFS.ollama.chatModel);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -40,21 +44,41 @@ export function TutorSettingsForm({ locale, onChange, compact }: Props) {
     if (existing) {
       setApiType(existing.apiType);
       setApiUrl(existing.apiUrl);
-      setApiKey(existing.apiKey);
+      setApiKey(
+        existing.apiKey === "ollama" || existing.apiKey === "no-key"
+          ? ""
+          : existing.apiKey,
+      );
       setChatModel(
         existing.chatModel || DEFAULT_CHAT_MODEL[existing.apiType],
       );
+      setPreset(existing.preset ?? "custom");
     }
   }, []);
 
+  function onPresetChange(next: LlmPreset) {
+    setPreset(next);
+    const def = PRESET_DEFS[next];
+    setApiType(def.apiType);
+    setApiUrl(def.apiUrl);
+    setChatModel(def.chatModel);
+    if (def.keyOptional) setApiKey("");
+  }
+
   function onTypeChange(next: LlmApiType) {
     setApiType(next);
-    // Only auto-fill defaults when the URL still looks like a previous default.
-    const prevDefaults = Object.values(DEFAULT_API_URL);
+    setPreset("custom");
+    const prevDefaults = [
+      ...Object.values(DEFAULT_API_URL),
+      ...Object.values(PRESET_DEFS).map((d) => d.apiUrl),
+    ];
     if (!apiUrl.trim() || prevDefaults.includes(apiUrl)) {
       setApiUrl(DEFAULT_API_URL[next]);
     }
-    const prevModels = Object.values(DEFAULT_CHAT_MODEL);
+    const prevModels = [
+      ...Object.values(DEFAULT_CHAT_MODEL),
+      ...Object.values(PRESET_DEFS).map((d) => d.chatModel),
+    ];
     if (!chatModel.trim() || prevModels.includes(chatModel)) {
       setChatModel(DEFAULT_CHAT_MODEL[next]);
     }
@@ -70,6 +94,7 @@ export function TutorSettingsForm({ locale, onChange, compact }: Props) {
         apiUrl: apiUrl.trim(),
         apiKey: apiKey.trim(),
         chatModel: chatModel.trim() || undefined,
+        preset,
       };
       saveUserLlmSettings(settings);
       setSaved(true);
@@ -81,14 +106,21 @@ export function TutorSettingsForm({ locale, onChange, compact }: Props) {
 
   function handleClear() {
     clearUserLlmSettings();
+    const fresh = applyPreset("ollama");
+    setPreset("ollama");
     setApiKey("");
-    setApiType("openai-compatible");
-    setApiUrl(DEFAULT_API_URL["openai-compatible"]);
-    setChatModel(DEFAULT_CHAT_MODEL["openai-compatible"]);
+    setApiType(fresh.apiType);
+    setApiUrl(fresh.apiUrl);
+    setChatModel(fresh.chatModel || PRESET_DEFS.ollama.chatModel);
     setSaved(false);
     setError(null);
     onChange?.(null);
   }
+
+  const keyOptional =
+    PRESET_DEFS[preset]?.keyOptional ||
+    (apiType === "openai-compatible" && isLocalOpenAIEndpoint(apiUrl));
+  const presetHint = PRESET_DEFS[preset]?.hint[locale];
 
   const fieldClass =
     "mt-1 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm outline-none focus:border-indigo-500 dark:border-zinc-700 dark:bg-zinc-900";
@@ -112,6 +144,27 @@ export function TutorSettingsForm({ locale, onChange, compact }: Props) {
       </div>
 
       <label className="block text-xs font-medium text-zinc-700 dark:text-zinc-300">
+        {t(locale, "tutorPreset")}
+        <select
+          className={fieldClass}
+          value={preset}
+          onChange={(e) => onPresetChange(e.target.value as LlmPreset)}
+        >
+          {LLM_PRESETS.map((id) => (
+            <option key={id} value={id}>
+              {PRESET_DEFS[id].label[locale]}
+            </option>
+          ))}
+        </select>
+      </label>
+
+      {presetHint && (
+        <p className="text-[11px] leading-snug text-zinc-500 dark:text-zinc-400">
+          {presetHint}
+        </p>
+      )}
+
+      <label className="block text-xs font-medium text-zinc-700 dark:text-zinc-300">
         {t(locale, "tutorApiType")}
         <select
           className={fieldClass}
@@ -132,7 +185,10 @@ export function TutorSettingsForm({ locale, onChange, compact }: Props) {
           type="url"
           className={fieldClass}
           value={apiUrl}
-          onChange={(e) => setApiUrl(e.target.value)}
+          onChange={(e) => {
+            setApiUrl(e.target.value);
+            setPreset("custom");
+          }}
           placeholder={DEFAULT_API_URL[apiType]}
           autoComplete="off"
           required
@@ -141,14 +197,19 @@ export function TutorSettingsForm({ locale, onChange, compact }: Props) {
 
       <label className="block text-xs font-medium text-zinc-700 dark:text-zinc-300">
         {t(locale, "tutorApiKey")}
+        {keyOptional ? (
+          <span className="ml-1 font-normal text-zinc-400">
+            ({t(locale, "tutorApiKeyOptional")})
+          </span>
+        ) : null}
         <input
           type="password"
           className={fieldClass}
           value={apiKey}
           onChange={(e) => setApiKey(e.target.value)}
-          placeholder="sk-…"
+          placeholder={keyOptional ? "ollama / 可留空" : "sk-…"}
           autoComplete="off"
-          required
+          required={!keyOptional}
         />
       </label>
 

@@ -1,6 +1,12 @@
 import { streamText } from "ai";
 import { NextResponse } from "next/server";
-import { LLM_API_TYPES, sanitizeUserCredentials } from "@/lib/rag/llm-settings";
+import { encodeCitationsHeader } from "@/lib/rag/citations-header";
+import {
+  LLM_API_TYPES,
+  LLM_PRESETS,
+  isLocalOpenAIEndpoint,
+  sanitizeUserCredentials,
+} from "@/lib/rag/llm-settings";
 import {
   missingKeyMessage,
   providerConfigured,
@@ -8,7 +14,7 @@ import {
 } from "@/lib/rag/provider";
 import { buildSystemPrompt, formatRetrievedContext } from "@/lib/rag/prompt";
 import { checkRateLimit } from "@/lib/rag/rate-limit";
-import { retrieveChunks } from "@/lib/rag/retrieve";
+import { getIndexMeta, retrieveChunks } from "@/lib/rag/retrieve";
 import type { ChatCitation } from "@/lib/rag/types";
 import { createClient } from "@/lib/supabase/server";
 
@@ -65,6 +71,21 @@ export async function POST(req: Request) {
   // Ephemeral user credentials — used only for this request, never written to disk/DB/logs.
   const userCreds = sanitizeUserCredentials(body.credentials);
 
+  // Localhost endpoints must be called from the browser (see TutorChat hybrid path).
+  if (userCreds && isLocalOpenAIEndpoint(userCreds.apiUrl)) {
+    return jsonNoStore(
+      {
+        error:
+          locale === "en"
+            ? "Local OpenAI-compatible URLs (Ollama / LM Studio) are streamed from the browser. The UI should call /api/rag then your local /v1/chat/completions — not this proxy."
+            : "本机 OpenAI 兼容地址（Ollama / LM Studio）应由浏览器直连。界面会先请求 /api/rag，再调用本机 /v1/chat/completions，请勿经此代理。",
+        code: "USE_CLIENT_STREAM",
+        docs: "/docs/ai-tutor",
+      },
+      { status: 400 },
+    );
+  }
+
   let userId: string | null = null;
   try {
     const supabase = await createClient();
@@ -109,16 +130,16 @@ export async function POST(req: Request) {
         code: "AI_NOT_CONFIGURED",
         docs: "/docs/ai-tutor",
         supportsUserCredentials: true,
+        presets: [...LLM_PRESETS],
         hint:
           locale === "en"
-            ? "Open the setup form in the assistant UI and enter API URL, type, and key (stored in this browser only). Keyword retrieval still works once generation is configured."
-            : "请在助教界面的设置表单填写 API URL、类型与 Key（仅保存在本浏览器）。配置生成能力后，本地关键词检索仍会照常工作。",
+            ? "Open API settings and pick Ollama, DeepSeek, SiliconFlow, or any OpenAI-compatible URL. Keyword RAG still runs once generation is configured."
+            : "请打开 API 设置，选择 Ollama / DeepSeek / 硅基流动或任意 OpenAI 兼容地址。配置生成能力后，本地关键词 RAG 仍会照常工作。",
       },
       { status: 503 },
     );
   }
 
-  // Local keyword retrieval always runs when generating (no key → no generation, retrieval unused).
   const retrieved = retrieveChunks({
     query: lastUser.content,
     locale,
@@ -153,15 +174,11 @@ export async function POST(req: Request) {
       temperature: 0.3,
     });
 
-    const citationHeader = Buffer.from(
-      JSON.stringify(citations),
-      "utf8",
-    ).toString("base64url");
-
     return result.toTextStreamResponse({
       headers: {
         ...NO_STORE,
-        "X-Citations": citationHeader,
+        "X-Citations": encodeCitationsHeader(citations),
+        "X-Citations-Empty": citations.length === 0 ? "1" : "0",
         "X-RateLimit-Limit": String(rl.limit),
         "X-RateLimit-Remaining": String(rl.remaining),
         "X-RAG-Mode": "local-keyword",
@@ -184,13 +201,15 @@ export async function POST(req: Request) {
 
 /** Lightweight status for UI (no secrets). */
 export async function GET() {
-  const meta = await import("@/lib/rag/retrieve").then((m) => m.getIndexMeta());
   return jsonNoStore({
     configured: providerConfigured(),
     serverConfigured: providerConfigured(),
     supportsUserCredentials: true,
+    openSourceStack: true,
     apiTypes: [...LLM_API_TYPES],
+    presets: [...LLM_PRESETS],
     docs: "/docs/ai-tutor",
-    index: meta,
+    index: getIndexMeta(),
+    note: "Prefer OpenAI-compatible presets (Ollama / DeepSeek / SiliconFlow). Localhost streams from the browser via /api/rag + direct /v1/chat/completions.",
   });
 }

@@ -1,6 +1,7 @@
 /**
  * LLM provider resolution: prefer per-request user credentials (ephemeral),
- * else fall back to server env. Never assume a key exists; never log secrets.
+ * else fall back to server env. OpenAI-compatible first (Ollama / DeepSeek / …).
+ * Never assume a key exists; never log secrets.
  */
 
 import { createAnthropic } from "@ai-sdk/anthropic";
@@ -9,6 +10,7 @@ import { createOpenAI } from "@ai-sdk/openai";
 import type { LanguageModel } from "ai";
 import {
   DEFAULT_CHAT_MODEL,
+  LOCAL_API_KEY_PLACEHOLDER,
   type LlmApiType,
   type UserLlmSettings,
 } from "./llm-settings";
@@ -56,7 +58,7 @@ export function resolveEnvProviderConfig(): ProviderConfig | null {
 
   return {
     apiKey,
-    baseURL,
+    baseURL: baseURL.replace(/\/+$/, ""),
     chatModel,
     embeddingModel,
     apiType: "openai-compatible",
@@ -64,7 +66,7 @@ export function resolveEnvProviderConfig(): ProviderConfig | null {
   };
 }
 
-/** @deprecated use resolveEnvProviderConfig — kept for call-site clarity */
+/** @deprecated use resolveEnvProviderConfig */
 export function resolveProviderConfig(): ProviderConfig | null {
   return resolveEnvProviderConfig();
 }
@@ -80,11 +82,16 @@ export function providerConfigured(): boolean {
 export function resolveEffectiveConfig(
   user?: UserLlmSettings | null,
 ): ProviderConfig | null {
-  if (user?.apiKey?.trim() && user?.apiUrl?.trim()) {
+  if (user?.apiUrl?.trim()) {
     const apiType = user.apiType;
+    const apiKey =
+      user.apiKey?.trim() ||
+      (apiType === "openai-compatible" ? LOCAL_API_KEY_PLACEHOLDER : "");
+    if (!apiKey && apiType !== "openai-compatible") return null;
+
     return {
-      apiKey: user.apiKey.trim(),
-      baseURL: user.apiUrl.trim().replace(/\/$/, ""),
+      apiKey: apiKey || LOCAL_API_KEY_PLACEHOLDER,
+      baseURL: user.apiUrl.trim().replace(/\/+$/, ""),
       chatModel:
         user.chatModel?.trim() ||
         DEFAULT_CHAT_MODEL[apiType] ||
@@ -117,6 +124,7 @@ export function createChatModel(config: ProviderConfig): LanguageModel {
     }
     case "openai-compatible":
     default: {
+      // chat() uses /v1/chat/completions — works with Ollama, vLLM, DeepSeek, etc.
       const openai = createOpenAI({
         apiKey: config.apiKey,
         baseURL: config.baseURL,
@@ -137,7 +145,7 @@ export function resolveChatModel(
 /** Human-readable reason when chat is unavailable (no secrets). */
 export function missingKeyMessage(locale: "zh-CN" | "en" = "zh-CN"): string {
   if (locale === "en") {
-    return "AI tutor has no LLM credentials. Configure API URL / type / key in the assistant UI (saved in this browser only), or set OPENAI_API_KEY on the server — see docs/ai-tutor.md.";
+    return "AI tutor has no LLM credentials. Pick a preset (Ollama / DeepSeek / …) in the assistant UI, or set OPENAI_API_KEY on the server — see docs/ai-tutor.md.";
   }
-  return "AI 助教尚未配置 LLM。请在助教界面填写 API URL / 类型 / Key（仅保存在本浏览器），或在服务端设置 OPENAI_API_KEY，详见 docs/ai-tutor.md。";
+  return "AI 助教尚未配置 LLM。请在助教界面选择预设（Ollama / DeepSeek 等）并填写凭证，或在服务端设置 OPENAI_API_KEY，详见 docs/ai-tutor.md。";
 }
