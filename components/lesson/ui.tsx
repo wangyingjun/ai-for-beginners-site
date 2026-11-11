@@ -97,7 +97,7 @@ export function ExpCanvas({
   animate?: boolean;
   aspect?: number;
   maxWidth?: number;
-  onPointer?: (u: number, v: number, kind: "down" | "move" | "up") => void;
+  onPointer?: (u: number, v: number, kind: "down" | "move" | "up", cssW: number, cssH: number) => void;
   ariaLabel: string;
   className?: string;
 }) {
@@ -160,7 +160,7 @@ export function ExpCanvas({
 
   const toUV = (e: React.PointerEvent<HTMLCanvasElement>) => {
     const r = e.currentTarget.getBoundingClientRect();
-    return [(e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height] as const;
+    return [(e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height, r.width, r.height] as const;
   };
 
   return (
@@ -174,19 +174,19 @@ export function ExpCanvas({
           if (!onPointer) return;
           draggingRef.current = true;
           e.currentTarget.setPointerCapture(e.pointerId);
-          const [u, v] = toUV(e);
-          onPointer(u, v, "down");
+          const [u, v, cw, ch] = toUV(e);
+          onPointer(u, v, "down", cw, ch);
         }}
         onPointerMove={(e) => {
           if (!onPointer || !draggingRef.current) return;
-          const [u, v] = toUV(e);
-          onPointer(u, v, "move");
+          const [u, v, cw, ch] = toUV(e);
+          onPointer(u, v, "move", cw, ch);
         }}
         onPointerUp={(e) => {
           if (!onPointer) return;
           draggingRef.current = false;
-          const [u, v] = toUV(e);
-          onPointer(u, v, "up");
+          const [u, v, cw, ch] = toUV(e);
+          onPointer(u, v, "up", cw, ch);
         }}
       />
     </div>

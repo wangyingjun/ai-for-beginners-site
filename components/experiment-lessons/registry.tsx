@@ -10,6 +10,8 @@ type LessonComp = ComponentType<{ advanced?: ReactNode }>;
  * Keep in sync with lib/experiment-lessons.ts.
  */
 const REGISTRY: Record<string, LessonComp> = {
+  "01": dynamic(() => import("./lesson01")),
+  data: dynamic(() => import("./lessonData")),
   "03": dynamic(() => import("./lesson03")),
   loss: dynamic(() => import("./lessonLoss")),
   gd: dynamic(() => import("./lessonGd")),
