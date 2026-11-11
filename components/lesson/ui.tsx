@@ -192,3 +192,54 @@ export function ExpCanvas({
     </div>
   );
 }
+
+/** "和原文的对应" box at the top of the collapsed 进阶 section. */
+export function AdvancedNote({ children }: { children: ReactNode }) {
+  return (
+    <div className="space-y-2 rounded-xl border border-zinc-200 bg-white p-4 text-[15px] leading-relaxed dark:border-zinc-800 dark:bg-zinc-950">
+      <p className="font-semibold">和原文的对应（选读）</p>
+      {children}
+    </div>
+  );
+}
+
+/** Small square pixel grid (values 0..1 as grayscale), optional per-cell outline color. */
+export function PixelGrid({
+  px,
+  n = 8,
+  size = 132,
+  ring,
+  onCell,
+  label,
+  color = "24,24,27",
+}: {
+  px: number[];
+  n?: number;
+  size?: number;
+  ring?: (i: number) => string | undefined;
+  onCell?: (i: number) => void;
+  label: string;
+  color?: string;
+}) {
+  return (
+    <div className="space-y-1">
+      <div className="text-xs text-zinc-500">{label}</div>
+      <div
+        role="grid"
+        aria-label={label}
+        className="grid gap-px bg-zinc-300 p-px dark:bg-zinc-700"
+        style={{ width: size, gridTemplateColumns: `repeat(${n}, minmax(0, 1fr))` }}
+      >
+        {px.map((v, i) => {
+          const r = ring?.(i);
+          const style = { backgroundColor: v > 0.02 ? `rgba(${color},${Math.min(1, v).toFixed(2)})` : undefined, boxShadow: r ? `inset 0 0 0 2px ${r}` : undefined };
+          return onCell ? (
+            <button key={i} type="button" aria-label={`第 ${Math.floor(i / n) + 1} 行第 ${(i % n) + 1} 格`} onClick={() => onCell(i)} className="aspect-square bg-white dark:bg-zinc-900" style={style} />
+          ) : (
+            <div key={i} className="aspect-square bg-white dark:bg-zinc-900" style={style} />
+          );
+        })}
+      </div>
+    </div>
+  );
+}

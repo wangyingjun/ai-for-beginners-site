@@ -294,24 +294,24 @@ export default async function LessonPage({
             <p className="text-sm text-zinc-500">原课：{localizedTitle(lesson, locale)}</p>
           )}
           <div className="flex flex-wrap gap-2 text-xs">
-            {tierLabel && (
+            {!experimentFirst && tierLabel && (
               <span className="rounded-full bg-amber-50 px-2 py-0.5 text-amber-800 dark:bg-amber-950 dark:text-amber-200">
                 {t(locale, "tier")}: {tierLabel}
               </span>
             )}
-            {!lesson.hasNotebook && (
+            {!experimentFirst && !lesson.hasNotebook && (
               <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-zinc-600 dark:bg-zinc-800">
                 {t(locale, "readingOnly")}
               </span>
             )}
-            {lesson.hasLab && (
+            {!experimentFirst && lesson.hasLab && (
               <span className="rounded-full bg-violet-50 px-2 py-0.5 text-violet-800 dark:bg-violet-950 dark:text-violet-200">
                 {t(locale, "lab")}
               </span>
             )}
-            {hasMd && (
+            {!experimentFirst && hasMd && (
               <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">
-                Markdown
+                {locale === "zh-CN" ? "图文正文" : "Markdown"}
               </span>
             )}
             <a
@@ -320,7 +320,7 @@ export default async function LessonPage({
               rel="noreferrer"
               className="rounded-full bg-zinc-100 px-2 py-0.5 text-zinc-600 underline dark:bg-zinc-800"
             >
-              GitHub README
+              {locale === "zh-CN" ? "GitHub 上的原文" : "GitHub README"}
             </a>
           </div>
         </header>
