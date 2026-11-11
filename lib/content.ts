@@ -1,6 +1,7 @@
 import { readFile } from "fs/promises";
 import path from "path";
 import type { Locale } from "@/lib/i18n";
+import { applyContentFixes } from "@/lib/content-fixes";
 
 export async function loadLessonMarkdown(
   lessonId: string,
@@ -18,7 +19,7 @@ export async function loadLessonMarkdown(
 
   for (const candidate of [preferred, fallback]) {
     try {
-      return await readFile(candidate, "utf8");
+      return applyContentFixes(await readFile(candidate, "utf8"), lessonId);
     } catch {
       /* try next */
     }
@@ -127,7 +128,11 @@ export async function loadLabMarkdown(
 
   for (const candidate of [preferred, fallback]) {
     try {
-      return await readFile(candidate, "utf8");
+      return applyContentFixes(
+        await readFile(candidate, "utf8"),
+        lessonId,
+        "lab",
+      );
     } catch {
       /* try next */
     }

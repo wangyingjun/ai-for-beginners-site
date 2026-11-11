@@ -3,6 +3,7 @@ import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
 import { rewriteQuizHref } from "@/lib/quizzes";
+import { resolveLessonHref, resolveLessonImg } from "@/lib/lesson-links";
 
 const schema = {
   ...defaultSchema,
@@ -32,9 +33,12 @@ export function MarkdownBody({
   content,
   lessonId,
   langQuery,
+  linkBase = "",
 }: {
   content: string;
   lessonId?: string;
+  /** Upstream folder the Markdown lives in, relative to the lesson ("" or "lab"). */
+  linkBase?: "" | "lab";
   /** e.g. "?lang=zh-CN" appended to rewritten in-site quiz links */
   langQuery?: string;
 }) {
@@ -63,13 +67,21 @@ export function MarkdownBody({
           ),
           li: ({ children }) => <li className="leading-relaxed">{children}</li>,
           a: ({ href, children }) => {
-            const rewritten = rewriteQuizHref(href, lessonId);
+            const quiz = rewriteQuizHref(href, lessonId);
+            const rewritten =
+              quiz && quiz === href && lessonId
+                ? resolveLessonHref(quiz, lessonId, linkBase)
+                : quiz;
             const isInternal =
               rewritten?.startsWith("/") && !rewritten.startsWith("//");
-            const finalHref =
-              isInternal && rewritten
-                ? `${rewritten}${suffix}`
-                : rewritten;
+            let finalHref = rewritten;
+            if (isInternal && rewritten && suffix) {
+              const i = rewritten.indexOf("#");
+              finalHref =
+                i === -1
+                  ? `${rewritten}${suffix}`
+                  : `${rewritten.slice(0, i)}${suffix}${rewritten.slice(i)}`;
+            }
             return (
               <a
                 href={finalHref}
@@ -88,7 +100,13 @@ export function MarkdownBody({
           img: ({ src, alt }) => (
             // eslint-disable-next-line @next/next/no-img-element
             <img
-              src={typeof src === "string" ? src : undefined}
+              src={
+                typeof src === "string"
+                  ? lessonId
+                    ? resolveLessonImg(src, lessonId, linkBase)
+                    : src
+                  : undefined
+              }
               alt={alt || ""}
               className="my-3 max-h-[480px] max-w-full rounded-lg border border-zinc-200 object-contain dark:border-zinc-700"
               loading="lazy"

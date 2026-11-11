@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { nearestNeighbors, TOY_EMBEDDINGS } from "@/lib/ml/textrep";
+import { nearestNeighbors, TOY_EMBEDDINGS, TOY_EMBEDDINGS_ZH } from "@/lib/ml/textrep";
 import { t, type Locale } from "@/lib/i18n";
 
 const GROUP_COLOR: Record<string, string> = {
@@ -22,6 +22,8 @@ export function EmbeddingsDemo({
   showFullscreenLink?: boolean;
 }) {
   const [selected, setSelected] = useState("king");
+  const label = (word: string) =>
+    locale === "zh-CN" ? (TOY_EMBEDDINGS_ZH[word] ?? word) : word;
   const neighbors = useMemo(() => nearestNeighbors(selected, 5), [selected]);
   const size = 340;
   const pad = 28;
@@ -74,7 +76,7 @@ export function EmbeddingsDemo({
                   y={cy + 3}
                   className="fill-zinc-700 text-[10px] dark:fill-zinc-300"
                 >
-                  {w.word}
+                  {label(w.word)}
                 </text>
               </g>
             );
@@ -84,7 +86,7 @@ export function EmbeddingsDemo({
         <div className="min-w-[180px] space-y-2 text-sm">
           <p>
             <span className="text-zinc-500">{t(locale, "demoEmbedSelected")}: </span>
-            <strong className="font-mono">{selected}</strong>
+            <strong className="font-mono">{label(selected)}</strong>
           </p>
           <p className="font-medium">{t(locale, "demoEmbedNeighbors")}</p>
           <ul className="space-y-1">
@@ -95,7 +97,7 @@ export function EmbeddingsDemo({
                   className="font-mono text-indigo-600 hover:underline dark:text-indigo-400"
                   onClick={() => setSelected(n.word)}
                 >
-                  {n.word}
+                  {label(n.word)}
                 </button>
                 <span className="ml-2 text-zinc-400">{n.score.toFixed(3)}</span>
               </li>

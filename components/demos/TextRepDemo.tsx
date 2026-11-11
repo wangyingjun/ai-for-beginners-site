@@ -5,11 +5,19 @@ import Link from "next/link";
 import { bagOfWords, tfidf } from "@/lib/ml/textrep";
 import { t, type Locale } from "@/lib/i18n";
 
-const DEFAULT_DOCS = [
-  "I love machine learning and neural networks",
-  "Neural networks power deep learning models",
-  "Cats and dogs are popular pets",
-];
+const DEFAULT_DOCS: Record<Locale, string[]> = {
+  // Chinese docs are pre-segmented with spaces (the toy tokenizer splits on whitespace).
+  "zh-CN": [
+    "我 喜欢 机器学习 和 神经网络",
+    "神经网络 驱动 深度学习 模型",
+    "猫咪 和 小狗 都是 常见 宠物",
+  ],
+  en: [
+    "I love machine learning and neural networks",
+    "Neural networks power deep learning models",
+    "Cats and dogs are popular pets",
+  ],
+};
 
 export function TextRepDemo({
   locale,
@@ -18,7 +26,7 @@ export function TextRepDemo({
   locale: Locale;
   showFullscreenLink?: boolean;
 }) {
-  const [raw, setRaw] = useState(DEFAULT_DOCS.join("\n"));
+  const [raw, setRaw] = useState((DEFAULT_DOCS[locale] ?? DEFAULT_DOCS.en).join("\n"));
   const [mode, setMode] = useState<"bow" | "tfidf">("bow");
   const [dropStop, setDropStop] = useState(true);
 

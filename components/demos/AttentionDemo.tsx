@@ -9,11 +9,18 @@ import {
 } from "@/lib/ml/attention";
 import { t, type Locale } from "@/lib/i18n";
 
-const PRESETS = [
-  "the cat sat on the mat",
-  "transformers attend to relevant tokens",
-  "attention is all you need",
-];
+const PRESETS: Record<Locale, string[]> = {
+  "zh-CN": [
+    "小猫 没 吃 鱼 因为 它 不 饿",
+    "我 喜欢 在 周末 读书",
+    "注意力 就是 你 所 需要 的",
+  ],
+  en: [
+    "the cat sat on the mat",
+    "transformers attend to relevant tokens",
+    "attention is all you need",
+  ],
+};
 
 export function AttentionDemo({
   locale,
@@ -22,7 +29,8 @@ export function AttentionDemo({
   locale: Locale;
   showFullscreenLink?: boolean;
 }) {
-  const [sentence, setSentence] = useState(PRESETS[0]);
+  const presets = PRESETS[locale] ?? PRESETS.en;
+  const [sentence, setSentence] = useState(presets[0]);
   const [temp, setTemp] = useState(0.35);
   const tokens = useMemo(() => tokenizeSentence(sentence).slice(0, 12), [sentence]);
   const matrix = useMemo(
@@ -48,7 +56,7 @@ export function AttentionDemo({
       </div>
 
       <div className="flex flex-wrap gap-2">
-        {PRESETS.map((p) => (
+        {presets.map((p) => (
           <button
             key={p}
             type="button"

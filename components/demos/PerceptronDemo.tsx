@@ -112,18 +112,18 @@ export function PerceptronDemo({ locale, showFullscreenLink = true }: { locale: 
       ctx.beginPath();
       if (p.label === 1) {
         ctx.arc(cx, cy, 7, 0, Math.PI * 2);
-        ctx.fillStyle = correct ? "#2563eb" : "#93c5fd";
+        ctx.fillStyle = correct ? "#dc2626" : "#fca5a5";
         ctx.fill();
-        ctx.strokeStyle = "#1e3a8a";
+        ctx.strokeStyle = "#7f1d1d";
         ctx.lineWidth = 1.5;
         ctx.stroke();
       } else {
         ctx.save();
         ctx.translate(cx, cy);
         ctx.rotate(Math.PI / 4);
-        ctx.fillStyle = correct ? "#dc2626" : "#fca5a5";
+        ctx.fillStyle = correct ? "#2563eb" : "#93c5fd";
         ctx.fillRect(-6, -6, 12, 12);
-        ctx.strokeStyle = "#7f1d1d";
+        ctx.strokeStyle = "#1e3a8a";
         ctx.lineWidth = 1.5;
         ctx.strokeRect(-6, -6, 12, 12);
         ctx.restore();

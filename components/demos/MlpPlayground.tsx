@@ -32,19 +32,19 @@ const HIDDEN_PRESETS: { id: string; layers: number[] }[] = [
 ];
 
 function lerpColor(p: number): string {
-  // blue (1) ← white (0.5) → orange/red (0)
+  // red (class 1, matches upstream notebooks) ← white (0.5) → blue (class 0)
   const t = Math.max(0, Math.min(1, p));
   if (t >= 0.5) {
     const u = (t - 0.5) * 2;
-    const r = Math.round(255 - u * (255 - 37));
-    const g = Math.round(255 - u * (255 - 99));
-    const b = Math.round(255 - u * (255 - 235));
+    const r = Math.round(255 - u * (255 - 239));
+    const g = Math.round(255 - u * (255 - 68));
+    const b = Math.round(255 - u * (255 - 68));
     return `rgb(${r},${g},${b})`;
   }
   const u = t * 2;
-  const r = Math.round(249 + u * (255 - 249));
-  const g = Math.round(115 + u * (255 - 115));
-  const b = Math.round(22 + u * (255 - 22));
+  const r = Math.round(37 + u * (255 - 37));
+  const g = Math.round(99 + u * (255 - 99));
+  const b = Math.round(235 + u * (255 - 235));
   return `rgb(${r},${g},${b})`;
 }
 
@@ -136,7 +136,7 @@ export function MlpPlayground({ locale, showFullscreenLink = true }: { locale: L
       const cy = ((DATA_MAX - s.y) / (DATA_MAX - DATA_MIN)) * h;
       ctx.beginPath();
       ctx.arc(cx, cy, 5, 0, Math.PI * 2);
-      ctx.fillStyle = s.label === 1 ? "#1d4ed8" : "#c2410c";
+      ctx.fillStyle = s.label === 1 ? "#b91c1c" : "#1d4ed8";
       ctx.fill();
       ctx.strokeStyle = "#fff";
       ctx.lineWidth = 1.5;

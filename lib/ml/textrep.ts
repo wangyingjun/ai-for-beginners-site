@@ -78,6 +78,16 @@ export const TOY_EMBEDDINGS: { word: string; x: number; y: number; group: string
   { word: "train", x: 0.92, y: 0.42, group: "vehicles" },
 ];
 
+/** Chinese display labels for the toy embedding vocabulary. */
+export const TOY_EMBEDDINGS_ZH: Record<string, string> = {
+  king: "国王", queen: "女王", prince: "王子", princess: "公主",
+  man: "男人", woman: "女人", boy: "男孩", girl: "女孩",
+  cat: "猫", dog: "狗", puppy: "小狗", kitten: "小猫",
+  paris: "巴黎", france: "法国", london: "伦敦", england: "英国",
+  apple: "苹果", orange: "橙子", bread: "面包",
+  car: "汽车", bus: "公交车", train: "火车",
+};
+
 export function cosine(
   a: { x: number; y: number },
   b: { x: number; y: number },

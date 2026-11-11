@@ -4,11 +4,14 @@
  */
 
 export function tokenizeSentence(s: string): string[] {
-  return s
-    .trim()
-    .split(/\s+/)
-    .map((t) => t.replace(/[.,!?;:"()]/g, ""))
-    .filter(Boolean);
+  const trimmed = s.trim();
+  const strip = (t: string) =>
+    t.replace(/[.,!?;:"()\u3000-\u303f\uff00-\uff0f\uff1a-\uff20]/g, "");
+  // Chinese without spaces: one token per character.
+  if (!/\s/.test(trimmed) && /[\u4e00-\u9fff]/.test(trimmed)) {
+    return Array.from(strip(trimmed)).filter(Boolean);
+  }
+  return trimmed.split(/\s+/).map(strip).filter(Boolean);
 }
 
 /** Deterministic pseudo-embedding from character codes (dim=8). */
