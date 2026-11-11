@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { mulberry32 } from "@/lib/ml/perceptron";
 import {
   DEFAULT_GA,
   bestOf,
@@ -26,10 +27,10 @@ export function GeneticDemo({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const curveRef = useRef<HTMLCanvasElement>(null);
   const [cfg, setCfg] = useState<GAConfig>({ ...DEFAULT_GA });
-  const [pop, setPop] = useState<Individual[]>(() => createPopulation(DEFAULT_GA));
+  const [pop, setPop] = useState<Individual[]>(() => createPopulation(DEFAULT_GA, mulberry32(7)));
   const [gen, setGen] = useState(0);
   const [history, setHistory] = useState<number[]>(() => [
-    bestOf(createPopulation(DEFAULT_GA)).fitness,
+    bestOf(createPopulation(DEFAULT_GA, mulberry32(7))).fitness,
   ]);
   const [running, setRunning] = useState(false);
   const popRef = useRef(pop);

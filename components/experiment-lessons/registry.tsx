@@ -25,6 +25,10 @@ const REGISTRY: Record<string, LessonComp> = {
   "17": dynamic(() => import("./lesson17")),
   "18": dynamic(() => import("./lesson18")),
   "20": dynamic(() => import("./lesson20")),
+  "02": dynamic(() => import("./lesson02")),
+  "21": dynamic(() => import("./lesson21")),
+  "22": dynamic(() => import("./lesson22")),
+  "24": dynamic(() => import("./lesson24")),
 };
 
 export function ExperimentLessonById({

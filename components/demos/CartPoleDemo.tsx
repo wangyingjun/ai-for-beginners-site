@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { mulberry32 } from "@/lib/ml/perceptron";
 import {
   CART,
   act,
@@ -30,11 +31,11 @@ export function CartPoleDemo({
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const curveRef = useRef<HTMLCanvasElement>(null);
-  const [state, setState] = useState<CartState>(() => resetCart());
+  const [state, setState] = useState<CartState>(() => resetCart(mulberry32(7)));
   const [mode, setMode] = useState<Mode>("heuristic");
   const [running, setRunning] = useState(false);
   const [steps, setSteps] = useState(0);
-  const [policy, setPolicy] = useState<Policy>(() => createPolicy());
+  const [policy, setPolicy] = useState<Policy>(() => createPolicy(mulberry32(11)));
   const [curve, setCurve] = useState<number[]>([]);
   const [training, setTraining] = useState(false);
   const stateRef = useRef(state);
