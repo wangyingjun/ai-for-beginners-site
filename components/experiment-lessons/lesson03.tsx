@@ -135,7 +135,7 @@ const def: ExperimentLessonDef = {
       storageKey="exp:03:practice"
       aha={
         <>
-          一条直线，<b>怎么转都分不开</b>「四角棋盘」。想让分界线拐弯，就得把好几条这样的线叠起来——这就是下一课的
+          一条直线，<b>怎么转都分不开</b>「四角棋盘」。想让分界线拐弯，就得把好几条这样的线叠起来——这就是第 04 课的
           <b>多层网络</b>。
         </>
       }
@@ -175,9 +175,9 @@ const def: ExperimentLessonDef = {
     </>
   ),
   next: {
-    question: "如果数据像棋盘格那样，怎么让分界线弯起来？",
-    href: "/lessons/04",
-    label: "去第 04 课：多层感知机 →",
+    question: "线是被一个个错点推着走的。能不能用一个数字说出「现在总共错了多少」？",
+    href: "/lessons/loss",
+    label: "去下一课：错得有多离谱（误差）→",
   },
   advancedIntro: (
     <div className="space-y-3 rounded-xl border border-zinc-200 bg-white p-4 text-[15px] leading-relaxed dark:border-zinc-800 dark:bg-zinc-950">
@@ -203,3 +203,5 @@ const def: ExperimentLessonDef = {
 export function Lesson03({ advanced }: { advanced?: ReactNode }) {
   return <ExperimentLesson def={def} advanced={advanced} />;
 }
+
+export default Lesson03;

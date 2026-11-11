@@ -20,6 +20,9 @@ import { TutorChat } from "@/components/tutor/TutorChat";
 import { ExperimentLessonById } from "@/components/experiment-lessons/registry";
 import { OpenDetailsOnHash } from "@/components/lesson/OpenDetailsOnHash";
 import { hasExperimentLesson } from "@/lib/experiment-lessons";
+import { ExtraLessonPage } from "@/components/lesson/ExtraLessonPage";
+import { PathNav } from "@/components/lesson/PathNav";
+import { EXTRA_LESSON_IDS, isExtraLesson, PATH_LESSONS } from "@/lib/learning-path";
 import { SiteHeader } from "@/components/SiteHeader";
 import {
   loadLabMarkdown,
@@ -38,7 +41,10 @@ import {
 } from "@/lib/lessons";
 
 export function generateStaticParams() {
-  return getLessons().map((l) => ({ id: l.id }));
+  return [
+    ...getLessons().map((l) => ({ id: l.id })),
+    ...EXTRA_LESSON_IDS.map((id) => ({ id })),
+  ];
 }
 
 export async function generateMetadata({
@@ -48,7 +54,7 @@ export async function generateMetadata({
 }) {
   const { id } = await params;
   const lesson = getLessonById(id);
-  if (!lesson) return { title: "Lesson" };
+  if (!lesson) return { title: PATH_LESSONS[id]?.title ?? "Lesson" };
   return { title: lesson.title["zh-CN"] };
 }
 
@@ -62,7 +68,10 @@ export default async function LessonPage({
   const { id } = await params;
   const locale = await resolveLocale(searchParams);
   const lesson = getLessonById(id);
-  if (!lesson) notFound();
+  if (!lesson) {
+    if (isExtraLesson(id)) return <ExtraLessonPage id={id} locale={locale} />;
+    notFound();
+  }
 
   const mod = getModule(lesson.module);
   const { prev, next } = adjacentLessons(lesson.id);
@@ -277,8 +286,13 @@ export default async function LessonPage({
             <span className="mr-2 font-mono text-lg text-zinc-400">
               {lesson.id}
             </span>
-            {localizedTitle(lesson, locale)}
+            {experimentFirst && PATH_LESSONS[lesson.id]
+              ? PATH_LESSONS[lesson.id].title
+              : localizedTitle(lesson, locale)}
           </h1>
+          {experimentFirst && PATH_LESSONS[lesson.id] && (
+            <p className="text-sm text-zinc-500">原课：{localizedTitle(lesson, locale)}</p>
+          )}
           <div className="flex flex-wrap gap-2 text-xs">
             {tierLabel && (
               <span className="rounded-full bg-amber-50 px-2 py-0.5 text-amber-800 dark:bg-amber-950 dark:text-amber-200">
@@ -320,6 +334,9 @@ export default async function LessonPage({
         )}
         <OpenDetailsOnHash />
 
+        {experimentFirst ? (
+          <PathNav lessonId={lesson.id} />
+        ) : (
         <nav className="mt-12 flex items-center justify-between border-t border-zinc-200 pt-6 text-sm dark:border-zinc-800">
           {prev ? (
             <Link
@@ -342,6 +359,7 @@ export default async function LessonPage({
             <span />
           )}
         </nav>
+        )}
       </main>
       <TutorChat locale={locale} lessonId={lesson.id} variant="panel" />
       <SiteFooter locale={locale} />

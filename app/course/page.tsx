@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
+import { LearningPath } from "@/components/lesson/LearningPath";
+import { EXPERIMENT_LESSON_IDS } from "@/lib/experiment-lessons";
 import { t } from "@/lib/i18n";
 import { resolveLocale } from "@/lib/locale";
 import {
@@ -32,6 +34,20 @@ export default async function CoursePage({
           {t(locale, "siteTagline")}
         </p>
 
+        {locale === "zh-CN" && (
+          <div className="mb-12">
+            <LearningPath ready={EXPERIMENT_LESSON_IDS} />
+          </div>
+        )}
+
+        {locale === "zh-CN" && (
+          <h2 className="mb-1 text-xl font-semibold tracking-tight">全部原课程（按上游顺序）</h2>
+        )}
+        {locale === "zh-CN" && (
+          <p className="mb-6 text-sm text-zinc-500">
+            Microsoft AI-For-Beginners 原来的 25 课。新版课页的「进阶」里也能找到对应原文和 Notebook。
+          </p>
+        )}
         <div className="space-y-10">
           {modules.map((mod) => {
             const lessons = getLessonsByModule(mod.id);

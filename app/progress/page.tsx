@@ -1,4 +1,5 @@
 import { ProgressClient } from "@/components/ProgressClient";
+import { ExperimentProgress } from "@/components/lesson/ExperimentProgress";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { t } from "@/lib/i18n";
@@ -24,6 +25,11 @@ export default async function ProgressPage({
           <p className="mt-4 rounded-lg border border-rose-200 bg-rose-50 p-3 text-sm text-rose-800 dark:border-rose-900 dark:bg-rose-950/40 dark:text-rose-200">
             {t(locale, "authError")}
           </p>
+        )}
+        {locale === "zh-CN" && (
+          <div className="mt-6">
+            <ExperimentProgress />
+          </div>
         )}
         <div className="mt-6">
           <ProgressClient locale={locale} />

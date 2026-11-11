@@ -92,9 +92,16 @@ export function Experiment<S>({
   useEffect(() => {
     if (allDone && !firedRef.current) {
       firedRef.current = true;
+      if (storageKey) {
+        try {
+          window.localStorage.setItem(`${storageKey}:complete`, "1");
+        } catch {
+          /* ignore */
+        }
+      }
       onAllDone?.();
     }
-  }, [allDone, onAllDone]);
+  }, [allDone, onAllDone, storageKey]);
 
   return (
     <div className="space-y-4">
