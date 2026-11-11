@@ -17,6 +17,9 @@ import { LessonVisitTracker } from "@/components/LessonVisitTracker";
 import { MarkdownBody } from "@/components/MarkdownBody";
 import { SiteFooter } from "@/components/SiteFooter";
 import { TutorChat } from "@/components/tutor/TutorChat";
+import { ExperimentLessonById } from "@/components/experiment-lessons/registry";
+import { OpenDetailsOnHash } from "@/components/lesson/OpenDetailsOnHash";
+import { hasExperimentLesson } from "@/lib/experiment-lessons";
 import { SiteHeader } from "@/components/SiteHeader";
 import {
   loadLabMarkdown,
@@ -97,63 +100,10 @@ export default async function LessonPage({
   const showCart = lesson.id === "22";
 
   const labNotebooks = lesson.labNotebooks ?? [];
+  const experimentFirst = hasExperimentLesson(lesson.id, locale);
 
-  return (
+  const legacy = (
     <>
-      <SiteHeader locale={locale} />
-      <LessonVisitTracker lessonId={lesson.id} />
-      <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-10">
-        <Link
-          href={`/course?lang=${locale}`}
-          className="text-sm text-indigo-600 hover:underline dark:text-indigo-400"
-        >
-          ← {t(locale, "backToIndex")}
-        </Link>
-
-        <header className="mt-4 space-y-2">
-          {mod && (
-            <p className="text-sm text-zinc-500">
-              {localizedTitle(mod, locale)}
-            </p>
-          )}
-          <h1 className="text-3xl font-bold tracking-tight">
-            <span className="mr-2 font-mono text-lg text-zinc-400">
-              {lesson.id}
-            </span>
-            {localizedTitle(lesson, locale)}
-          </h1>
-          <div className="flex flex-wrap gap-2 text-xs">
-            {tierLabel && (
-              <span className="rounded-full bg-amber-50 px-2 py-0.5 text-amber-800 dark:bg-amber-950 dark:text-amber-200">
-                {t(locale, "tier")}: {tierLabel}
-              </span>
-            )}
-            {!lesson.hasNotebook && (
-              <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-zinc-600 dark:bg-zinc-800">
-                {t(locale, "readingOnly")}
-              </span>
-            )}
-            {lesson.hasLab && (
-              <span className="rounded-full bg-violet-50 px-2 py-0.5 text-violet-800 dark:bg-violet-950 dark:text-violet-200">
-                {t(locale, "lab")}
-              </span>
-            )}
-            {hasMd && (
-              <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">
-                Markdown
-              </span>
-            )}
-            <a
-              href={githubBlobUrl(lesson.path, "README.md")}
-              target="_blank"
-              rel="noreferrer"
-              className="rounded-full bg-zinc-100 px-2 py-0.5 text-zinc-600 underline dark:bg-zinc-800"
-            >
-              GitHub README
-            </a>
-          </div>
-        </header>
-
         <section className="mt-8 space-y-4">
           {hasMd ? (
             <LessonMarkdown lessonId={lesson.id} locale={locale} />
@@ -228,7 +178,7 @@ export default async function LessonPage({
         )}
 
         {lesson.hasNotebook && notebooks.length > 0 && (
-          <section className="mt-10 space-y-4">
+          <section id="notebooks" className="mt-10 scroll-mt-20 space-y-4">
             <h2 className="text-xl font-semibold">{t(locale, "notebooks")}</h2>
             <p className="text-sm text-zinc-500">{t(locale, "notebookOutputHint")}</p>
             <FrameworkTabs
@@ -247,7 +197,7 @@ export default async function LessonPage({
         )}
 
         {lesson.hasLab && (
-          <section className="mt-10 space-y-4 rounded-xl border border-violet-200 bg-violet-50/50 p-5 dark:border-violet-900 dark:bg-violet-950/30">
+          <section id="lab" className="mt-10 scroll-mt-20 space-y-4 rounded-xl border border-violet-200 bg-violet-50/50 p-5 dark:border-violet-900 dark:bg-violet-950/30">
             <h2 className="text-xl font-semibold text-violet-900 dark:text-violet-100">
               {t(locale, "labSection")}
             </h2>
@@ -281,7 +231,12 @@ export default async function LessonPage({
                   {t(locale, "labReadme")}
                 </summary>
                 <div className="border-t border-violet-100 px-4 py-3 dark:border-violet-900">
-                  <MarkdownBody content={labMd} />
+                  <MarkdownBody
+                    content={labMd}
+                    lessonId={lesson.id}
+                    linkBase="lab"
+                    langQuery={`?lang=${locale}`}
+                  />
                 </div>
               </details>
             )}
@@ -297,6 +252,73 @@ export default async function LessonPage({
             )}
           </section>
         )}
+    </>
+  );
+
+  return (
+    <>
+      <SiteHeader locale={locale} />
+      <LessonVisitTracker lessonId={lesson.id} />
+      <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-10">
+        <Link
+          href={`/course?lang=${locale}`}
+          className="text-sm text-indigo-600 hover:underline dark:text-indigo-400"
+        >
+          ← {t(locale, "backToIndex")}
+        </Link>
+
+        <header className="mt-4 space-y-2">
+          {mod && (
+            <p className="text-sm text-zinc-500">
+              {localizedTitle(mod, locale)}
+            </p>
+          )}
+          <h1 className="text-3xl font-bold tracking-tight">
+            <span className="mr-2 font-mono text-lg text-zinc-400">
+              {lesson.id}
+            </span>
+            {localizedTitle(lesson, locale)}
+          </h1>
+          <div className="flex flex-wrap gap-2 text-xs">
+            {tierLabel && (
+              <span className="rounded-full bg-amber-50 px-2 py-0.5 text-amber-800 dark:bg-amber-950 dark:text-amber-200">
+                {t(locale, "tier")}: {tierLabel}
+              </span>
+            )}
+            {!lesson.hasNotebook && (
+              <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-zinc-600 dark:bg-zinc-800">
+                {t(locale, "readingOnly")}
+              </span>
+            )}
+            {lesson.hasLab && (
+              <span className="rounded-full bg-violet-50 px-2 py-0.5 text-violet-800 dark:bg-violet-950 dark:text-violet-200">
+                {t(locale, "lab")}
+              </span>
+            )}
+            {hasMd && (
+              <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">
+                Markdown
+              </span>
+            )}
+            <a
+              href={githubBlobUrl(lesson.path, "README.md")}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-full bg-zinc-100 px-2 py-0.5 text-zinc-600 underline dark:bg-zinc-800"
+            >
+              GitHub README
+            </a>
+          </div>
+        </header>
+
+        {experimentFirst ? (
+          <div className="mt-8">
+            <ExperimentLessonById lessonId={lesson.id} advanced={legacy} />
+          </div>
+        ) : (
+          legacy
+        )}
+        <OpenDetailsOnHash />
 
         <nav className="mt-12 flex items-center justify-between border-t border-zinc-200 pt-6 text-sm dark:border-zinc-800">
           {prev ? (
