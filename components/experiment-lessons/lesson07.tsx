@@ -19,6 +19,13 @@ const playTasks: ExperimentTask<S>[] = [
 
 const practiceTasks: ExperimentTask<S>[] = [
   {
+    id: "neg3",
+    text: <>在得分图上点开<b>得 −3 的格子</b>，看看是哪些格子在扣分</>,
+    hint: "−3 的格子是蓝色的，就在得分 5 的格子上下左右。点开后看展开的算式，蓝色的积就是在扣分。",
+    doneNote: "窗口和完整的 × 对不齐时，不该亮的格亮了，检测器就扣分，几笔加起来是 −3。",
+    check: (s) => s.inspectedNeg3,
+  },
+  {
     id: "corner",
     text: <>把 × 挪到<b>右下角</b>（贴着右边和下边）</>,
     doneNote: "得分表里红色的格子跟着跑到了右下角，最大值还是 5。",
@@ -87,7 +94,7 @@ const def: ExperimentLessonDef = {
   ],
   practice: (
     <Experiment<S>
-      intro={<>多了「池化」和换图案。完成 3 个小任务：</>}
+      intro={<>多了「点开得分格看计算」、池化和换图案。完成下面的小任务：</>}
       tasks={practiceTasks}
       storageKey="exp:07:practice"
       aha={
